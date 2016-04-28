@@ -27,25 +27,15 @@ LOG = log.getLogger(__name__)
 
 def dbsync():
     service.prepare_service()
-    storage.get_connection_from_config(cfg.CONF, 'metering').upgrade()
-    storage.get_connection_from_config(cfg.CONF, 'event').upgrade()
+    storage.get_connection_from_config(cfg.CONF).upgrade()
 
 
 def expirer():
     service.prepare_service()
 
-    if cfg.CONF.database.metering_time_to_live > 0:
-        LOG.debug("Clearing expired metering data")
-        storage_conn = storage.get_connection_from_config(cfg.CONF, 'metering')
-        storage_conn.clear_expired_metering_data(
-            cfg.CONF.database.metering_time_to_live)
-    else:
-        LOG.info(_LI("Nothing to clean, database metering time to live "
-                     "is disabled"))
-
     if cfg.CONF.database.event_time_to_live > 0:
         LOG.debug("Clearing expired event data")
-        event_conn = storage.get_connection_from_config(cfg.CONF, 'event')
+        event_conn = storage.get_connection_from_config(cfg.CONF)
         event_conn.clear_expired_event_data(
             cfg.CONF.database.event_time_to_live)
     else:

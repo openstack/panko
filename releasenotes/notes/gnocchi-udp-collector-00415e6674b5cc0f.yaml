@@ -1,5 +1,0 @@
----
-fixes:
-  - >
-    [`bug 1523124 <https://bugs.launchpad.net/ceilometer/+bug/1523124>`_]
-    Fix gnocchi dispatcher to support UDP collector

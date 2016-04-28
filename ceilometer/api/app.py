@@ -36,6 +36,7 @@ OPTS = [
                ),
 ]
 
+
 API_OPTS = [
     cfg.BoolOpt('pecan_debug',
                 default=False,
@@ -45,6 +46,12 @@ API_OPTS = [
                default=100,
                help='Default maximum number of items returned by API request.'
                ),
+    cfg.IntOpt('workers',
+               default=1,
+               min=1,
+               deprecated_group='DEFAULT',
+               deprecated_name='api_workers',
+               help='Number of workers for api, default value is 1.'),
 ]
 
 CONF.register_opts(OPTS)
@@ -55,7 +62,6 @@ def setup_app(pecan_config=None):
     # FIXME: Replace DBHook with a hooks.TransactionHook
     app_hooks = [hooks.ConfigHook(),
                  hooks.DBHook(),
-                 hooks.NotifierHook(),
                  hooks.TranslationHook()]
 
     pecan_config = pecan_config or {

@@ -1,4 +1,0 @@
----
-features:
-  - >
-    Remove eventlet from Ceilometer in favour of threaded approach

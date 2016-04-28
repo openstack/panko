@@ -15,7 +15,6 @@
 
 from __future__ import absolute_import
 import datetime
-import os
 
 from oslo_config import cfg
 from oslo_db import exception as dbexc
@@ -137,12 +136,8 @@ class Connection(base.Connection):
         self._engine_facade = db_session.EngineFacade(url, **options)
 
     def upgrade(self):
-        # NOTE(gordc): to minimise memory, only import migration when needed
-        from oslo_db.sqlalchemy import migration
-        path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            '..', '..', 'storage', 'sqlalchemy',
-                            'migrate_repo')
-        migration.db_sync(self._engine_facade.get_engine(), path)
+        engine = self._engine_facade.get_engine()
+        models.Base.metadata.create_all(engine)
 
     def clear(self):
         engine = self._engine_facade.get_engine()

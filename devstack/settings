@@ -1,11 +1,3 @@
-# turn on all the ceilometer services by default (except for ipmi pollster)
-# Pollsters
-enable_service ceilometer-acompute ceilometer-acentral
-# Notification Agent
-enable_service ceilometer-anotification
-# Data Collector
-enable_service ceilometer-collector
-# API service
 enable_service ceilometer-api
 
 # Default directories
@@ -18,37 +10,11 @@ CEILOMETER_WSGI_DIR=${CEILOMETER_WSGI_DIR:-/var/www/ceilometer}
 # Set up database backend
 CEILOMETER_BACKEND=${CEILOMETER_BACKEND:-mysql}
 
-# Gnocchi default archive_policy for Ceilometer
-GNOCCHI_ARCHIVE_POLICY=${GNOCCHI_ARCHIVE_POLICY:-low}
-
 # Ceilometer connection info.
 CEILOMETER_SERVICE_PROTOCOL=http
 CEILOMETER_SERVICE_HOST=$SERVICE_HOST
 CEILOMETER_SERVICE_PORT=${CEILOMETER_SERVICE_PORT:-8777}
 CEILOMETER_USE_MOD_WSGI=${CEILOMETER_USE_MOD_WSGI:-${ENABLE_HTTPD_MOD_WSGI_SERVICES}}
-
-# To enable OSprofiler change value of this variable to "notifications,profiler"
-CEILOMETER_NOTIFICATION_TOPICS=${CEILOMETER_NOTIFICATION_TOPICS:-notifications}
-CEILOMETER_EVENTS=${CEILOMETER_EVENTS:-True}
-
-CEILOMETER_COORDINATION_URL=${CEILOMETER_COORDINATION_URL:-redis://localhost:6379}
-CEILOMETER_PIPELINE_INTERVAL=${CEILOMETER_PIPELINE_INTERVAL:-}
-
-# Cache Options
-# NOTE(cdent): These are incomplete and specific for this testing.
-CEILOMETER_CACHE_BACKEND=${CEILOMETER_CACHE_BACKEND:-dogpile.cache.redis}
-CEILOMETER_CACHE_URL=${CEILOMETER_CACHE_URL:-redis://localhost:6379}
-
-CEILOMETER_EVENT_ALARM=${CEILOMETER_EVENT_ALARM:-False}
-
-# Tell Tempest this project is present
-TEMPEST_SERVICES+=,ceilometer
-
-# Set up default directories for client and middleware
-GITREPO["python-ceilometerclient"]=${CEILOMETERCLIENT_REPO:-${GIT_BASE}/openstack/python-ceilometerclient.git}
-GITBRANCH["python-ceilometerclient"]=${CEILOMETERCLIENT_BRANCH:-master}
-GITDIR["python-ceilometerclient"]=$DEST/python-ceilometerclient
-GITDIR["ceilometermiddleware"]=$DEST/ceilometermiddleware
 
 # Get rid of this before done.
 # Tell emacs to use shell-script-mode

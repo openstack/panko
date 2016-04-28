@@ -29,4 +29,4 @@ class TestCapabilitiesController(tests_api.FunctionalTest):
         self.assertIsNotNone(data)
         self.assertNotEqual({}, data)
         self.assertIn('api', data)
-        self.assertIn('storage', data)
+        self.assertIn('event_storage', data)

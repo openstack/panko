@@ -17,7 +17,6 @@
 
 import datetime
 import os
-import random
 from unittest import case
 import uuid
 
@@ -30,8 +29,6 @@ import six
 from six.moves.urllib import parse as urlparse
 
 from ceilometer.event.storage import models
-from ceilometer.publisher import utils
-from ceilometer import sample
 from ceilometer import storage
 
 # TODO(chdent): For now only MongoDB is supported, because of easy
@@ -63,8 +60,6 @@ class ConfigFixture(fixture.GabbiFixture):
         self.conf([], project='ceilometer', validate_default_values=True)
         opts.set_defaults(self.conf)
         conf.import_group('api', 'ceilometer.api.controllers.v2.root')
-        conf.import_opt('store_events', 'ceilometer.notification',
-                        group='notification')
 
         content = ('{"default": ""}')
         if six.PY3:
@@ -81,20 +76,11 @@ class ConfigFixture(fixture.GabbiFixture):
                 'ceilometer/tests/functional/gabbi/gabbi_paste.ini')
         )
 
-        # A special pipeline is required to use the direct publisher.
-        conf.set_override('pipeline_cfg_file',
-                          'ceilometer/tests/functional/gabbi_pipeline.yaml')
-
         database_name = '%s-%s' % (db_url, str(uuid.uuid4()))
         conf.set_override('connection', database_name, group='database')
-        conf.set_override('metering_connection', '', group='database')
         conf.set_override('event_connection', '', group='database')
 
         conf.set_override('pecan_debug', True, group='api')
-        conf.set_override('gnocchi_is_enabled', False, group='api')
-        conf.set_override('aodh_is_enabled', False, group='api')
-
-        conf.set_override('store_events', True, group='notification')
 
     def stop_fixture(self):
         """Reset the config and remove data."""
@@ -103,50 +89,13 @@ class ConfigFixture(fixture.GabbiFixture):
             self.conf.reset()
 
 
-class SampleDataFixture(fixture.GabbiFixture):
-    """Instantiate some sample data for use in testing."""
-
-    def start_fixture(self):
-        """Create some samples."""
-        conf = fixture_config.Config().conf
-        self.conn = storage.get_connection_from_config(conf)
-        timestamp = datetime.datetime.utcnow()
-        project_id = str(uuid.uuid4())
-        self.source = str(uuid.uuid4())
-        resource_metadata = {'farmed_by': 'nancy'}
-
-        for name in ['cow', 'pig', 'sheep']:
-            resource_metadata.update({'breed': name}),
-            c = sample.Sample(name='livestock',
-                              type='gauge',
-                              unit='head',
-                              volume=int(10 * random.random()),
-                              user_id='farmerjon',
-                              project_id=project_id,
-                              resource_id=project_id,
-                              timestamp=timestamp,
-                              resource_metadata=resource_metadata,
-                              source=self.source)
-            data = utils.meter_message_from_counter(
-                c, conf.publisher.telemetry_secret)
-            self.conn.record_metering_data(data)
-
-    def stop_fixture(self):
-        """Destroy the samples."""
-        # NOTE(chdent): print here for sake of info during testing.
-        # This will go away eventually.
-        print('resource',
-              self.conn.db.resource.remove({'source': self.source}))
-        print('meter', self.conn.db.meter.remove({'source': self.source}))
-
-
 class EventDataFixture(fixture.GabbiFixture):
     """Instantiate some sample event data for use in testing."""
 
     def start_fixture(self):
         """Create some events."""
         conf = fixture_config.Config().conf
-        self.conn = storage.get_connection_from_config(conf, 'event')
+        self.conn = storage.get_connection_from_config(conf)
         events = []
         name_list = ['chocolate.chip', 'peanut.butter', 'sugar']
         for ix, name in enumerate(name_list):

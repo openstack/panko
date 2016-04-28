@@ -16,33 +16,16 @@
 import functools
 import os.path
 
-import oslo_messaging.conffixture
 from oslo_utils import timeutils
 from oslotest import base
-from oslotest import mockpatch
 import six
 from testtools import testcase
 import webtest
 
 import ceilometer
-from ceilometer import messaging
 
 
 class BaseTestCase(base.BaseTestCase):
-    def setup_messaging(self, conf, exchange=None):
-        self.useFixture(oslo_messaging.conffixture.ConfFixture(conf))
-        conf.set_override("notification_driver", "messaging")
-        if not exchange:
-            exchange = 'ceilometer'
-        conf.set_override("control_exchange", exchange)
-
-        # NOTE(sileht): Ensure a new oslo.messaging driver is loaded
-        # between each tests
-        self.transport = messaging.get_transport("fake://", cache=False)
-        self.useFixture(mockpatch.Patch(
-            'ceilometer.messaging.get_transport',
-            return_value=self.transport))
-
     def assertTimestampEqual(self, first, second, msg=None):
         """Checks that two timestamps are equals.
 

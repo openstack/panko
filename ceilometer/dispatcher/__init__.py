@@ -16,26 +16,8 @@
 import abc
 
 from oslo_config import cfg
-from oslo_log import log
 import six
-from stevedore import named
 
-from ceilometer.i18n import _LW
-
-
-LOG = log.getLogger(__name__)
-
-OPTS = [
-    cfg.MultiStrOpt('meter_dispatchers',
-                    deprecated_name='dispatcher',
-                    default=['database'],
-                    help='Dispatchers to process metering data.'),
-    cfg.MultiStrOpt('event_dispatchers',
-                    default=['database'],
-                    deprecated_name='dispatcher',
-                    help='Dispatchers to process event data.'),
-]
-cfg.CONF.register_opts(OPTS)
 
 STORAGE_OPTS = [
     cfg.IntOpt('max_retries',
@@ -51,59 +33,11 @@ STORAGE_OPTS = [
 cfg.CONF.register_opts(STORAGE_OPTS, group='storage')
 
 
-def _load_dispatcher_manager(dispatcher_type):
-    namespace = 'ceilometer.dispatcher.%s' % dispatcher_type
-    conf_name = '%s_dispatchers' % dispatcher_type
-
-    LOG.debug('loading dispatchers from %s', namespace)
-    # set propagate_map_exceptions to True to enable stevedore
-    # to propagate exceptions.
-    dispatcher_manager = named.NamedExtensionManager(
-        namespace=namespace,
-        names=getattr(cfg.CONF, conf_name),
-        invoke_on_load=True,
-        invoke_args=[cfg.CONF],
-        propagate_map_exceptions=True)
-    if not list(dispatcher_manager):
-        LOG.warning(_LW('Failed to load any dispatchers for %s'),
-                    namespace)
-    return dispatcher_manager
-
-
-def load_dispatcher_manager():
-    return (_load_dispatcher_manager('meter'),
-            _load_dispatcher_manager('event'))
-
-
-class Base(object):
+@six.add_metaclass(abc.ABCMeta)
+class EventDispatcherBase(object):
     def __init__(self, conf):
         self.conf = conf
 
-
-@six.add_metaclass(abc.ABCMeta)
-class MeterDispatcherBase(Base):
-    @abc.abstractmethod
-    def record_metering_data(self, data):
-        """Recording metering data interface."""
-
-    def verify_and_record_metering_data(self, datapoints):
-        """Verify metering data's signature and record valid ones."""
-        if not isinstance(datapoints, list):
-            datapoints = [datapoints]
-
-        valid_datapoints = []
-        for datapoint in datapoints:
-            if utils.verify_signature(datapoint,
-                                      self.conf.publisher.telemetry_secret):
-                valid_datapoints.append(datapoint)
-            else:
-                LOG.warning(_LW('Message signature is invalid, discarding '
-                                'it: <%r>.'), datapoint)
-        return self.record_metering_data(valid_datapoints)
-
-
-@six.add_metaclass(abc.ABCMeta)
-class EventDispatcherBase(Base):
     @abc.abstractmethod
     def record_events(self, events):
         """Record events."""

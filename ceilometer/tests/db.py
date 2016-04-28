@@ -48,10 +48,8 @@ class MongoDbManager(fixtures.Fixture):
                 action='ignore',
                 message='.*you must provide a username and password.*')
             try:
-                self.connection = storage.get_connection(
-                    self.url, 'ceilometer.metering.storage')
                 self.event_connection = storage.get_connection(
-                    self.url, 'ceilometer.event.storage')
+                    self.url)
             except storage.StorageBadVersion as e:
                 raise testcase.TestSkipped(six.text_type(e))
 
@@ -77,10 +75,7 @@ class SQLManager(fixtures.Fixture):
 
     def setUp(self):
         super(SQLManager, self).setUp()
-        self.connection = storage.get_connection(
-            self.url, 'ceilometer.metering.storage')
-        self.event_connection = storage.get_connection(
-            self.url, 'ceilometer.event.storage')
+        self.event_connection = storage.get_connection(self.url)
 
 
 class PgSQLManager(SQLManager):
@@ -103,10 +98,8 @@ class ElasticSearchManager(fixtures.Fixture):
 
     def setUp(self):
         super(ElasticSearchManager, self).setUp()
-        self.connection = storage.get_connection(
-            'sqlite://', 'ceilometer.metering.storage')
         self.event_connection = storage.get_connection(
-            self.url, 'ceilometer.event.storage')
+            self.url)
         # prefix each test with unique index name
         self.event_connection.index_name = 'events_%s' % uuid.uuid4().hex
         # force index on write so data is queryable right away
@@ -119,10 +112,8 @@ class HBaseManager(fixtures.Fixture):
 
     def setUp(self):
         super(HBaseManager, self).setUp()
-        self.connection = storage.get_connection(
-            self.url, 'ceilometer.metering.storage')
         self.event_connection = storage.get_connection(
-            self.url, 'ceilometer.event.storage')
+            self.url)
         # Unique prefix for each test to keep data is distinguished because
         # all test data is stored in one table
         data_prefix = str(uuid.uuid4().hex)
@@ -159,10 +150,8 @@ class SQLiteManager(fixtures.Fixture):
 
     def setUp(self):
         super(SQLiteManager, self).setUp()
-        self.connection = storage.get_connection(
-            self.url, 'ceilometer.metering.storage')
         self.event_connection = storage.get_connection(
-            self.url, 'ceilometer.event.storage')
+            self.url)
 
 
 @six.add_metaclass(test_base.SkipNotImplementedMeta)
@@ -206,35 +195,19 @@ class TestBase(test_base.BaseTestCase):
 
         self.useFixture(self.db_manager)
 
-        self.conn = self.db_manager.connection
-        self.conn.upgrade()
-
         self.event_conn = self.db_manager.event_connection
         self.event_conn.upgrade()
 
         self.useFixture(mockpatch.Patch('ceilometer.storage.get_connection',
                                         side_effect=self._get_connection))
 
-        # Set a default location for the pipeline config file so the
-        # tests work even if ceilometer is not installed globally on
-        # the system.
-        self.CONF.import_opt('pipeline_cfg_file', 'ceilometer.pipeline')
-        self.CONF.set_override(
-            'pipeline_cfg_file',
-            self.path_get('etc/ceilometer/pipeline.yaml')
-        )
-
     def tearDown(self):
         self.event_conn.clear()
         self.event_conn = None
-        self.conn.clear()
-        self.conn = None
         super(TestBase, self).tearDown()
 
-    def _get_connection(self, url, namespace):
-        if namespace == "ceilometer.event.storage":
-            return self.event_conn
-        return self.conn
+    def _get_connection(self, url):
+        return self.event_conn
 
 
 def run_with(*drivers):

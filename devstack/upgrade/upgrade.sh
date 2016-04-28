@@ -73,15 +73,7 @@ $CEILOMETER_BIN_DIR/ceilometer-dbsync || die $LINENO "DB sync error"
 # Start Ceilometer
 start_ceilometer
 
-# Note these are process names, not service names
-# Note(liamji): Disable the test for
-# "ceilometer-polling --polling-namespaces ipmi". In the test environment,
-# the impi is not ready. The ceilometer-polling should fail.
-ensure_services_started "ceilometer-polling --polling-namespaces compute" \
-                        "ceilometer-polling --polling-namespaces central" \
-                        ceilometer-agent-notification \
-                        ceilometer-api \
-                        ceilometer-collector
+ensure_services_started ceilometer-api
 
 # Save mongodb state (replace with snapshot)
 if grep -q 'connection *= *mongo' /etc/ceilometer/ceilometer.conf; then

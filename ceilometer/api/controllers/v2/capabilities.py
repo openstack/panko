@@ -39,8 +39,6 @@ class Capabilities(base.Base):
 
     api = {wtypes.text: bool}
     "A flattened dictionary of API capabilities"
-    storage = {wtypes.text: bool}
-    "A flattened dictionary of storage capabilities"
     event_storage = {wtypes.text: bool}
     "A flattened dictionary of event storage capabilities"
 
@@ -48,30 +46,8 @@ class Capabilities(base.Base):
     def sample(cls):
         return cls(
             api=_flatten_capabilities({
-                'meters': {'query': {'simple': True,
-                                     'metadata': True}},
-                'resources': {'query': {'simple': True,
-                                        'metadata': True}},
-                'samples': {'query': {'simple': True,
-                                      'metadata': True,
-                                      'complex': True}},
-                'statistics': {'groupby': True,
-                               'query': {'simple': True,
-                                         'metadata': True},
-                               'aggregation': {'standard': True,
-                                               'selectable': {
-                                                   'max': True,
-                                                   'min': True,
-                                                   'sum': True,
-                                                   'avg': True,
-                                                   'count': True,
-                                                   'stddev': True,
-                                                   'cardinality': True,
-                                                   'quartile': False}}},
                 'events': {'query': {'simple': True}},
             }),
-            storage=_flatten_capabilities(
-                {'storage': {'production_ready': True}}),
             event_storage=_flatten_capabilities(
                 {'storage': {'production_ready': True}}),
         )
@@ -88,13 +64,10 @@ class CapabilitiesController(rest.RestController):
         """
         # variation in API capabilities is effectively determined by
         # the lack of strict feature parity across storage drivers
-        conn = pecan.request.storage_conn
         event_conn = pecan.request.event_storage_conn
-        driver_capabilities = conn.get_capabilities().copy()
-        driver_capabilities['events'] = event_conn.get_capabilities()['events']
-        driver_perf = conn.get_storage_capabilities()
+        driver_capabilities = {'events':
+                               event_conn.get_capabilities()['events']}
         event_driver_perf = event_conn.get_storage_capabilities()
         return Capabilities(api=_flatten_capabilities(driver_capabilities),
-                            storage=_flatten_capabilities(driver_perf),
                             event_storage=_flatten_capabilities(
                                 event_driver_perf))

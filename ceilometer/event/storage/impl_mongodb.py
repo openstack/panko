@@ -18,7 +18,6 @@ import pymongo
 
 from ceilometer.event.storage import pymongo_base
 from ceilometer import storage
-from ceilometer.storage import impl_mongodb
 from ceilometer.storage.mongo import utils as pymongo_utils
 
 LOG = log.getLogger(__name__)
@@ -52,6 +51,31 @@ class Connection(pymongo_base.Connection):
         # needed.
         self.upgrade()
 
+    @staticmethod
+    def update_ttl(ttl, ttl_index_name, index_field, coll):
+        """Update or create time_to_live indexes.
+
+        :param ttl: time to live in seconds.
+        :param ttl_index_name: name of the index we want to update or create.
+        :param index_field: field with the index that we need to update.
+        :param coll: collection which indexes need to be updated.
+        """
+        indexes = coll.index_information()
+        if ttl <= 0:
+            if ttl_index_name in indexes:
+                coll.drop_index(ttl_index_name)
+            return
+
+        if ttl_index_name in indexes:
+            return coll.database.command(
+                'collMod', coll.name,
+                index={'keyPattern': {index_field: pymongo.ASCENDING},
+                       'expireAfterSeconds': ttl})
+
+        coll.create_index([(index_field, pymongo.ASCENDING)],
+                          expireAfterSeconds=ttl,
+                          name=ttl_index_name)
+
     def upgrade(self):
         # create collection if not present
         if 'event' not in self.db.conn.collection_names():
@@ -65,8 +89,7 @@ class Connection(pymongo_base.Connection):
             name='event_type_idx'
         )
         ttl = cfg.CONF.database.event_time_to_live
-        impl_mongodb.Connection.update_ttl(ttl, 'event_ttl', 'timestamp',
-                                           self.db.event)
+        self.update_ttl(ttl, 'event_ttl', 'timestamp', self.db.event)
 
     def clear(self):
         self.conn.drop_database(self.db.name)

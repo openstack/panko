@@ -108,24 +108,6 @@ class Base(wtypes.DynamicBase):
                     getattr(self, k) != wsme.Unset)
 
 
-class Link(Base):
-    """A link representation."""
-
-    href = wtypes.text
-    "The url of a link"
-
-    rel = wtypes.text
-    "The name of a link"
-
-    @classmethod
-    def sample(cls):
-        return cls(href=('http://localhost:8777/v2/meters/volume?'
-                         'q.field=resource_id&'
-                         'q.value=bd9431c1-8d69-4ad3-803a-8d4a6b89fd36'),
-                   rel='volume'
-                   )
-
-
 class Query(Base):
     """Query filter."""
 

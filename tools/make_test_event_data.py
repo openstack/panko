@@ -99,7 +99,7 @@ def main():
     args = parser.parse_args()
 
     # Connect to the event database
-    conn = storage.get_connection_from_config(cfg.CONF, 'event')
+    conn = storage.get_connection_from_config(cfg.CONF)
 
     # Compute the correct time span
     start = datetime.datetime.utcnow() - datetime.timedelta(days=args.start)

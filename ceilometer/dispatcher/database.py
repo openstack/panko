@@ -24,8 +24,7 @@ from ceilometer import storage
 LOG = log.getLogger(__name__)
 
 
-class DatabaseDispatcher(dispatcher.MeterDispatcherBase,
-                         dispatcher.EventDispatcherBase):
+class DatabaseDispatcher(dispatcher.EventDispatcherBase):
     """Dispatcher class for recording metering data into database.
 
     The dispatcher class which records each meter into a database configured
@@ -41,59 +40,7 @@ class DatabaseDispatcher(dispatcher.MeterDispatcherBase,
 
     def __init__(self, conf):
         super(DatabaseDispatcher, self).__init__(conf)
-
-        self._meter_conn = self._get_db_conn('metering', True)
-        self._event_conn = self._get_db_conn('event', True)
-
-    def _get_db_conn(self, purpose, ignore_exception=False):
-        try:
-            return storage.get_connection_from_config(self.conf, purpose)
-        except Exception as err:
-            params = {"purpose": purpose, "err": err}
-            LOG.exception(_LE("Failed to connect to db, purpose %(purpose)s "
-                              "re-try later: %(err)s") % params)
-            if not ignore_exception:
-                raise
-
-    @property
-    def meter_conn(self):
-        if not self._meter_conn:
-            self._meter_conn = self._get_db_conn('metering')
-
-        return self._meter_conn
-
-    @property
-    def event_conn(self):
-        if not self._event_conn:
-            self._event_conn = self._get_db_conn('event')
-
-        return self._event_conn
-
-    def record_metering_data(self, data):
-        # We may have receive only one counter on the wire
-        if not isinstance(data, list):
-            data = [data]
-
-        for meter in data:
-            LOG.debug(
-                'metering data %(counter_name)s '
-                'for %(resource_id)s @ %(timestamp)s: %(counter_volume)s',
-                {'counter_name': meter['counter_name'],
-                 'resource_id': meter['resource_id'],
-                 'timestamp': meter.get('timestamp', 'NO TIMESTAMP'),
-                 'counter_volume': meter['counter_volume']})
-            try:
-                # Convert the timestamp to a datetime instance.
-                # Storage engines are responsible for converting
-                # that value to something they can store.
-                if meter.get('timestamp'):
-                    ts = timeutils.parse_isotime(meter['timestamp'])
-                    meter['timestamp'] = timeutils.normalize_time(ts)
-                self.meter_conn.record_metering_data(meter)
-            except Exception as err:
-                LOG.error(_LE('Failed to record metering data: %s.'), err)
-                # raise the exception to propagate it up in the chain.
-                raise
+        self.event_conn = storage.get_connection_from_config(self.conf)
 
     def record_events(self, events):
         if not isinstance(events, list):

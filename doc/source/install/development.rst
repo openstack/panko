@@ -18,15 +18,6 @@
  Installing development sandbox
 ===============================
 
-Ceilometer has several daemons. The basic are: :term:`polling agent` running
-either on the Nova compute node(s) or :term:`polling agent` running on the
-central management node(s), :term:`collector` and :term:`notification agent`
-running on the cloud's management node(s).
-
-In a development environment created by devstack_, these services are
-typically running on the same server.
-
-
 Configuring devstack
 ====================
 
@@ -37,11 +28,7 @@ Configuring devstack
 
 2. Create a ``local.conf`` file as input to devstack.
 
-3. Ceilometer makes extensive use of the messaging bus, but has not
-   yet been tested with ZeroMQ. We recommend using Rabbit for
-   now. By default, RabbitMQ will be used by devstack.
-
-4. The ceilometer services are not enabled by default, so they must be
+3. The ceilometer services are not enabled by default, so they must be
    enabled in ``local.conf`` before running ``stack.sh``.
 
    This example ``local.conf`` file shows all of the settings required for
@@ -50,8 +37,5 @@ Configuring devstack
       [[local|localrc]]
       # Enable the Ceilometer devstack plugin
       enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer.git
-
-   By default, all ceilometer services except for ceilometer-ipmi agent will
-   be enabled
 
 .. _devstack: http://www.devstack.org/

@@ -41,7 +41,6 @@ class FunctionalTest(db_test_base.TestBase):
     def setUp(self):
         super(FunctionalTest, self).setUp()
         self.CONF = self.useFixture(fixture_config.Config()).conf
-        self.setup_messaging(self.CONF)
         opts.set_defaults(self.CONF)
 
         self.CONF.set_override("auth_version", "v2.0",
@@ -49,9 +48,6 @@ class FunctionalTest(db_test_base.TestBase):
         self.CONF.set_override("policy_file",
                                self.path_get('etc/ceilometer/policy.json'),
                                group='oslo_policy')
-
-        self.CONF.set_override('gnocchi_is_enabled', False, group='api')
-        self.CONF.set_override('aodh_is_enabled', False, group='api')
 
         self.app = self._make_app()
 
