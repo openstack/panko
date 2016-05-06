@@ -1,7 +1,7 @@
 [run]
 branch = True
-source = ceilometer
-omit = ceilometer/tests/*
+source = panko
+omit = panko/tests/*
 
 [report]
 ignore_errors = True

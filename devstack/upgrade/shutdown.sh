@@ -12,16 +12,16 @@ source $BASE_DEVSTACK_DIR/stackrc # needed for status directory
 source $BASE_DEVSTACK_DIR/lib/tls
 source $BASE_DEVSTACK_DIR/lib/apache
 
-# Locate the ceilometer plugin and get its functions
-CEILOMETER_DEVSTACK_DIR=$(dirname $(dirname $0))
-source $CEILOMETER_DEVSTACK_DIR/plugin.sh
+# Locate the panko plugin and get its functions
+PANKO_DEVSTACK_DIR=$(dirname $(dirname $0))
+source $PANKO_DEVSTACK_DIR/plugin.sh
 
 set -o xtrace
 
-stop_ceilometer
+stop_panko
 
 # ensure everything is stopped
 
-SERVICES_DOWN="ceilometer-api"
+SERVICES_DOWN="panko-api"
 
 ensure_services_stopped $SERVICES_DOWN

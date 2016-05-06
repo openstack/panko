@@ -13,13 +13,13 @@
       License for the specific language governing permissions and limitations
       under the License.
 
-==================================================
-Welcome to the Ceilometer developer documentation!
-==================================================
+=============================================
+Welcome to the Panko developer documentation!
+=============================================
 
-Ceilometer is a component of the Telemetry project.
+Panko is a component of the Telemetry project.
 
-This documentation offers information on how Ceilometer works and how to
+This documentation offers information on how Panko works and how to
 contribute to the project.
 
 Overview

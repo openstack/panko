@@ -16,7 +16,7 @@ and a growing number of applications running on top of OpenStack infrastructure.
 In an effort to avoid significant integration work that would be required if
 each service produced a unique notification payload, we have defined a minimum
 data set that provides the core data elements needed for downstream metering
-processes. This format is not enforced by Ceilometer but serves as an advisory
+processes. This format is not enforced by Panko but serves as an advisory
 guideline for PaaS service developers:
 
 ::
@@ -184,7 +184,7 @@ guideline for PaaS service developers:
                         "Type": "enumeration",
                         "Description": "gauge, cumulative, delta",
                         "Compliance": "required",
-                        "Notes": "describes the behavior of the metric, from Ceilometer"
+                        "Notes": "describes the behavior of the metric, from Panko"
                     },
                     {
                         "Field": "metric_value",

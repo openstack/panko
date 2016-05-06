@@ -17,23 +17,23 @@
  Installing the API behind mod_wsgi
 ===================================
 
-Ceilometer comes with a few example files for configuring the API
+Panko comes with a few example files for configuring the API
 service to run behind Apache with ``mod_wsgi``.
 
 app.wsgi
 ========
 
-The file ``ceilometer/api/app.wsgi`` sets up the V2 API WSGI
-application. The file is installed with the rest of the ceilometer
+The file ``panko/api/app.wsgi`` sets up the V2 API WSGI
+application. The file is installed with the rest of the panko
 application code, and should not need to be modified.
 
-etc/apache2/ceilometer
+etc/apache2/panko
 ======================
 
-The ``etc/apache2/ceilometer`` file contains example settings that
-work with a copy of ceilometer installed via devstack.
+The ``etc/apache2/panko`` file contains example settings that
+work with a copy of panko installed via devstack.
 
-.. literalinclude:: ../../../etc/apache2/ceilometer
+.. literalinclude:: ../../../etc/apache2/panko
 
 1. On deb-based systems copy or symlink the file to
    ``/etc/apache2/sites-available``. For rpm-based systems the file will go in
@@ -41,11 +41,11 @@ work with a copy of ceilometer installed via devstack.
 
 2. Modify the ``WSGIDaemonProcess`` directive to set the ``user`` and
    ``group`` values to an appropriate user on your server. In many
-   installations ``ceilometer`` will be correct.
+   installations ``panko`` will be correct.
 
-3. Enable the ceilometer site. On deb-based systems::
+3. Enable the panko site. On deb-based systems::
 
-      $ a2ensite ceilometer
+      $ a2ensite panko
       $ service apache2 reload
 
    On rpm-based systems::
@@ -56,11 +56,11 @@ work with a copy of ceilometer installed via devstack.
 Limitation
 ==========
 
-As Ceilometer is using Pecan and Pecan's DebugMiddleware doesn't support
+As Panko is using Pecan and Pecan's DebugMiddleware doesn't support
 multiple processes, there is no way to set debug mode in the multiprocessing
 case. To allow multiple processes the DebugMiddleware may be turned off by
 setting ``pecan_debug`` to ``False`` in the ``api`` section of
-``ceilometer.conf``.
+``panko.conf``.
 
 For other WSGI setup you can refer to the `pecan deployment`_ documentation.
 .. _`pecan deployment`: http://pecan.readthedocs.org/en/latest/deployment.html

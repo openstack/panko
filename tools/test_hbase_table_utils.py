@@ -17,15 +17,15 @@ import sys
 
 from oslo_config import cfg
 
-from ceilometer import storage
+from panko import storage
 
 
 def main(argv):
-    cfg.CONF([], project='ceilometer')
-    if os.getenv("CEILOMETER_TEST_STORAGE_URL", "").startswith("hbase://"):
+    cfg.CONF([], project='panko')
+    if os.getenv("PANKO_TEST_STORAGE_URL", "").startswith("hbase://"):
         url = ("%s?table_prefix=%s" %
-               (os.getenv("CEILOMETER_TEST_STORAGE_URL"),
-                os.getenv("CEILOMETER_TEST_HBASE_TABLE_PREFIX", "test")))
+               (os.getenv("PANKO_TEST_STORAGE_URL"),
+                os.getenv("PANKO_TEST_HBASE_TABLE_PREFIX", "test")))
         event_conn = storage.get_connection(url)
         for arg in argv:
             if arg == "--upgrade":

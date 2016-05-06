@@ -28,14 +28,14 @@ Configuring devstack
 
 2. Create a ``local.conf`` file as input to devstack.
 
-3. The ceilometer services are not enabled by default, so they must be
+3. The panko services are not enabled by default, so they must be
    enabled in ``local.conf`` before running ``stack.sh``.
 
    This example ``local.conf`` file shows all of the settings required for
-   ceilometer::
+   panko::
 
       [[local|localrc]]
-      # Enable the Ceilometer devstack plugin
-      enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer.git
+      # Enable the Panko devstack plugin
+      enable_plugin panko https://git.openstack.org/openstack/panko.git
 
 .. _devstack: http://www.devstack.org/

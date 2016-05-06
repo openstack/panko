@@ -14,11 +14,11 @@
 .. _contributing:
 
 ============================
- Contributing to Ceilometer
+ Contributing to Panko
 ============================
 
-Ceilometer follows the same workflow as other OpenStack projects. To start
-contributing to Ceilometer, please follow the workflow found here_.
+Panko follows the same workflow as other OpenStack projects. To start
+contributing to Panko, please follow the workflow found here_.
 
 .. _here: https://wiki.openstack.org/wiki/Gerrit_Workflow
 
@@ -26,8 +26,8 @@ contributing to Ceilometer, please follow the workflow found here_.
 Project Hosting Details
 =======================
 
-:Bug tracker: http://launchpad.net/ceilometer
-:Mailing list: http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev (prefix subjects with ``[Ceilometer]`` for faster responses)
-:Wiki: http://wiki.openstack.org/wiki/Ceilometer
-:Code Hosting: https://git.openstack.org/cgit/openstack/ceilometer/
-:Code Review: https://review.openstack.org/#/q/status:open+project:openstack/ceilometer,n,z
+:Bug tracker: http://launchpad.net/panko
+:Mailing list: http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev (prefix subjects with ``[Panko]`` for faster responses)
+:Wiki: http://wiki.openstack.org/wiki/Panko
+:Code Hosting: https://git.openstack.org/cgit/openstack/panko/
+:Code Review: https://review.openstack.org/#/q/status:open+project:openstack/panko,n,z

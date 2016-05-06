@@ -16,7 +16,7 @@
 .. _install:
 
 =======================
- Installing Ceilometer
+ Installing Panko
 =======================
 
 .. toctree::

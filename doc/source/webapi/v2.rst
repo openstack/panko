@@ -14,37 +14,37 @@ returns a flattened dictionary of properties with associated boolean values -
 a 'False' or absent value means that the corresponding feature is not
 available in the backend.
 
-.. rest-controller:: ceilometer.api.controllers.v2.capabilities:CapabilitiesController
+.. rest-controller:: panko.api.controllers.v2.capabilities:CapabilitiesController
    :webprefix: /v2/capabilities
 
-.. autotype:: ceilometer.api.controllers.v2.capabilities.Capabilities
+.. autotype:: panko.api.controllers.v2.capabilities.Capabilities
    :members:
 
 Events and Traits
 =================
 
-.. rest-controller:: ceilometer.api.controllers.v2.events:EventTypesController
+.. rest-controller:: panko.api.controllers.v2.events:EventTypesController
    :webprefix: /v2/event_types
 
-.. rest-controller:: ceilometer.api.controllers.v2.events:TraitsController
+.. rest-controller:: panko.api.controllers.v2.events:TraitsController
    :webprefix: /v2/event_types/(event_type)/traits
 
-.. rest-controller:: ceilometer.api.controllers.v2.events:EventsController
+.. rest-controller:: panko.api.controllers.v2.events:EventsController
    :webprefix: /v2/events
 
-.. autotype:: ceilometer.api.controllers.v2.events.Event
+.. autotype:: panko.api.controllers.v2.events.Event
    :members:
 
-.. autotype:: ceilometer.api.controllers.v2.events.Trait
+.. autotype:: panko.api.controllers.v2.events.Trait
    :members:
 
-.. autotype:: ceilometer.api.controllers.v2.events.TraitDescription
+.. autotype:: panko.api.controllers.v2.events.TraitDescription
    :members:
 
 Filtering Queries
 =================
 
-Ceilometer's REST API currently supports two types of queries. The Simple
+Panko's REST API currently supports two types of queries. The Simple
 Query functionality provides simple filtering on several fields of the
 *Sample* type. Complex Query provides the possibility to specify queries
 with logical and comparison operators on the fields of *Sample*.
@@ -73,7 +73,7 @@ type (for example, if you apply a filter on a query for statistics,
 you won't target *duration_start* field of *Statistics*, but *timestamp*
 field of *Sample*). See :ref:`api-queries` for how to query the API.
 
-.. autotype:: ceilometer.api.controllers.v2.base.Query
+.. autotype:: panko.api.controllers.v2.base.Query
    :members:
 
 Event Query
@@ -86,5 +86,5 @@ event_type, message_id, start_timestamp, end_timestamp, then this field
 will be applied on event, otherwise it will be treated as trait name and
 applied on trait. See :ref:`api-queries` for how to query the API.
 
-.. autotype:: ceilometer.api.controllers.v2.events.EventQuery
+.. autotype:: panko.api.controllers.v2.events.EventQuery
    :members:

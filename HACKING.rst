@@ -1,12 +1,12 @@
-Ceilometer Style Commandments
-=============================
+Panko Style Commandments
+========================
 
 - Step 1: Read the OpenStack Style Commandments
   http://docs.openstack.org/developer/hacking/
 - Step 2: Read on
 
-Ceilometer Specific Commandments
---------------------------------
+Panko Specific Commandments
+---------------------------
 
 - [C301] LOG.warn() is not allowed. Use LOG.warning()
 - [C302] Deprecated library function os.popen()

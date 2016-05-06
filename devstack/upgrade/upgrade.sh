@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# ``upgrade-ceilometer``
+# ``upgrade-panko``
 
 echo "*********************************************************************"
 echo "Begin $0"
@@ -34,50 +34,50 @@ source $GRENADE_DIR/functions
 set -o errexit
 
 # Save mongodb state (replace with snapshot)
-# TODO(chdent): There used to be a 'register_db_to_save ceilometer'
+# TODO(chdent): There used to be a 'register_db_to_save panko'
 # which may wish to consider putting back in.
-if grep -q 'connection *= *mongo' /etc/ceilometer/ceilometer.conf; then
-    mongodump --db ceilometer --out $SAVE_DIR/ceilometer-dump.$BASE_RELEASE
+if grep -q 'connection *= *mongo' /etc/panko/panko.conf; then
+    mongodump --db panko --out $SAVE_DIR/panko-dump.$BASE_RELEASE
 fi
 
-# Upgrade Ceilometer
+# Upgrade Panko
 # ==================
-# Locate ceilometer devstack plugin, the directory above the
+# Locate panko devstack plugin, the directory above the
 # grenade plugin.
-CEILOMETER_DEVSTACK_DIR=$(dirname $(dirname $0))
+PANKO_DEVSTACK_DIR=$(dirname $(dirname $0))
 
 # Get functions from current DevStack
 source $TARGET_DEVSTACK_DIR/functions
 source $TARGET_DEVSTACK_DIR/stackrc
 source $TARGET_DEVSTACK_DIR/lib/apache
 
-# Get ceilometer functions from devstack plugin
-source $CEILOMETER_DEVSTACK_DIR/settings
+# Get panko functions from devstack plugin
+source $PANKO_DEVSTACK_DIR/settings
 
 # Print the commands being run so that we can see the command that triggers
 # an error.
 set -o xtrace
 
-# Install the target ceilometer
-source $CEILOMETER_DEVSTACK_DIR/plugin.sh stack install
+# Install the target panko
+source $PANKO_DEVSTACK_DIR/plugin.sh stack install
 
-# calls upgrade-ceilometer for specific release
-upgrade_project ceilometer $RUN_DIR $BASE_DEVSTACK_BRANCH $TARGET_DEVSTACK_BRANCH
+# calls upgrade-panko for specific release
+upgrade_project panko $RUN_DIR $BASE_DEVSTACK_BRANCH $TARGET_DEVSTACK_BRANCH
 
 # Migrate the database
 # NOTE(chdent): As we evolve BIN_DIR is likely to be defined, but
 # currently it is not.
-CEILOMETER_BIN_DIR=$(dirname $(which ceilometer-dbsync))
-$CEILOMETER_BIN_DIR/ceilometer-dbsync || die $LINENO "DB sync error"
+PANKO_BIN_DIR=$(dirname $(which panko-dbsync))
+$PANKO_BIN_DIR/panko-dbsync || die $LINENO "DB sync error"
 
-# Start Ceilometer
-start_ceilometer
+# Start Panko
+start_panko
 
-ensure_services_started ceilometer-api
+ensure_services_started panko-api
 
 # Save mongodb state (replace with snapshot)
-if grep -q 'connection *= *mongo' /etc/ceilometer/ceilometer.conf; then
-    mongodump --db ceilometer --out $SAVE_DIR/ceilometer-dump.$TARGET_RELEASE
+if grep -q 'connection *= *mongo' /etc/panko/panko.conf; then
+    mongodump --db panko --out $SAVE_DIR/panko-dump.$TARGET_RELEASE
 fi
 
 

@@ -12,7 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""Command line tool for creating event test data for Ceilometer.
+"""Command line tool for creating event test data for Panko.
 
 Usage:
 
@@ -29,8 +29,8 @@ import uuid
 from oslo_config import cfg
 from oslo_utils import timeutils
 
-from ceilometer.event.storage import models
-from ceilometer import storage
+from panko.event.storage import models
+from panko import storage
 
 
 def make_test_data(conn, start, end, interval, event_types):
@@ -67,7 +67,7 @@ def make_test_data(conn, start, end, interval, event_types):
 
 
 def main():
-    cfg.CONF([], project='ceilometer')
+    cfg.CONF([], project='panko')
 
     parser = argparse.ArgumentParser(
         description='generate event data',

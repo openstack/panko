@@ -1,0 +1,15 @@
+Listen %PORT%
+
+<VirtualHost *:%PORT%>
+    WSGIDaemonProcess panko-api processes=2 threads=10 user=%USER% display-name=%{GROUP} %VIRTUALENV%
+    WSGIProcessGroup panko-api
+    WSGIScriptAlias / %WSGIAPP%
+    WSGIApplicationGroup %{GLOBAL}
+    <IfVersion >= 2.4>
+        ErrorLogFormat "%{cu}t %M"
+    </IfVersion>
+    ErrorLog /var/log/%APACHE_NAME%/panko.log
+    CustomLog /var/log/%APACHE_NAME%/panko_access.log combined
+</VirtualHost>
+
+WSGISocketPrefix /var/run/%APACHE_NAME%

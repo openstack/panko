@@ -25,7 +25,7 @@ Storage Backend Installation
 ============================
 
 This step is a prerequisite for the collector and API services. You may use
-one of the listed database backends below to store Ceilometer data.
+one of the listed database backends below to store Panko data.
 
 MongoDB
 -------
@@ -35,10 +35,10 @@ MongoDB
    2.4.x. You will also need to have pymongo_ 2.4 installed
 
    To use MongoDB as the storage backend, change the 'database' section in
-   ceilometer.conf as follows::
+   panko.conf as follows::
 
     [database]
-    connection = mongodb://username:password@host:27017/ceilometer
+    connection = mongodb://username:password@host:27017/panko
 
 SQLalchemy-supported DBs
 ------------------------
@@ -47,10 +47,10 @@ SQLalchemy-supported DBs
    `PostgreSQL` or `MySQL`.
 
    To use MySQL as the storage backend, change the 'database' section in
-   ceilometer.conf as follows::
+   panko.conf as follows::
 
     [database]
-    connection = mysql+pymysql://username:password@host/ceilometer?charset=utf8
+    connection = mysql+pymysql://username:password@host/panko?charset=utf8
 
 
 .. _MongoDB: http://www.mongodb.org/
@@ -65,38 +65,38 @@ Installing the API Server
 
 .. note::
 
-   The API server needs to be able to talk to keystone and ceilometer's
+   The API server needs to be able to talk to keystone and panko's
    database. It is only required if you choose to store data in legacy
    database or if you inject new samples via REST API.
 
-1. Clone the ceilometer git repository to the server::
+1. Clone the panko git repository to the server::
 
    $ cd /opt/stack
-   $ git clone https://git.openstack.org/openstack/ceilometer.git
+   $ git clone https://git.openstack.org/openstack/panko.git
 
 2. As a user with ``root`` permissions or ``sudo`` privileges, run the
-   ceilometer installer::
+   panko installer::
 
-   $ cd ceilometer
+   $ cd panko
    $ sudo python setup.py install
 
 3. Copy the sample configuration files from the source tree
    to their final location::
 
-   $ mkdir -p /etc/ceilometer
-   $ cp etc/ceilometer/api_paste.ini /etc/ceilometer
-   $ cp etc/ceilometer/*.json /etc/ceilometer
-   $ cp etc/ceilometer/*.yaml /etc/ceilometer
-   $ cp etc/ceilometer/ceilometer.conf.sample /etc/ceilometer/ceilometer.conf
+   $ mkdir -p /etc/panko
+   $ cp etc/panko/api_paste.ini /etc/panko
+   $ cp etc/panko/*.json /etc/panko
+   $ cp etc/panko/*.yaml /etc/panko
+   $ cp etc/panko/panko.conf.sample /etc/panko/panko.conf
 
-4. Create a service for ceilometer in keystone::
+4. Create a service for panko in keystone::
 
-     $ openstack service create metering --name=ceilometer \
-                                         --description="Ceilometer Service"
+     $ openstack service create metering --name=panko \
+                                         --description="Panko Service"
 
-5. Create an endpoint in keystone for ceilometer::
+5. Create an endpoint in keystone for panko::
 
-     $ openstack endpoint create $CEILOMETER_SERVICE \
+     $ openstack endpoint create $PANKO_SERVICE \
                                  --region RegionOne \
                                  --publicurl "http://$SERVICE_HOST:8777" \
                                  --adminurl "http://$SERVICE_HOST:8777" \
@@ -104,14 +104,14 @@ Installing the API Server
 
    .. note::
 
-     CEILOMETER_SERVICE is the id of the service created by the first command
-     and SERVICE_HOST is the host where the Ceilometer API is running. The
-     default port value for ceilometer API is 8777. If the port value
+     PANKO_SERVICE is the id of the service created by the first command
+     and SERVICE_HOST is the host where the Panko API is running. The
+     default port value for panko API is 8777. If the port value
      has been customized, adjust accordingly.
 
 6. Choose and start the API server.
 
-   Ceilometer includes the ``ceilometer-api`` command. This can be
+   Panko includes the ``panko-api`` command. This can be
    used to run the API server. For smaller or proof-of-concept
    installations this is a reasonable choice. For larger installations it
    is strongly recommended to install the API server in a WSGI host
@@ -119,10 +119,10 @@ Installing the API Server
    performance and more options for making adjustments specific to the
    installation environment.
 
-   If you are using the ``ceilometer-api`` command it can be started
+   If you are using the ``panko-api`` command it can be started
    as::
 
-    $ ceilometer-api
+    $ panko-api
 
 .. note::
 

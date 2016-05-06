@@ -11,5 +11,5 @@ cover/*
 dist/*
 doc/build
 doc/source/api/
-etc/ceilometer/ceilometer.conf
+etc/panko/panko.conf
 subunit.log
