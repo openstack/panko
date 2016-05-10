@@ -16,7 +16,6 @@
 from oslo_log import log
 from oslo_utils import timeutils
 
-from panko import dispatcher
 from panko.event.storage import models
 from panko.i18n import _LE
 from panko import storage
@@ -24,7 +23,7 @@ from panko import storage
 LOG = log.getLogger(__name__)
 
 
-class DatabaseDispatcher(dispatcher.EventDispatcherBase):
+class DatabaseDispatcher(object):
     """Dispatcher class for recording metering data into database.
 
     The dispatcher class which records each meter into a database configured
@@ -39,8 +38,7 @@ class DatabaseDispatcher(dispatcher.EventDispatcherBase):
     """
 
     def __init__(self, conf):
-        super(DatabaseDispatcher, self).__init__(conf)
-        self.event_conn = storage.get_connection_from_config(self.conf)
+        self.event_conn = storage.get_connection_from_config(conf)
 
     def record_events(self, events):
         if not isinstance(events, list):

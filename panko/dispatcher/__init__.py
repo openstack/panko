@@ -13,10 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import abc
-
 from oslo_config import cfg
-import six
 
 
 STORAGE_OPTS = [
@@ -31,13 +28,3 @@ STORAGE_OPTS = [
                help='Interval (in seconds) between retries of connection.'),
 ]
 cfg.CONF.register_opts(STORAGE_OPTS, group='storage')
-
-
-@six.add_metaclass(abc.ABCMeta)
-class EventDispatcherBase(object):
-    def __init__(self, conf):
-        self.conf = conf
-
-    @abc.abstractmethod
-    def record_events(self, events):
-        """Record events."""
