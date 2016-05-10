@@ -44,28 +44,6 @@ class TestDispatcherDB(base.BaseTestCase):
             self.dispatcher.record_events(event)
         self.assertEqual(1, len(record_events.call_args_list[0][0][0]))
 
-    @mock.patch('ceilometer.publisher.utils.verify_signature')
-    def test_event_with_bad_signature(self, mocked_verify):
-        event = event_models.Event(uuid.uuid4(), 'test',
-                                   datetime.datetime(2012, 7, 2, 13, 53, 40),
-                                   [], {}).serialize()
-
-        def _fake_verify(ev, secret):
-            if ev.get('message_signature') == 'bad_signature':
-                return False
-            return True
-        mocked_verify.side_effect = _fake_verify
-        with mock.patch.object(self.dispatcher.event_conn,
-                               'record_events') as record_events:
-            event['message_signature'] = 'bad_signature'
-            self.dispatcher.verify_and_record_events([event])
-            self.assertEqual([], record_events.call_args_list[0][0][0])
-            del event['message_signature']
-            event['message_signature'] = utils.compute_signature(
-                event, self.CONF.publisher.telemetry_secret)
-            self.dispatcher.verify_and_record_events([event])
-            self.assertEqual(1, len(record_events.call_args_list[1][0][0]))
-
     def test_valid_message(self):
         msg = {'counter_name': 'test',
                'resource_id': self.id(),

@@ -24,7 +24,7 @@ from oslo_utils import netutils
 from oslo_utils import units
 
 from ceilometer import dispatcher
-from ceilometer.i18n import _, _LE
+from ceilometer.i18n import _, _LE, _LW
 from ceilometer import messaging
 from ceilometer import service_base
 from ceilometer import utils
@@ -94,7 +94,8 @@ class CollectorService(service_base.ServiceBase):
                 self.event_listener = (
                     messaging.get_batch_notification_listener(
                         transport, [event_target],
-                        [EventEndpoint(self.event_manager)],
+                        [EventEndpoint(
+                            EventDispatcherVerificator(self.event_manager))],
                         allow_requeue=True,
                         batch_size=cfg.CONF.collector.batch_size,
                         batch_timeout=cfg.CONF.collector.batch_timeout))
@@ -159,6 +160,23 @@ class CollectorEndpoint(object):
 class SampleEndpoint(CollectorEndpoint):
     method = 'verify_and_record_metering_data'
     ep_type = 'sample'
+
+
+class EventDispatcherVerificator(object):
+    def __init__(self, dispatcher):
+        self.dispatcher = dispatcher
+
+    def verify_and_record_events(self, events):
+        """Verify event signature and record them."""
+        goods = []
+        for event in events:
+            if utils.verify_signature(
+                    event, self.conf.publisher.telemetry_secret):
+                goods.append(event)
+            else:
+                LOG.warning(_LW(
+                    'event signature invalid, discarding event: %s'), event)
+        return self.dispatcher.record_events(goods)
 
 
 class EventEndpoint(CollectorEndpoint):
