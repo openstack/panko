@@ -33,7 +33,10 @@ class Connection(pymongo_base.Connection):
         # We need that otherwise we overflow the MongoDB instance with new
         # connection since we instantiate a Pymongo client each time someone
         # requires a new storage connection.
-        self.conn = self.CONNECTION_POOL.connect(url)
+        self.conn = self.CONNECTION_POOL.connect(
+            url,
+            conf.database.max_retries,
+            conf.database.retry_interval)
 
         # Require MongoDB 2.4 to use $setOnInsert
         if self.conn.server_info()['versionArray'] < [2, 4]:
