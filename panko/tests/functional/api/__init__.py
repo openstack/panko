@@ -24,8 +24,6 @@ import pecan.testing
 from panko.api import rbac
 from panko.tests import db as db_test_base
 
-OPT_GROUP_NAME = 'keystone_authtoken'
-cfg.CONF.import_group(OPT_GROUP_NAME, "keystonemiddleware.auth_token")
 cfg.CONF.import_group('api', 'panko.api.controllers.v2.root')
 
 
@@ -43,8 +41,6 @@ class FunctionalTest(db_test_base.TestBase):
         self.CONF = self.useFixture(fixture_config.Config()).conf
         opts.set_defaults(self.CONF)
 
-        self.CONF.set_override("auth_version", "v2.0",
-                               group=OPT_GROUP_NAME)
         self.CONF.set_override("policy_file",
                                self.path_get('etc/panko/policy.json'),
                                group='oslo_policy')
