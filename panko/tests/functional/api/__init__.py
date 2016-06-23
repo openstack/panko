@@ -15,16 +15,13 @@
 """Base classes for API tests.
 """
 
-from oslo_config import cfg
-from oslo_config import fixture as fixture_config
 from oslo_policy import opts
 import pecan
 import pecan.testing
 
 from panko.api import rbac
+from panko import service
 from panko.tests import db as db_test_base
-
-cfg.CONF.import_group('api', 'panko.api.controllers.v2.root')
 
 
 class FunctionalTest(db_test_base.TestBase):
@@ -38,16 +35,16 @@ class FunctionalTest(db_test_base.TestBase):
 
     def setUp(self):
         super(FunctionalTest, self).setUp()
-        self.CONF = self.useFixture(fixture_config.Config()).conf
+        self.CONF = service.prepare_service([], [])
         opts.set_defaults(self.CONF)
 
         self.CONF.set_override("policy_file",
                                self.path_get('etc/panko/policy.json'),
                                group='oslo_policy')
 
-        self.app = self._make_app()
+        self.app = self._make_app(self.CONF)
 
-    def _make_app(self, enable_acl=False):
+    def _make_app(self, conf, enable_acl=False):
         self.config = {
             'app': {
                 'root': 'panko.api.controllers.root.RootController',
@@ -59,7 +56,7 @@ class FunctionalTest(db_test_base.TestBase):
             },
         }
 
-        return pecan.testing.load_test_app(self.config)
+        return pecan.testing.load_test_app(self.config, conf=conf)
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()

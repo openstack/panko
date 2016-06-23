@@ -16,18 +16,18 @@ import datetime
 import uuid
 
 import mock
-from oslo_config import fixture as fixture_config
 from oslotest import base
 
 from panko.dispatcher import database
 from panko.event.storage import models as event_models
+from panko import service
 
 
 class TestDispatcherDB(base.BaseTestCase):
 
     def setUp(self):
         super(TestDispatcherDB, self).setUp()
-        self.CONF = self.useFixture(fixture_config.Config()).conf
+        self.CONF = service.prepare_service([], [])
         self.CONF.set_override('connection', 'sqlite://', group='database')
         self.dispatcher = database.DatabaseDispatcher(self.CONF)
         self.ctx = None

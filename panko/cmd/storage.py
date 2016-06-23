@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from oslo_log import log
 
 from panko.i18n import _LI
@@ -26,18 +25,18 @@ LOG = log.getLogger(__name__)
 
 
 def dbsync():
-    service.prepare_service()
-    storage.get_connection_from_config(cfg.CONF).upgrade()
+    conf = service.prepare_service()
+    storage.get_connection_from_config(conf).upgrade()
 
 
 def expirer():
-    service.prepare_service()
+    conf = service.prepare_service()
 
-    if cfg.CONF.database.event_time_to_live > 0:
+    if conf.database.event_time_to_live > 0:
         LOG.debug("Clearing expired event data")
-        event_conn = storage.get_connection_from_config(cfg.CONF)
+        event_conn = storage.get_connection_from_config(conf)
         event_conn.clear_expired_event_data(
-            cfg.CONF.database.event_time_to_live)
+            conf.database.event_time_to_live)
     else:
         LOG.info(_LI("Nothing to clean, database event time to live "
                      "is disabled"))

@@ -16,7 +16,6 @@
 """
 
 from oslo_config import cfg
-from oslo_db import options as db_options
 from oslo_log import log
 import retrying
 import six.moves.urllib.parse as urlparse
@@ -36,10 +35,6 @@ OPTS = [
                help='The connection string used to connect to the event '
                'database. (if unset, connection is used)'),
 ]
-
-cfg.CONF.register_opts(OPTS, group='database')
-
-db_options.set_defaults(cfg.CONF)
 
 
 class StorageUnknownWriteError(Exception):

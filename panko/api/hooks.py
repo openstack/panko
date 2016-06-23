@@ -13,8 +13,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
-
 from pecan import hooks
 
 from panko import storage
@@ -26,16 +24,19 @@ class ConfigHook(hooks.PecanHook):
     That allows controllers to get it.
     """
 
-    @staticmethod
-    def before(state):
-        state.request.cfg = cfg.CONF
+    def __init__(self, conf):
+        super(ConfigHook, self).__init__()
+        self.conf = conf
+
+    def before(self, state):
+        state.request.cfg = self.conf
 
 
 class DBHook(hooks.PecanHook):
 
-    def __init__(self):
+    def __init__(self, conf):
         self.event_storage_connection = storage.get_connection_from_config(
-            cfg.CONF)
+            conf)
 
     def before(self, state):
         state.request.event_storage_conn = self.event_storage_connection

@@ -33,7 +33,7 @@ from panko.api.controllers.v2 import utils as v2_utils
 from panko.api import rbac
 from panko.event import storage
 from panko.event.storage import models as event_models
-from panko.i18n import _
+from panko.i18n import _, _LI
 
 LOG = log.getLogger(__name__)
 
@@ -272,7 +272,12 @@ class EventsController(rest.RestController):
         """
         rbac.enforce("events:index", pecan.request)
         q = q or []
-        limit = v2_utils.enforce_limit(limit)
+        if limit is None:
+            limit = pecan.request.cfg.api.default_api_return_limit
+            LOG.info(_LI('No limit value provided, result set will be'
+                         ' limited to %(limit)d.'), {'limit': limit})
+        if not limit or limit <= 0:
+            raise base.ClientSideError(_("Limit must be positive"))
         event_filter = _event_query_to_event_filter(q)
         return [Event(message_id=event.message_id,
                       event_type=event.event_type,

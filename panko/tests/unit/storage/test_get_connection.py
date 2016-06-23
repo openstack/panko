@@ -16,12 +16,12 @@
 """
 
 import mock
-from oslo_config import fixture as fixture_config
 from oslotest import base
 import retrying
 
 from panko.event.storage import impl_log
 from panko.event.storage import impl_sqlalchemy
+from panko import service
 from panko import storage
 
 import six
@@ -42,7 +42,7 @@ class EngineTest(base.BaseTestCase):
 class ConnectionRetryTest(base.BaseTestCase):
     def setUp(self):
         super(ConnectionRetryTest, self).setUp()
-        self.CONF = self.useFixture(fixture_config.Config()).conf
+        self.CONF = service.prepare_service([], config_files=[])
 
     def test_retries(self):
         with mock.patch.object(
@@ -61,7 +61,7 @@ class ConnectionRetryTest(base.BaseTestCase):
 class ConnectionConfigTest(base.BaseTestCase):
     def setUp(self):
         super(ConnectionConfigTest, self).setUp()
-        self.CONF = self.useFixture(fixture_config.Config()).conf
+        self.CONF = service.prepare_service([], config_files=[])
 
     def test_only_default_url(self):
         self.CONF.set_override("connection", "log://", group="database")

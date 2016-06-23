@@ -15,18 +15,16 @@
 import os
 import sys
 
-from oslo_config import cfg
-
+from panko import service
 from panko import storage
 
 
 def main(argv):
-    cfg.CONF([], project='panko')
     if os.getenv("PANKO_TEST_STORAGE_URL", "").startswith("hbase://"):
         url = ("%s?table_prefix=%s" %
                (os.getenv("PANKO_TEST_STORAGE_URL"),
                 os.getenv("PANKO_TEST_HBASE_TABLE_PREFIX", "test")))
-        event_conn = storage.get_connection(url, None)
+        event_conn = storage.get_connection(url, service.prepare_service())
         for arg in argv:
             if arg == "--upgrade":
                 event_conn.upgrade()

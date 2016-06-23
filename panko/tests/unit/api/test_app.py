@@ -15,10 +15,9 @@
 
 import mock
 from oslo_config import cfg
-from oslo_config import fixture as fixture_config
-from oslo_log import log
 
 from panko.api import app
+from panko import service
 from panko.tests import base
 
 
@@ -26,14 +25,14 @@ class TestApp(base.BaseTestCase):
 
     def setUp(self):
         super(TestApp, self).setUp()
-        self.CONF = self.useFixture(fixture_config.Config()).conf
-        log.register_options(cfg.CONF)
+        self.CONF = service.prepare_service([], [])
 
     def test_api_paste_file_not_exist(self):
         self.CONF.set_override('api_paste_config', 'non-existent-file')
         with mock.patch.object(self.CONF, 'find_file') as ff:
             ff.return_value = None
-            self.assertRaises(cfg.ConfigFilesNotFoundError, app.load_app)
+            self.assertRaises(cfg.ConfigFilesNotFoundError, app.load_app,
+                              self.CONF)
 
     @mock.patch('panko.storage.get_connection_from_config',
                 mock.MagicMock())
@@ -44,7 +43,7 @@ class TestApp(base.BaseTestCase):
             if p_debug is not None:
                 self.CONF.set_override('pecan_debug', p_debug, group='api')
             self.CONF.set_override('workers', workers, group='api')
-            app.setup_app()
+            app.setup_app(conf=self.CONF)
             args, kwargs = mocked.call_args
             self.assertEqual(expected, kwargs.get('debug'))
 

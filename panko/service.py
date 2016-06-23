@@ -15,28 +15,36 @@
 import sys
 
 from oslo_config import cfg
+from oslo_db import options as db_options
 import oslo_i18n
 from oslo_log import log
 from oslo_reports import guru_meditation_report as gmr
 
 from panko.conf import defaults
+from panko import opts
 from panko import version
 
 
 def prepare_service(argv=None, config_files=None):
+    conf = cfg.ConfigOpts()
     oslo_i18n.enable_lazy()
-    log.register_options(cfg.CONF)
+    for group, options in opts.list_opts():
+        conf.register_opts(list(options),
+                           group=None if group == "DEFAULT" else group)
     defaults.set_cors_middleware_defaults()
+    db_options.set_defaults(conf)
+    log.register_options(conf)
 
     if argv is None:
         argv = sys.argv
-    cfg.CONF(argv[1:], project='panko', validate_default_values=True,
-             version=version.version_info.version_string(),
-             default_config_files=config_files)
+    conf(argv[1:], project='panko', validate_default_values=True,
+         version=version.version_info.version_string(),
+         default_config_files=config_files)
 
-    log.setup(cfg.CONF, 'panko')
+    log.setup(conf, 'panko')
     # NOTE(liusheng): guru cannot run with service under apache daemon, so when
     # panko-api running with mod_wsgi, the argv is [], we don't start
     # guru.
     if argv:
         gmr.TextGuruMeditation.setup_autorun(version)
+    return conf

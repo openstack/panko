@@ -28,9 +28,3 @@ OPTS = [
                help='The listen IP for the Panko API server.',
                ),
 ]
-
-CONF = cfg.CONF
-opt_group = cfg.OptGroup(name='api',
-                         title='Options for the panko-api service')
-CONF.register_group(opt_group)
-CONF.register_opts(OPTS, opt_group)

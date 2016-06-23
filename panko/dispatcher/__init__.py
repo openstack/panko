@@ -27,4 +27,3 @@ STORAGE_OPTS = [
                deprecated_group='database',
                help='Interval (in seconds) between retries of connection.'),
 ]
-cfg.CONF.register_opts(STORAGE_OPTS, group='storage')

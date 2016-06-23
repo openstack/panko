@@ -19,5 +19,4 @@ from panko import service
 
 
 def main():
-    service.prepare_service()
-    app.build_server()
+    app.build_server(service.prepare_service())

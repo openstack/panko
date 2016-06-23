@@ -26,10 +26,10 @@ import datetime
 import random
 import uuid
 
-from oslo_config import cfg
 from oslo_utils import timeutils
 
 from panko.event.storage import models
+from panko import service
 from panko import storage
 
 
@@ -67,7 +67,7 @@ def make_test_data(conn, start, end, interval, event_types):
 
 
 def main():
-    cfg.CONF([], project='panko')
+    conf = service.prepare_service()
 
     parser = argparse.ArgumentParser(
         description='generate event data',
@@ -99,7 +99,7 @@ def main():
     args = parser.parse_args()
 
     # Connect to the event database
-    conn = storage.get_connection_from_config(cfg.CONF)
+    conn = storage.get_connection_from_config(conf)
 
     # Compute the correct time span
     start = datetime.datetime.utcnow() - datetime.timedelta(days=args.start)

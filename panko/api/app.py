@@ -14,6 +14,7 @@
 # under the License.
 
 import os
+import uuid
 
 from oslo_config import cfg
 from oslo_log import log
@@ -27,7 +28,6 @@ from panko.i18n import _LI, _LW
 
 LOG = log.getLogger(__name__)
 
-CONF = cfg.CONF
 
 OPTS = [
     cfg.StrOpt('api_paste_config',
@@ -54,14 +54,13 @@ API_OPTS = [
                help='Number of workers for api, default value is 1.'),
 ]
 
-CONF.register_opts(OPTS)
-CONF.register_opts(API_OPTS, group='api')
 
-
-def setup_app(pecan_config=None):
+def setup_app(pecan_config=None, conf=None):
+    if conf is None:
+        raise RuntimeError("No configuration passed")
     # FIXME: Replace DBHook with a hooks.TransactionHook
-    app_hooks = [hooks.ConfigHook(),
-                 hooks.DBHook(),
+    app_hooks = [hooks.ConfigHook(conf),
+                 hooks.DBHook(conf),
                  hooks.TranslationHook()]
 
     pecan_config = pecan_config or {
@@ -74,8 +73,8 @@ def setup_app(pecan_config=None):
     pecan.configuration.set_config(dict(pecan_config), overwrite=True)
 
     # NOTE(sileht): pecan debug won't work in multi-process environment
-    pecan_debug = CONF.api.pecan_debug
-    if CONF.api.workers and CONF.api.workers != 1 and pecan_debug:
+    pecan_debug = conf.api.pecan_debug
+    if conf.api.workers and conf.api.workers != 1 and pecan_debug:
         pecan_debug = False
         LOG.warning(_LW('pecan_debug cannot be enabled, if workers is > 1, '
                         'the value is overrided with False'))
@@ -91,29 +90,46 @@ def setup_app(pecan_config=None):
     return app
 
 
-def load_app():
+# NOTE(sileht): pastedeploy uses ConfigParser to handle
+# global_conf, since python 3 ConfigParser doesn't
+# allow to store object as config value, only strings are
+# permit, so to be able to pass an object created before paste load
+# the app, we store them into a global var. But the each loaded app
+# store it's configuration in unique key to be concurrency safe.
+global APPCONFIGS
+APPCONFIGS = {}
+
+
+def load_app(conf):
+    global APPCONFIGS
+
     # Build the WSGI app
     cfg_file = None
-    cfg_path = cfg.CONF.api_paste_config
+    cfg_path = conf.api_paste_config
     if not os.path.isabs(cfg_path):
-        cfg_file = CONF.find_file(cfg_path)
+        cfg_file = conf.find_file(cfg_path)
     elif os.path.exists(cfg_path):
         cfg_file = cfg_path
 
     if not cfg_file:
-        raise cfg.ConfigFilesNotFoundError([cfg.CONF.api_paste_config])
+        raise cfg.ConfigFilesNotFoundError([conf.api_paste_config])
+
+    configkey = str(uuid.uuid4())
+    APPCONFIGS[configkey] = conf
+
     LOG.info("Full WSGI config used: %s" % cfg_file)
-    return deploy.loadapp("config:" + cfg_file)
+    return deploy.loadapp("config:" + cfg_file,
+                          global_conf={'configkey': configkey})
 
 
-def build_server():
-    app = load_app()
+def build_server(conf):
+    app = load_app(conf)
     # Create the WSGI server and start it
-    host, port = cfg.CONF.api.host, cfg.CONF.api.port
+    host, port = conf.api.host, conf.api.port
 
     LOG.info(_LI('Starting server in PID %s') % os.getpid())
     LOG.info(_LI("Configuration:"))
-    cfg.CONF.log_opt_values(LOG, log.INFO)
+    conf.log_opt_values(LOG, log.INFO)
 
     if host == '0.0.0.0':
         LOG.info(_LI(
@@ -123,9 +139,11 @@ def build_server():
         LOG.info(_LI("serving on http://%(host)s:%(port)s") % (
                  {'host': host, 'port': port}))
 
-    serving.run_simple(cfg.CONF.api.host, cfg.CONF.api.port,
-                       app, processes=CONF.api.workers)
+    serving.run_simple(conf.api.host, conf.api.port,
+                       app, processes=conf.api.workers)
 
 
 def app_factory(global_config, **local_conf):
-    return setup_app()
+    global APPCONFIGS
+    conf = APPCONFIGS.get(global_config.get('configkey'))
+    return setup_app(conf=conf)

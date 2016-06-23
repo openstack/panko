@@ -22,14 +22,27 @@ import uuid
 
 from gabbi import fixture
 from oslo_config import cfg
-from oslo_config import fixture as fixture_config
 from oslo_policy import opts
 from oslo_utils import fileutils
 import six
 from six.moves.urllib import parse as urlparse
 
+from panko.api import app
 from panko.event.storage import models
+from panko import service
 from panko import storage
+
+# NOTE(chdent): Hack to restore semblance of global configuration to
+# pass to the WSGI app used per test suite. LOAD_APP_KWARGS are the olso
+# configuration, and the pecan application configuration of
+# which the critical part is a reference to the current indexer.
+LOAD_APP_KWARGS = None
+
+
+def setup_app():
+    global LOAD_APP_KWARGS
+    return app.load_app(**LOAD_APP_KWARGS)
+
 
 # TODO(chdent): For now only MongoDB is supported, because of easy
 # database name handling and intentional focus on the API, not the
@@ -43,6 +56,8 @@ class ConfigFixture(fixture.GabbiFixture):
     def start_fixture(self):
         """Set up config."""
 
+        global LOAD_APP_KWARGS
+
         self.conf = None
 
         # Determine the database connection.
@@ -55,11 +70,8 @@ class ConfigFixture(fixture.GabbiFixture):
         if engine not in ENGINES:
             raise case.SkipTest('Database engine not supported')
 
-        conf = fixture_config.Config().conf
-        self.conf = conf
-        self.conf([], project='panko', validate_default_values=True)
+        conf = self.conf = service.prepare_service([], [])
         opts.set_defaults(self.conf)
-        conf.import_group('api', 'panko.api.controllers.v2.root')
 
         content = ('{"default": ""}')
         if six.PY3:
@@ -80,22 +92,26 @@ class ConfigFixture(fixture.GabbiFixture):
         conf.set_override('connection', database_name, group='database')
         conf.set_override('event_connection', '', group='database')
 
-        conf.set_override('pecan_debug', True, group='api')
+        LOAD_APP_KWARGS = {
+            'conf': conf,
+        }
 
     def stop_fixture(self):
         """Reset the config and remove data."""
         if self.conf:
             storage.get_connection_from_config(self.conf).clear()
-            self.conf.reset()
 
 
-class EventDataFixture(fixture.GabbiFixture):
+class EventDataFixture(ConfigFixture):
     """Instantiate some sample event data for use in testing."""
 
     def start_fixture(self):
         """Create some events."""
-        conf = fixture_config.Config().conf
-        self.conn = storage.get_connection_from_config(conf)
+        super(EventDataFixture, self).start_fixture()
+        self.conn = None
+        if not self.conf:
+            return
+        self.conn = storage.get_connection_from_config(self.conf)
         events = []
         name_list = ['chocolate.chip', 'peanut.butter', 'sugar']
         for ix, name in enumerate(name_list):
@@ -112,7 +128,9 @@ class EventDataFixture(fixture.GabbiFixture):
 
     def stop_fixture(self):
         """Destroy the events."""
-        self.conn.db.event.remove({'event_type': '/^cookies_/'})
+        if self.conn:
+            self.conn.db.event.remove({'event_type': '/^cookies_/'})
+        super(EventDataFixture, self).stop_fixture()
 
 
 class CORSConfigFixture(fixture.GabbiFixture):
