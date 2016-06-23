@@ -29,40 +29,26 @@ from panko.tests import db as tests_db
 @tests_db.run_with('mongodb')
 class IndexTest(tests_db.TestBase):
 
-    def _test_ttl_index_absent(self, conn, coll_name, ttl_opt):
-        # create a fake index and check it is deleted
-        coll = getattr(conn.db, coll_name)
-        index_name = '%s_ttl' % coll_name
-        self.CONF.set_override(ttl_opt, -1, group='database')
-        conn.upgrade()
-        self.assertNotIn(index_name, coll.index_information())
-
-        self.CONF.set_override(ttl_opt, 456789, group='database')
-        conn.upgrade()
-        self.assertEqual(456789,
-                         coll.index_information()
-                         [index_name]['expireAfterSeconds'])
-
     def test_event_ttl_index_absent(self):
-        self._test_ttl_index_absent(self.event_conn, 'event',
-                                    'event_time_to_live')
+        # create a fake index and check it is deleted
+        self.event_conn.clear_expired_event_data(-1)
+        self.assertNotIn("event_ttl",
+                         self.event_conn.db.event.index_information())
 
-    def _test_ttl_index_present(self, conn, coll_name, ttl_opt):
-        coll = getattr(conn.db, coll_name)
-        self.CONF.set_override(ttl_opt, 456789, group='database')
-        conn.upgrade()
-        index_name = '%s_ttl' % coll_name
+        self.event_conn.clear_expired_event_data(456789)
         self.assertEqual(456789,
-                         coll.index_information()
-                         [index_name]['expireAfterSeconds'])
-
-        self.CONF.set_override(ttl_opt, -1, group='database')
-        conn.upgrade()
-        self.assertNotIn(index_name, coll.index_information())
+                         self.event_conn.db.event.index_information()
+                         ["event_ttl"]['expireAfterSeconds'])
 
     def test_event_ttl_index_present(self):
-        self._test_ttl_index_present(self.event_conn, 'event',
-                                     'event_time_to_live')
+        self.event_conn.clear_expired_event_data(456789)
+        self.assertEqual(456789,
+                         self.event_conn.db.event.index_information()
+                         ["event_ttl"]['expireAfterSeconds'])
+
+        self.event_conn.clear_expired_event_data(-1)
+        self.assertNotIn("event_ttl",
+                         self.event_conn.db.event.index_information())
 
 
 class CapabilitiesTest(test_base.BaseTestCase):

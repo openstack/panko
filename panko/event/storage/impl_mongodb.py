@@ -12,7 +12,6 @@
 # under the License.
 """MongoDB storage backend"""
 
-from oslo_config import cfg
 from oslo_log import log
 import pymongo
 
@@ -88,21 +87,19 @@ class Connection(pymongo_base.Connection):
              ('timestamp', pymongo.ASCENDING)],
             name='event_type_idx'
         )
-        ttl = cfg.CONF.database.event_time_to_live
-        self.update_ttl(ttl, 'event_ttl', 'timestamp', self.db.event)
 
     def clear(self):
         self.conn.drop_database(self.db.name)
         # Connection will be reopened automatically if needed
         self.conn.close()
 
-    @staticmethod
-    def clear_expired_event_data(ttl):
+    def clear_expired_event_data(self, ttl):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.
 
         :param ttl: Number of seconds to keep records for.
         """
-        LOG.debug("Clearing expired event data is based on native "
-                  "MongoDB time to live feature and going in background.")
+        self.update_ttl(ttl, 'event_ttl', 'timestamp', self.db.event)
+        LOG.info("Clearing expired event data is based on native "
+                 "MongoDB time to live feature and going in background.")
