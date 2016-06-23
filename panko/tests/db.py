@@ -38,8 +38,9 @@ except ImportError:
 
 class MongoDbManager(fixtures.Fixture):
 
-    def __init__(self, url):
+    def __init__(self, url, conf):
         self._url = url
+        self.conf = conf
 
     def setUp(self):
         super(MongoDbManager, self).setUp()
@@ -49,7 +50,7 @@ class MongoDbManager(fixtures.Fixture):
                 message='.*you must provide a username and password.*')
             try:
                 self.event_connection = storage.get_connection(
-                    self.url)
+                    self.url, self.conf)
             except storage.StorageBadVersion as e:
                 raise testcase.TestSkipped(six.text_type(e))
 
@@ -62,7 +63,7 @@ class MongoDbManager(fixtures.Fixture):
 
 
 class SQLManager(fixtures.Fixture):
-    def __init__(self, url):
+    def __init__(self, url, conf):
         db_name = 'panko_%s' % uuid.uuid4().hex
         engine = sqlalchemy.create_engine(url)
         conn = engine.connect()
@@ -72,10 +73,11 @@ class SQLManager(fixtures.Fixture):
         parsed = list(urlparse.urlparse(url))
         parsed[2] = '/' + db_name
         self.url = urlparse.urlunparse(parsed)
+        self.conf = conf
 
     def setUp(self):
         super(SQLManager, self).setUp()
-        self.event_connection = storage.get_connection(self.url)
+        self.event_connection = storage.get_connection(self.url, self.conf)
 
 
 class PgSQLManager(SQLManager):
@@ -93,13 +95,14 @@ class MySQLManager(SQLManager):
 
 
 class ElasticSearchManager(fixtures.Fixture):
-    def __init__(self, url):
+    def __init__(self, url, conf):
         self.url = url
+        self.conf = conf
 
     def setUp(self):
         super(ElasticSearchManager, self).setUp()
         self.event_connection = storage.get_connection(
-            self.url)
+            self.url, self.conf)
         # prefix each test with unique index name
         self.event_connection.index_name = 'events_%s' % uuid.uuid4().hex
         # force index on write so data is queryable right away
@@ -107,13 +110,14 @@ class ElasticSearchManager(fixtures.Fixture):
 
 
 class HBaseManager(fixtures.Fixture):
-    def __init__(self, url):
+    def __init__(self, url, conf):
         self._url = url
+        self.conf = conf
 
     def setUp(self):
         super(HBaseManager, self).setUp()
         self.event_connection = storage.get_connection(
-            self.url)
+            self.url, self.conf)
         # Unique prefix for each test to keep data is distinguished because
         # all test data is stored in one table
         data_prefix = str(uuid.uuid4().hex)
@@ -145,13 +149,14 @@ class HBaseManager(fixtures.Fixture):
 
 class SQLiteManager(fixtures.Fixture):
 
-    def __init__(self, url):
+    def __init__(self, url, conf):
         self.url = url
+        self.conf = conf
 
     def setUp(self):
         super(SQLiteManager, self).setUp()
         self.event_connection = storage.get_connection(
-            self.url)
+            self.url, self.conf)
 
 
 @six.add_metaclass(test_base.SkipNotImplementedMeta)
@@ -191,7 +196,7 @@ class TestBase(test_base.BaseTestCase):
         if not manager:
             self.skipTest("missing driver manager: %s" % engine)
 
-        self.db_manager = manager(db_url)
+        self.db_manager = manager(db_url, self.CONF)
 
         self.useFixture(self.db_manager)
 
@@ -206,7 +211,7 @@ class TestBase(test_base.BaseTestCase):
         self.event_conn = None
         super(TestBase, self).tearDown()
 
-    def _get_connection(self, url):
+    def _get_connection(self, url, conf):
         return self.event_conn
 
 

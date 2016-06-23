@@ -70,7 +70,7 @@ class Connection(base.Connection):
     #              it is only searchable after periodic refreshes.
     _refresh_on_write = False
 
-    def __init__(self, url):
+    def __init__(self, url, conf):
         url_split = netutils.urlsplit(url)
         self.conn = es.Elasticsearch(url_split.netloc)
 

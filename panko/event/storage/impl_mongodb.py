@@ -27,7 +27,7 @@ class Connection(pymongo_base.Connection):
 
     CONNECTION_POOL = pymongo_utils.ConnectionPool()
 
-    def __init__(self, url):
+    def __init__(self, url, conf):
 
         # NOTE(jd) Use our own connection pooling on top of the Pymongo one.
         # We need that otherwise we overflow the MongoDB instance with new

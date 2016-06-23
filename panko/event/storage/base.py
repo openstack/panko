@@ -25,7 +25,8 @@ class Connection(object):
         'storage': {'production_ready': False},
     }
 
-    def __init__(self, url):
+    @staticmethod
+    def __init__(url, conf):
         pass
 
     @staticmethod

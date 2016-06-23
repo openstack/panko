@@ -64,12 +64,12 @@ def get_connection_from_config(conf):
     def _inner():
         url = (getattr(conf.database, 'event_connection') or
                conf.database.connection)
-        return get_connection(url)
+        return get_connection(url, conf)
 
     return _inner()
 
 
-def get_connection(url):
+def get_connection(url, conf):
     """Return an open connection to the database."""
     connection_scheme = urlparse.urlparse(url).scheme
     # SqlAlchemy connections specify may specify a 'dialect' or
@@ -79,4 +79,4 @@ def get_connection(url):
     LOG.debug('looking for %(name)r driver in panko.event.storage',
               {'name': engine_name})
     mgr = driver.DriverManager('panko.event.storage', engine_name)
-    return mgr.driver(url)
+    return mgr.driver(url, conf)

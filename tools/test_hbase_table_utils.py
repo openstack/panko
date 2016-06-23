@@ -26,7 +26,7 @@ def main(argv):
         url = ("%s?table_prefix=%s" %
                (os.getenv("PANKO_TEST_STORAGE_URL"),
                 os.getenv("PANKO_TEST_HBASE_TABLE_PREFIX", "test")))
-        event_conn = storage.get_connection(url)
+        event_conn = storage.get_connection(url, None)
         for arg in argv:
             if arg == "--upgrade":
                 event_conn.upgrade()
