@@ -16,6 +16,7 @@ SQLAlchemy models for Panko data.
 import json
 
 import six
+import sqlalchemy
 from sqlalchemy import Column, Integer, String, ForeignKey, Index
 from sqlalchemy import Float, DateTime
 from sqlalchemy.dialects.mysql import DECIMAL
@@ -30,7 +31,7 @@ from panko import utils
 class JSONEncodedDict(TypeDecorator):
     """Represents an immutable structure as a json-encoded string."""
 
-    impl = String
+    impl = sqlalchemy.Text
 
     @staticmethod
     def process_bind_param(value, dialect):
