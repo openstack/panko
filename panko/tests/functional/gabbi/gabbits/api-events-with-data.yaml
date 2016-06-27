@@ -14,19 +14,20 @@ tests:
       X-Project-Id: project1
   response_headers:
       content-type: application/json; charset=UTF-8
+  verbose: True
   response_json_paths:
-      $.[0].event_type: cookies_chocolate.chip
-      $.[0].traits.[0].value: chocolate.chip
-      $.[0].traits.[1].value: '0'
-      $.[0].raw.nested.inside: value
-      $.[1].event_type: cookies_peanut.butter
-      $.[1].traits.[0].name: type
-      $.[1].traits.[1].name: ate
-      $.[1].raw.nested.inside: value
-      $.[2].event_type: cookies_sugar
-      $.[2].traits.[0].type: string
-      $.[2].traits.[1].type: integer
-      $.[2].raw.nested.inside: value
+    $[/event_type].[0].event_type: cookies_chocolate.chip
+    $[/event_type].[0].traits[/value].[0].value: '0'
+    $[/event_type].[0].traits[/value].[1].value: chocolate.chip
+    $[/event_type].[0].raw.nested.inside: value
+    $[/event_type].[1].event_type: cookies_peanut.butter
+    $[/event_type].[1].traits[/name].[0].name: ate
+    $[/event_type].[1].traits[/name].[1].name: type
+    $[/event_type].[1].raw.nested.inside: value
+    $[/event_type].[2].event_type: cookies_sugar
+    $[/event_type].[2].traits[/type].[0].type: integer
+    $[/event_type].[2].traits[/type].[1].type: string
+    $[/event_type].[2].raw.nested.inside: value
 
 # this attempts to get all the events with invalid parameters and expects a 400
 - name: get events with bad params
@@ -48,8 +49,8 @@ tests:
   response_headers:
       content-type: application/json; charset=UTF-8
   response_json_paths:
-      $.[0].event_type: cookies_chocolate.chip
-      $.[0].traits.[0].value: chocolate.chip
+      $[/event_type].[0].event_type: cookies_chocolate.chip
+      $[/event_type].[0].traits[/value].[1].value: chocolate.chip
 
 # this attempts to query the events with the correct data query syntax and
 # expects a matching event
@@ -69,8 +70,8 @@ tests:
   response_headers:
       content-type: application/json; charset=UTF-8
   response_json_paths:
-      $.[0].event_type: cookies_chocolate.chip
-      $.[0].traits.[0].value: chocolate.chip
+      $[/event_type].[0].event_type: cookies_chocolate.chip
+      $[/event_type].[0].traits[/value].[1].value: chocolate.chip
 
 # this attempts to query the events with the correct parameterized query syntax
 # but a bad field name and expects an empty list
@@ -132,8 +133,8 @@ tests:
       content-type: application/json; charset=UTF-8
   response_json_paths:
       $.event_type: cookies_chocolate.chip
-      $.traits.[0].value: chocolate.chip
-      $.traits.[1].value: '0'
+      $.traits[/value].[0].value: '0'
+      $.traits[/value].[1].value: chocolate.chip
 
 # Get a single event by message_id no data is present so should return a 404
 - name: get a single event that does not exist

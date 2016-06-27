@@ -26,6 +26,7 @@ from oslo_policy import opts
 from oslo_utils import fileutils
 import six
 from six.moves.urllib import parse as urlparse
+import sqlalchemy_utils
 
 from panko.api import app
 from panko.event.storage import models
@@ -44,12 +45,6 @@ def setup_app():
     return app.load_app(**LOAD_APP_KWARGS)
 
 
-# TODO(chdent): For now only MongoDB is supported, because of easy
-# database name handling and intentional focus on the API, not the
-# data store.
-ENGINES = ['mongodb']
-
-
 class ConfigFixture(fixture.GabbiFixture):
     """Establish the relevant configuration for a test run."""
 
@@ -65,10 +60,6 @@ class ConfigFixture(fixture.GabbiFixture):
             "mysql://", "mysql+pymysql://")
         if not db_url:
             raise case.SkipTest('No database connection configured')
-
-        engine = urlparse.urlparse(db_url).scheme
-        if engine not in ENGINES:
-            raise case.SkipTest('Database engine not supported')
 
         conf = self.conf = service.prepare_service([], [])
         opts.set_defaults(self.conf)
@@ -88,9 +79,19 @@ class ConfigFixture(fixture.GabbiFixture):
                 'panko/tests/functional/gabbi/gabbi_paste.ini')
         )
 
-        database_name = '%s-%s' % (db_url, str(uuid.uuid4()))
-        conf.set_override('connection', database_name, group='database')
+        parsed_url = list(urlparse.urlparse(db_url))
+        parsed_url[2] += '-%s' % str(uuid.uuid4()).replace('-', '')
+        db_url = urlparse.urlunparse(parsed_url)
+
+        conf.set_override('connection', db_url, group='database')
         conf.set_override('event_connection', '', group='database')
+
+        if (parsed_url[0].startswith("mysql")
+           or parsed_url[0].startswith("postgresql")):
+            sqlalchemy_utils.create_database(conf.database.connection)
+
+        self.conn = storage.get_connection_from_config(self.conf)
+        self.conn.upgrade()
 
         LOAD_APP_KWARGS = {
             'conf': conf,
@@ -98,6 +99,8 @@ class ConfigFixture(fixture.GabbiFixture):
 
     def stop_fixture(self):
         """Reset the config and remove data."""
+        if self.conn:
+            self.conn.clear()
         if self.conf:
             storage.get_connection_from_config(self.conf).clear()
 
@@ -108,10 +111,6 @@ class EventDataFixture(ConfigFixture):
     def start_fixture(self):
         """Create some events."""
         super(EventDataFixture, self).start_fixture()
-        self.conn = None
-        if not self.conf:
-            return
-        self.conn = storage.get_connection_from_config(self.conf)
         events = []
         name_list = ['chocolate.chip', 'peanut.butter', 'sugar']
         for ix, name in enumerate(name_list):
@@ -125,12 +124,6 @@ class EventDataFixture(ConfigFixture):
                                  traits, {'nested': {'inside': 'value'}})
             events.append(event)
         self.conn.record_events(events)
-
-    def stop_fixture(self):
-        """Destroy the events."""
-        if self.conn:
-            self.conn.db.event.remove({'event_type': '/^cookies_/'})
-        super(EventDataFixture, self).stop_fixture()
 
 
 class CORSConfigFixture(fixture.GabbiFixture):

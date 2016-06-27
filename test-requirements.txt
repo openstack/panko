@@ -24,3 +24,4 @@ os-testr>=0.4.1 # Apache-2.0
 WebTest>=2.0 # MIT
 pifpaf>=0.0.11
 reno
+sqlalchemy-utils
