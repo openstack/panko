@@ -219,14 +219,6 @@ function start_panko {
         tail_log panko /var/log/$APACHE_NAME/panko.log
         tail_log panko-api /var/log/$APACHE_NAME/panko_access.log
     fi
-
-    # Only die on API if it was actually intended to be turned on
-    if is_service_enabled panko-api; then
-        echo "Waiting for panko-api to start..."
-        if ! wait_for_service $SERVICE_TIMEOUT $(panko_service_url)/v2/; then
-            die $LINENO "panko-api did not start"
-        fi
-    fi
 }
 
 # stop_panko() - Stop running processes
