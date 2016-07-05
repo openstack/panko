@@ -118,7 +118,7 @@ function _panko_cleanup_apache_wsgi {
     fi
 }
 
-function _drop_database {
+function _panko_drop_database {
     if is_service_enabled panko-api ; then
         if [ "$PANKO_BACKEND" = 'mongodb' ] ; then
             mongo panko --eval "db.dropDatabase();"
@@ -132,7 +132,7 @@ function _drop_database {
 # from previous runs that a clean run would need to clean up
 function cleanup_panko {
     _panko_cleanup_apache_wsgi
-    _drop_database
+    _panko_drop_database
     sudo rm -f "$PANKO_CONF_DIR"/*
     sudo rmdir "$PANKO_CONF_DIR"
 }
@@ -150,7 +150,7 @@ function _panko_configure_storage_backend {
     else
         die $LINENO "Unable to configure unknown PANKO_BACKEND $PANKO_BACKEND"
     fi
-    _drop_database
+    _panko_drop_database
 }
 
 # Configure Panko
