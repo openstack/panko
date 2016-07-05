@@ -234,7 +234,7 @@ function stop_panko {
 }
 
 # This is the main for plugin.sh
-if is_service_enabled panko; then
+if is_service_enabled panko-api; then
     if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
         # Set up other services
         echo_summary "Configuring system services for Panko"
