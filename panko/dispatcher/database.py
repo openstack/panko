@@ -18,6 +18,7 @@ from oslo_utils import timeutils
 
 from panko.event.storage import models
 from panko.i18n import _LE
+from panko import service
 from panko import storage
 
 LOG = log.getLogger(__name__)
@@ -38,6 +39,9 @@ class DatabaseDispatcher(object):
     """
 
     def __init__(self, conf):
+        # NOTE(jd) The `conf' arg is the Ceilometer conf, but we don't really
+        # need it here.
+        conf = service.prepare_service([])
         self.event_conn = storage.get_connection_from_config(conf)
 
     def record_events(self, events):
