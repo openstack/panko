@@ -29,8 +29,9 @@ class TestDispatcherDB(base.BaseTestCase):
         super(TestDispatcherDB, self).setUp()
         self.CONF = service.prepare_service([], [])
         self.CONF.set_override('connection', 'sqlite://', group='database')
-        self.dispatcher = database.DatabaseDispatcher(self.CONF)
-        self.ctx = None
+        with mock.patch('panko.service.prepare_service') as f:
+            f.return_value = self.CONF
+            self.dispatcher = database.DatabaseDispatcher(None)
 
     def test_event_conn(self):
         event = event_models.Event(uuid.uuid4(), 'test',
