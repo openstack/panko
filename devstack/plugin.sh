@@ -95,8 +95,8 @@ function _panko_create_accounts {
 
         create_service_user "panko" "admin"
 
-        get_or_create_service "panko" "metering" "OpenStack Telemetry Service"
-        get_or_create_endpoint "metering" \
+        get_or_create_service "panko" "event" "OpenStack Telemetry Service"
+        get_or_create_endpoint "event" \
             "$REGION_NAME" \
             "$(panko_service_url)" \
             "$(panko_service_url)" \
