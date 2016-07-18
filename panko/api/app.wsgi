@@ -13,13 +13,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-"""Use this file for deploying the API under mod_wsgi.
-
-See http://pecan.readthedocs.org/en/latest/deployment.html for details.
-"""
-from panko import service
+"""Use this file for deploying the API under mod_wsgi."""
 from panko.api import app
 
-# Initialize the oslo configuration library and logging
-conf = service.prepare_service([])
-application = app.load_app(conf)
+application = app.build_wsgi_app(argv=[])
