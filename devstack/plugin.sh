@@ -181,6 +181,10 @@ function configure_panko {
         iniset $PANKO_CONF api pecan_debug "False"
         _panko_config_apache_wsgi
     fi
+
+    if is_service_enabled ceilometer-collector; then
+        iniset $CEILOMETER_CONF DEFAULT event_dispatchers panko
+    fi
 }
 
 # init_panko() - Initialize etc.
