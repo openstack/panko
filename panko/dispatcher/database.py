@@ -25,17 +25,16 @@ LOG = log.getLogger(__name__)
 
 
 class DatabaseDispatcher(object):
-    """Dispatcher class for recording metering data into database.
+    """Dispatcher class for recording event data into database.
 
-    The dispatcher class which records each meter into a database configured
-    in panko configuration file.
+    The dispatcher class which records each event into a database configured
+    in Ceilometer configuration file.
 
     To enable this dispatcher, the following section needs to be present in
-    panko.conf file
+    ceilometer.conf file
 
     [DEFAULT]
-    meter_dispatchers = database
-    event_dispatchers = database
+    event_dispatchers = panko
     """
 
     def __init__(self, conf):
