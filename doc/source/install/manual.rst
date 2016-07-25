@@ -91,7 +91,7 @@ Installing the API Server
 
 4. Create a service for panko in keystone::
 
-     $ openstack service create metering --name=panko \
+     $ openstack service create event --name=panko \
                                          --description="Panko Service"
 
 5. Create an endpoint in keystone for panko::
