@@ -11,10 +11,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import itertools
+from oslo_config import cfg
 
-import panko.api
-import panko.api.app
 import panko.dispatcher
 import panko.storage
 import panko.utils
@@ -22,10 +20,24 @@ import panko.utils
 
 def list_opts():
     return [
-        ('DEFAULT', panko.api.app.OPTS),
+        ('DEFAULT',
+         [
+             # FIXME(jd) Move to [api]
+             cfg.StrOpt('api_paste_config',
+                        default="api_paste.ini",
+                        help="Configuration file for WSGI definition of API."),
+         ]),
         ('api',
-         itertools.chain(panko.api.OPTS,
-                         panko.api.app.API_OPTS)),
+         [
+             cfg.BoolOpt('pecan_debug',
+                         default=False,
+                         help='Toggle Pecan Debug Middleware.'),
+             cfg.IntOpt('default_api_return_limit',
+                        min=1,
+                        default=100,
+                        help='Default maximum number of '
+                        'items returned by API request.'),
+         ]),
         ('database', panko.storage.OPTS),
         ('storage', panko.dispatcher.STORAGE_OPTS),
     ]
