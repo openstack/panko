@@ -20,13 +20,10 @@
 
 import functools
 
-from oslo_log import log
 import pecan
 
 from panko.api.controllers.v2 import base
 from panko.api import rbac
-
-LOG = log.getLogger(__name__)
 
 
 def get_auth_project(on_behalf_of=None):
