@@ -24,9 +24,7 @@ from panko.tests import base
 class BinTestCase(base.BaseTestCase):
     def setUp(self):
         super(BinTestCase, self).setUp()
-        content = ("[DEFAULT]\n"
-                   "rpc_backend=fake\n"
-                   "[database]\n"
+        content = ("[database]\n"
                    "connection=log://localhost\n")
         if six.PY3:
             content = content.encode('utf-8')
@@ -54,9 +52,7 @@ class BinTestCase(base.BaseTestCase):
                       b"time to live is disabled", err)
 
     def _test_run_expirer_ttl_enabled(self, ttl_name, data_name):
-        content = ("[DEFAULT]\n"
-                   "rpc_backend=fake\n"
-                   "[database]\n"
+        content = ("[database]\n"
                    "%s=1\n"
                    "connection=log://localhost\n" % ttl_name)
         if six.PY3:
