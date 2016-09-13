@@ -79,9 +79,7 @@ class Connection(base.Connection):
         ts_template = {
             'template': '*',
             'mappings': {'_default_':
-                         {'_timestamp': {'enabled': True,
-                                         'store': True},
-                          'properties': {'traits': {'type': 'nested'}}}}}
+                         {'properties': {'traits': {'type': 'nested'}}}}}
         iclient.put_template(name='enable_timestamp', body=ts_template)
 
     def record_events(self, events):
@@ -141,9 +139,10 @@ class Connection(base.Connection):
             q_args['doc_type'] = ev_filter.event_type
         if ev_filter.message_id:
             filters.append({'term': {'_id': ev_filter.message_id}})
+
         if ev_filter.traits_filter or ev_filter.admin_proj:
-            trait_filters = []
             or_cond = []
+            trait_filters = []
             for t_filter in ev_filter.traits_filter or []:
                 value = None
                 for val_type in ['integer', 'string', 'float', 'datetime']:
@@ -158,16 +157,19 @@ class Connection(base.Connection):
                     op = (t_filter.get('op').replace('ge', 'gte')
                           .replace('le', 'lte'))
                     trait_filters.append(
-                        {'range': {t_filter['key']: {op: value}}})
+                        {'range': {
+                            "traits.%s" % t_filter['key']: {op: value}}})
                 else:
                     tf = {"query": {"query_string": {
-                        "query": "%s: \"%s\"" % (t_filter['key'], value)}}}
+                        "query": "traits.%s: \"%s\"" % (t_filter['key'], value)
+                    }}}
                     if t_filter.get('op') == 'ne':
                         tf = {"not": tf}
                     trait_filters.append(tf)
             if ev_filter.admin_proj:
-                or_cond = [{'missing': {'field': 'project_id'}},
-                           {'term': {'project_id': ev_filter.admin_proj}}]
+                or_cond = [{'missing': {'field': 'traits.project_id'}},
+                           {'term': {
+                               'traits.project_id': ev_filter.admin_proj}}]
             filters.append(
                 {'nested': {'path': 'traits', 'query': {'filtered': {
                     'filter': {'bool': {'must': trait_filters,
