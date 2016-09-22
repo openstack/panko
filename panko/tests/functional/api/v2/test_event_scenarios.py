@@ -17,6 +17,7 @@
 import datetime
 import uuid
 
+from oslo_serialization import jsonutils
 import webtest.app
 
 from panko.event.storage import models
@@ -701,3 +702,90 @@ class TestEventRestriction(EventRestrictionTestBase):
     def test_get_default_limit(self):
         data = self.get_json('/events', headers=HEADERS)
         self.assertEqual(10, len(data))
+
+
+@tests_db.run_with('mysql', 'pgsql', 'sqlite', 'postgresql')
+class TestEventSort(EventTestBase):
+
+    PATH = '/events'
+
+    def test_get_limit_decr(self):
+        data = self.get_json(
+            '/events?limit=3&sort=generated:desc&sort=message_id',
+            headers=HEADERS)
+        self.assertEqual(3, len(data))
+        # check that data is sorted in most recent order
+        # self.s_time - start (earliest)
+        # self.trait_time - end (latest)
+        trait_time = self.trait_time
+        for event in data:
+            trait_time -= datetime.timedelta(days=1)
+            expected_generated = trait_time.isoformat()
+            self.assertEqual(expected_generated, event['generated'])
+
+    def test_get_limit_incr(self):
+        data = self.get_json(
+            '/events?limit=3&sort=generated:asc&sort=message_id',
+            headers=HEADERS)
+        self.assertEqual(3, len(data))
+        # check that data is sorted in decr order
+        # self.s_time - start (earliest)
+        # self.trait_time - end (latest)
+        trait_time = self.s_time
+        for event in data:
+            expected_generated = trait_time.isoformat()
+            self.assertEqual(expected_generated, event['generated'])
+            trait_time += datetime.timedelta(days=1)
+
+    def test_invalid_sort_key(self):
+        resp = self.get_json('/events?sort=invalid_key:desc',
+                             headers=HEADERS,
+                             expect_errors=True)
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual("Invalid input for field/attribute sort. Value: "
+                         "'invalid_key:desc'. the sort parameter should be"
+                         " a pair of sort key and sort dir combined with "
+                         "':', or only sort key specified and sort dir will "
+                         "be default 'asc', the supported sort keys are: "
+                         "('message_id', 'generated')",
+                         jsonutils.loads(resp.body)['error_message']
+                         ['faultstring'])
+
+    def test_invalid_sort_dir(self):
+        resp = self.get_json('/events?sort=message_id:bah',
+                             headers=HEADERS,
+                             expect_errors=True)
+        self.assertEqual(resp.status_code, 400)
+        self.assertEqual("Invalid input for field/attribute sort direction. "
+                         "Value: 'message_id:bah'. the sort parameter "
+                         "should be a pair of sort key and sort dir combined "
+                         "with ':', or only sort key specified and sort dir "
+                         "will be default 'asc', the supported sort "
+                         "directions are: ('asc', 'desc')",
+                         jsonutils.loads(resp.body)['error_message']
+                         ['faultstring'])
+
+    def test_sort_message_id(self):
+        data = self.get_json('/events?limit=3&sort=message_id:desc',
+                             headers=HEADERS)
+        self.assertEqual(3, len(data))
+        result = [a['message_id'] for a in data]
+        self.assertEqual(['200', '100', '0'], result)
+
+        data = self.get_json('/events?limit=3&sort=message_id:asc',
+                             headers=HEADERS)
+        self.assertEqual(3, len(data))
+        result = [a['message_id'] for a in data]
+        self.assertEqual(['0', '100', '200'], result)
+
+    def test_paginate_query(self):
+        data1 = self.get_json(
+            '/events?limit=1&sort=message_id:asc', headers=HEADERS)
+        self.assertEqual(1, len(data1))
+        self.assertEqual('0', data1[0]['message_id'])
+        data2 = self.get_json(
+            '/events?limit=3&marker=%s&sort=message_id:asc' %
+            data1[0]['message_id'], headers=HEADERS)
+        self.assertEqual(2, len(data2))
+        result = [a['message_id'] for a in data2]
+        self.assertEqual(['100', '200'], result)

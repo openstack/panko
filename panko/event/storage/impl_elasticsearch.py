@@ -23,7 +23,7 @@ import six
 
 from panko.event.storage import base
 from panko.event.storage import models
-from panko.i18n import _LE, _LI
+from panko.i18n import _LE, _LI, _LW
 from panko import storage
 from panko import utils
 
@@ -179,9 +179,14 @@ class Connection(base.Connection):
                                     {'filter': {'bool': {'must': filters}}}}}
         return q_args
 
-    def get_events(self, event_filter, limit=None):
-        if limit == 0:
-            return
+    def get_events(self, event_filter, pagination=None):
+        limit = None
+        if pagination:
+            if pagination.get('sort'):
+                LOG.warning(_LW('Driver does not support sort functionality'))
+            limit = pagination.get('limit')
+            if limit == 0:
+                return
         iclient = es.client.IndicesClient(self.conn)
         indices = iclient.get_mapping('%s_*' % self.index_name).keys()
         if indices:

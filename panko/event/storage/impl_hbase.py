@@ -17,7 +17,7 @@ from oslo_log import log
 
 from panko.event.storage import base
 from panko.event.storage import models
-from panko.i18n import _LE
+from panko.i18n import _LE, _LW
 from panko.storage.hbase import base as hbase_base
 from panko.storage.hbase import utils as hbase_utils
 from panko import utils
@@ -120,14 +120,20 @@ class Connection(hbase_base.Connection, base.Connection):
         if error:
             raise error
 
-    def get_events(self, event_filter, limit=None):
+    def get_events(self, event_filter, pagination=None):
         """Return an iter of models.Event objects.
 
         :param event_filter: storage.EventFilter object, consists of filters
           for events that are stored in database.
+        :param pagination: Pagination parameters.
         """
-        if limit == 0:
-            return
+        limit = None
+        if pagination:
+            if pagination.get('sort'):
+                LOG.warning(_LW('Driver does not support sort functionality'))
+            limit = pagination.get('limit')
+            if limit == 0:
+                return
         q, start, stop = hbase_utils.make_events_query_from_filter(
             event_filter)
         with self.conn_pool.connection() as conn:

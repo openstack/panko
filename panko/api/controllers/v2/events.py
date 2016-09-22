@@ -33,7 +33,7 @@ from panko.api.controllers.v2 import utils as v2_utils
 from panko.api import rbac
 from panko.event import storage
 from panko.event.storage import models as event_models
-from panko.i18n import _, _LI
+from panko.i18n import _
 
 LOG = log.getLogger(__name__)
 
@@ -275,22 +275,21 @@ class EventsController(rest.RestController):
     """Works on Events."""
 
     @v2_utils.requires_context
-    @wsme_pecan.wsexpose([Event], [EventQuery], int)
-    def get_all(self, q=None, limit=None):
+    @wsme_pecan.wsexpose([Event], [EventQuery], int, [str], str)
+    def get_all(self, q=None, limit=None, sort=None, marker=None):
         """Return all events matching the query filters.
 
         :param q: Filter arguments for which Events to return
         :param limit: Maximum number of samples to be returned.
+        :param sort: A pair of sort key and sort direction combined with ":"
+        :param marker: The pagination query marker, message id of the last
+                       item viewed
         """
         rbac.enforce("events:index", pecan.request)
         q = q or []
-        if limit is None:
-            limit = pecan.request.cfg.api.default_api_return_limit
-            LOG.info(_LI('No limit value provided, result set will be'
-                         ' limited to %(limit)d.'), {'limit': limit})
-        if not limit or limit <= 0:
-            raise base.ClientSideError(_("Limit must be positive"))
         event_filter = _event_query_to_event_filter(q)
+        pagination = v2_utils.set_pagination_options(
+            sort, limit, marker, event_models.Event)
         return [Event(message_id=event.message_id,
                       event_type=event.event_type,
                       generated=event.generated,
@@ -298,7 +297,7 @@ class EventsController(rest.RestController):
                       raw=event.raw)
                 for event in
                 pecan.request.event_storage_conn.get_events(event_filter,
-                                                            limit)]
+                                                            pagination)]
 
     @v2_utils.requires_context
     @wsme_pecan.wsexpose(Event, wtypes.text)
