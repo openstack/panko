@@ -17,7 +17,7 @@ import pymongo
 
 from panko.event.storage import base
 from panko.event.storage import models
-from panko.i18n import _LE, _LI
+from panko.i18n import _LE, _LI, _LW
 from panko.storage.mongo import utils as pymongo_utils
 from panko import utils
 
@@ -71,15 +71,20 @@ class Connection(base.Connection):
         if error:
             raise error
 
-    def get_events(self, event_filter, limit=None):
+    def get_events(self, event_filter, pagination=None):
         """Return an iter of models.Event objects.
 
         :param event_filter: storage.EventFilter object, consists of filters
                              for events that are stored in database.
-        :param limit: Maximum number of results to return.
+        :param pagination: Pagination parameters.
         """
-        if limit == 0:
-            return
+        limit = None
+        if pagination:
+            if pagination.get('sort'):
+                LOG.warning(_LW('Driver does not support sort functionality'))
+            limit = pagination.get('limit')
+            if limit == 0:
+                return
         q = pymongo_utils.make_events_query_from_filter(event_filter)
         if limit is not None:
             results = self.db.event.find(q, limit=limit)

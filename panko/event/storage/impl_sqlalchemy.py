@@ -14,14 +14,17 @@
 """SQLAlchemy storage backend."""
 
 from __future__ import absolute_import
+import collections
 import datetime
 
 from oslo_db import exception as dbexc
 from oslo_db.sqlalchemy import session as db_session
+from oslo_db.sqlalchemy import utils as oslo_sql_utils
 from oslo_log import log
 from oslo_utils import timeutils
 import sqlalchemy as sa
 
+from panko.event import storage as event_storage
 from panko.event.storage import base
 from panko.event.storage import models as api_models
 from panko.i18n import _LE, _LI
@@ -205,13 +208,35 @@ class Connection(base.Connection):
         if error:
             raise error
 
-    def get_events(self, event_filter, limit=None):
+    def _get_pagination_query(self, query, pagination, api_model, model):
+        limit = pagination.get('limit')
+
+        marker = None
+        if pagination.get('marker'):
+            marker_filter = event_storage.EventFilter(
+                message_id=pagination.get('marker'))
+            markers = list(self.get_events(marker_filter))
+            if markers:
+                marker = markers[0]
+            else:
+                raise storage.InvalidMarker(
+                    'Marker %s not found.' % pagination['marker'])
+
+        if not pagination.get('sort'):
+            pagination['sort'] = api_model.DEFAULT_SORT
+        sort_keys = [s[0] for s in pagination['sort']]
+        sort_dirs = [s[1] for s in pagination['sort']]
+
+        return oslo_sql_utils.paginate_query(
+            query, model, limit, sort_keys, sort_dirs=sort_dirs, marker=marker)
+
+    def get_events(self, event_filter, pagination=None):
         """Return an iterable of model.Event objects.
 
         :param event_filter: EventFilter instance
+        :param pagination: Pagination parameters.
         """
-        if limit == 0:
-            return
+        pagination = pagination or {}
         session = self._engine_facade.get_session()
         with session.begin():
             # Build up the join conditions
@@ -276,15 +301,18 @@ class Connection(base.Connection):
             if event_filter_conditions:
                 query = query.filter(sa.and_(*event_filter_conditions))
 
-            query = query.order_by(models.Event.generated).limit(limit)
-            event_list = {}
+            query = self._get_pagination_query(
+                query, pagination, api_models.Event, models.Event)
+
+            event_list = collections.OrderedDict()
             # get a list of all events that match filters
             for (id_, generated, message_id,
                  desc, raw) in query.add_columns(
                      models.Event.generated, models.Event.message_id,
                      models.EventType.desc, models.Event.raw).all():
-                event_list[id_] = api_models.Event(message_id, desc,
-                                                   generated, [], raw)
+                event_list[id_] = api_models.Event(
+                    message_id, desc, generated, [], raw)
+
             # Query all traits related to events.
             # NOTE (gordc): cast is done because pgsql defaults to TEXT when
             #               handling unknown values such as null.

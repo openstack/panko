@@ -50,6 +50,10 @@ class StorageBadAggregate(Exception):
     code = 400
 
 
+class InvalidMarker(Exception):
+    """Invalid pagination marker parameters"""
+
+
 def get_connection_from_config(conf):
     retries = conf.database.max_retries
 

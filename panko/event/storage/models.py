@@ -33,6 +33,12 @@ class Event(base.Model):
     UNKNOWN_PROBLEM = 2
     INCOMPATIBLE_TRAIT = 3
 
+    SUPPORT_DIRS = ('asc', 'desc')
+    SUPPORT_SORT_KEYS = ('message_id', 'generated')
+    DEFAULT_DIR = 'asc'
+    DEFAULT_SORT = [('generated', 'asc'), ('message_id', 'asc')]
+    PRIMARY_KEY = 'message_id'
+
     def __init__(self, message_id, event_type, generated, traits, raw):
         """Create a new event.
 

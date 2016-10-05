@@ -46,7 +46,7 @@ class Connection(object):
         raise panko.NotImplementedError('Events not implemented.')
 
     @staticmethod
-    def get_events(event_filter, limit=None):
+    def get_events(event_filter, pagination=None):
         """Return an iterable of model.Event objects."""
         raise panko.NotImplementedError('Events not implemented.')
 
