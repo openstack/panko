@@ -182,7 +182,7 @@ function configure_panko {
     fi
 
     if is_service_enabled ceilometer-collector; then
-        iniset $CEILOMETER_CONF DEFAULT event_dispatchers panko
+        iniadd $CEILOMETER_CONF DEFAULT event_dispatchers panko
     fi
 }
 
