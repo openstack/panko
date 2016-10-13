@@ -177,7 +177,6 @@ function configure_panko {
     fi
 
     if is_service_enabled panko-api && [ "$PANKO_USE_MOD_WSGI" == "True" ]; then
-        iniset $PANKO_CONF api pecan_debug "False"
         _panko_config_apache_wsgi
     fi
 

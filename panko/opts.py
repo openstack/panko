@@ -29,9 +29,6 @@ def list_opts():
          ]),
         ('api',
          [
-             cfg.BoolOpt('pecan_debug',
-                         default=False,
-                         help='Toggle Pecan Debug Middleware.'),
              cfg.IntOpt('default_api_return_limit',
                         min=1,
                         default=100,
