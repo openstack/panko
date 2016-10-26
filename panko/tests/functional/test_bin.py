@@ -45,11 +45,11 @@ class BinTestCase(base.BaseTestCase):
         subp = subprocess.Popen(['panko-expirer',
                                  '-d',
                                  "--config-file=%s" % self.tempfile],
-                                stderr=subprocess.PIPE)
-        __, err = subp.communicate()
+                                stdout=subprocess.PIPE)
+        out, __ = subp.communicate()
         self.assertEqual(0, subp.poll())
         self.assertIn(b"Nothing to clean, database event "
-                      b"time to live is disabled", err)
+                      b"time to live is disabled", out)
 
     def _test_run_expirer_ttl_enabled(self, ttl_name, data_name):
         content = ("[database]\n"
@@ -63,13 +63,13 @@ class BinTestCase(base.BaseTestCase):
         subp = subprocess.Popen(['panko-expirer',
                                  '-d',
                                  "--config-file=%s" % self.tempfile],
-                                stderr=subprocess.PIPE)
-        __, err = subp.communicate()
+                                stdout=subprocess.PIPE)
+        out, __ = subp.communicate()
         self.assertEqual(0, subp.poll())
         msg = "Dropping %s data with TTL 1" % data_name
         if six.PY3:
             msg = msg.encode('utf-8')
-        self.assertIn(msg, err)
+        self.assertIn(msg, out)
 
     def test_run_expirer_ttl_enabled(self):
         self._test_run_expirer_ttl_enabled('event_time_to_live', 'event')
