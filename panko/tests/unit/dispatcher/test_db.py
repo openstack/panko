@@ -13,9 +13,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import datetime
-import uuid
 
 import mock
+from oslo_utils import uuidutils
 from oslotest import base
 
 from panko.dispatcher import database
@@ -34,7 +34,7 @@ class TestDispatcherDB(base.BaseTestCase):
             self.dispatcher = database.DatabaseDispatcher(None)
 
     def test_event_conn(self):
-        event = event_models.Event(uuid.uuid4(), 'test',
+        event = event_models.Event(uuidutils.generate_uuid(), 'test',
                                    datetime.datetime(2012, 7, 2, 13, 53, 40),
                                    [], {}).serialize()
         with mock.patch.object(self.dispatcher.event_conn,

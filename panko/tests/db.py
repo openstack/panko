@@ -16,11 +16,11 @@
 
 """Base classes for API tests."""
 import os
-import uuid
 import warnings
 
 import fixtures
 import mock
+from oslo_utils import uuidutils
 from oslotest import mockpatch
 import six
 from six.moves.urllib import parse as urlparse
@@ -58,13 +58,13 @@ class MongoDbManager(fixtures.Fixture):
     def url(self):
         return '%(url)s_%(db)s' % {
             'url': self._url,
-            'db': uuid.uuid4().hex
+            'db': uuidutils.generate_uuid(dashed=False)
         }
 
 
 class SQLManager(fixtures.Fixture):
     def __init__(self, url, conf):
-        db_name = 'panko_%s' % uuid.uuid4().hex
+        db_name = 'panko_%s' % uuidutils.generate_uuid(dashed=False)
         engine = sqlalchemy.create_engine(url)
         conn = engine.connect()
         self._create_database(conn, db_name)
@@ -104,7 +104,8 @@ class ElasticSearchManager(fixtures.Fixture):
         self.event_connection = storage.get_connection(
             self.url, self.conf)
         # prefix each test with unique index name
-        self.event_connection.index_name = 'events_%s' % uuid.uuid4().hex
+        inx_uuid = uuidutils.generate_uuid(dashed=False)
+        self.event_connection.index_name = 'events_%s' % inx_uuid
         # force index on write so data is queryable right away
         self.event_connection._refresh_on_write = True
 
@@ -120,7 +121,7 @@ class HBaseManager(fixtures.Fixture):
             self.url, self.conf)
         # Unique prefix for each test to keep data is distinguished because
         # all test data is stored in one table
-        data_prefix = str(uuid.uuid4().hex)
+        data_prefix = uuidutils.generate_uuid(dashed=False)
 
         def table(conn, name):
             return mocks.MockHBaseTable(name, conn, data_prefix)

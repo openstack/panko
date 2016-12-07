@@ -15,17 +15,17 @@
 """Test event, event_type and trait retrieval."""
 
 import datetime
-import uuid
 
 from oslo_serialization import jsonutils
+from oslo_utils import uuidutils
 import webtest.app
 
 from panko.event.storage import models
 from panko.tests import db as tests_db
 from panko.tests.functional.api import v2
 
-USER_ID = uuid.uuid4().hex
-PROJ_ID = uuid.uuid4().hex
+USER_ID = uuidutils.generate_uuid(dashed=False)
+PROJ_ID = uuidutils.generate_uuid(dashed=False)
 HEADERS = {"X-Roles": "admin",
            "X-User-Id": USER_ID,
            "X-Project-Id": PROJ_ID}
@@ -527,10 +527,10 @@ class AclRestrictedEventTestBase(v2.FunctionalTest):
 
     def setUp(self):
         super(AclRestrictedEventTestBase, self).setUp()
-        self.admin_user_id = uuid.uuid4().hex
-        self.admin_proj_id = uuid.uuid4().hex
-        self.user_id = uuid.uuid4().hex
-        self.proj_id = uuid.uuid4().hex
+        self.admin_user_id = uuidutils.generate_uuid(dashed=False)
+        self.admin_proj_id = uuidutils.generate_uuid(dashed=False)
+        self.user_id = uuidutils.generate_uuid(dashed=False)
+        self.proj_id = uuidutils.generate_uuid(dashed=False)
         self._generate_models()
 
     def _generate_models(self):
@@ -676,7 +676,7 @@ class EventRestrictionTestBase(v2.FunctionalTest):
                                     self.trait_time)]]
 
             event_models.append(
-                models.Event(message_id=str(uuid.uuid4()),
+                models.Event(message_id=uuidutils.generate_uuid(),
                              event_type='foo.bar',
                              generated=self.trait_time,
                              traits=trait_models,

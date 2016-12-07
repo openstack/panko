@@ -16,10 +16,10 @@
 
 import datetime
 import os
-import uuid
 
 from keystonemiddleware import fixture as ksm_fixture
 from oslo_utils import fileutils
+from oslo_utils import uuidutils
 import six
 import webtest
 
@@ -27,8 +27,8 @@ from panko.api import app
 from panko.event.storage import models as ev_model
 from panko.tests.functional.api import v2
 
-VALID_TOKEN = uuid.uuid4().hex
-VALID_TOKEN2 = uuid.uuid4().hex
+VALID_TOKEN = uuidutils.generate_uuid(dashed=False)
+VALID_TOKEN2 = uuidutils.generate_uuid(dashed=False)
 
 
 class TestAPIACL(v2.FunctionalTest):
@@ -89,7 +89,7 @@ class TestBaseApiEventRBAC(v2.FunctionalTest):
         super(TestBaseApiEventRBAC, self).setUp()
         traits = [ev_model.Trait('project_id', 1, 'project-good'),
                   ev_model.Trait('user_id', 1, 'user-good')]
-        self.message_id = str(uuid.uuid4())
+        self.message_id = uuidutils.generate_uuid()
         ev = ev_model.Event(self.message_id, 'event_type',
                             datetime.datetime.now(), traits, {})
         self.event_conn.record_events([ev])
