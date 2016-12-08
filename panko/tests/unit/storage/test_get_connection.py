@@ -17,7 +17,6 @@
 
 import mock
 from oslotest import base
-import retrying
 
 from panko.event.storage import impl_log
 from panko.event.storage import impl_sqlalchemy
@@ -45,17 +44,19 @@ class ConnectionRetryTest(base.BaseTestCase):
         self.CONF = service.prepare_service([], config_files=[])
 
     def test_retries(self):
-        with mock.patch.object(
-                retrying.Retrying, 'should_reject') as retry_reject:
+        # stevedore gives warning log instead of any exception
+        with mock.patch.object(storage, 'get_connection',
+                               side_effect=Exception) as retries:
             try:
-                self.CONF.set_override("connection", "no-such-engine://",
+                self.CONF.set_override("retry_interval", 1,
                                        group="database")
-                self.CONF.set_override("retry_interval", 0.00001,
+                self.CONF.set_override("max_retries", 3,
                                        group="database")
                 storage.get_connection_from_config(self.CONF)
-            except RuntimeError as err:
-                self.assertIn('no-such-engine', six.text_type(err))
-                self.assertEqual(10, retry_reject.call_count)
+            except Exception:
+                self.assertEqual(3, retries.call_count)
+            else:
+                self.fail()
 
 
 class ConnectionConfigTest(base.BaseTestCase):

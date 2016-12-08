@@ -17,9 +17,9 @@
 
 from oslo_config import cfg
 from oslo_log import log
-import retrying
 import six.moves.urllib.parse as urlparse
 from stevedore import driver
+import tenacity
 
 
 LOG = log.getLogger(__name__)
@@ -57,9 +57,11 @@ class InvalidMarker(Exception):
 def get_connection_from_config(conf):
     retries = conf.database.max_retries
 
-    # Convert retry_interval secs to msecs for retry decorator
-    @retrying.retry(wait_fixed=conf.database.retry_interval * 1000,
-                    stop_max_attempt_number=retries if retries >= 0 else None)
+    @tenacity.retry(
+        wait=tenacity.wait_fixed(conf.database.retry_interval),
+        stop=(tenacity.stop_after_attempt(retries) if retries >= 0
+              else tenacity.stop_never)
+    )
     def _inner():
         url = (getattr(conf.database, 'event_connection') or
                conf.database.connection)

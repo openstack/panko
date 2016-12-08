@@ -21,8 +21,8 @@ from oslo_log import log
 from oslo_utils import netutils
 import pymongo
 import pymongo.errors
-import retrying
 import six
+import tenacity
 
 from panko.i18n import _, _LI
 
@@ -145,11 +145,12 @@ class ConnectionPool(object):
 
 
 def _safe_mongo_call(max_retries, retry_interval):
-    return retrying.retry(
-        retry_on_exception=lambda e: isinstance(
-            e, pymongo.errors.AutoReconnect),
-        wait_fixed=retry_interval * 1000,
-        stop_max_attempt_number=max_retries if max_retries >= 0 else None
+    return tenacity.retry(
+        retry=tenacity.retry_if_exception_type(
+            pymongo.errors.AutoReconnect),
+        wait=tenacity.wait_fixed(retry_interval),
+        stop=(tenacity.stop_after_attempt(max_retries) if max_retries >= 0
+              else tenacity.stop_never)
     )
 
 
