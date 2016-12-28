@@ -13,7 +13,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   verbose: True
   response_json_paths:
     $[/event_type].[0].event_type: cookies_chocolate.chip
@@ -47,7 +47,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_json_paths:
       $[/event_type].[0].event_type: cookies_chocolate.chip
       $[/event_type].[0].traits[/value].[1].value: chocolate.chip
@@ -57,7 +57,7 @@ tests:
 - name: get events that match query via data
   url: /v2/events
   request_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
       X-Roles: admin
       X-User-Id: user1
       X-Project-Id: project1
@@ -68,7 +68,7 @@ tests:
           type: string
           value: cookies_chocolate.chip
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_json_paths:
       $[/event_type].[0].event_type: cookies_chocolate.chip
       $[/event_type].[0].traits[/value].[1].value: chocolate.chip
@@ -82,7 +82,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_strings:
       - "[]"
 
@@ -91,7 +91,7 @@ tests:
 - name: get events that match bad query via data
   url: /v2/events
   request_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
       X-Roles: admin
       X-User-Id: user1
       X-Project-Id: project1
@@ -102,7 +102,7 @@ tests:
           type: string
           value: cookies_chocolate.chip
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_strings:
       - "[]"
 
@@ -111,7 +111,7 @@ tests:
 - name: get events that match bad query via data list
   url: /v2/events
   request_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
       X-Roles: admin
       X-User-Id: user1
       X-Project-Id: project1
@@ -130,7 +130,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_json_paths:
       $.event_type: cookies_chocolate.chip
       $.traits[/value].[0].value: '0'
@@ -153,7 +153,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_strings:
       - cookies_chocolate.chip
       - cookies_peanut.butter
@@ -185,7 +185,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_json_paths:
       $.[0].type: string
       $.[1].name: ate
@@ -198,7 +198,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_strings:
       - "[]"
 
@@ -211,7 +211,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_json_paths:
       $.[0].name: ate
       $.[0].value: '0'
@@ -225,7 +225,7 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_strings:
       - "[]"
 
@@ -238,6 +238,6 @@ tests:
       X-User-Id: user1
       X-Project-Id: project1
   response_headers:
-      content-type: application/json; charset=UTF-8
+      content-type: application/json
   response_strings:
       - "[]"
