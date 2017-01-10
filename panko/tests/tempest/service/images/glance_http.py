@@ -29,7 +29,7 @@ from six import moves
 from six.moves import http_client as httplib
 from six.moves.urllib import parse as urlparse
 
-from ceilometer.tests.tempest import exceptions as exc
+from panko.tests.tempest import exceptions as exc
 
 LOG = logging.getLogger(__name__)
 USER_AGENT = 'tempest'

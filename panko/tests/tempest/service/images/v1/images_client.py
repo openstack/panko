@@ -23,7 +23,7 @@ from six.moves.urllib import parse as urllib
 from tempest.lib.common import rest_client
 from tempest.lib import exceptions as lib_exc
 
-from ceilometer.tests.tempest.service.images import glance_http
+from panko.tests.tempest.service.images import glance_http
 
 
 class ImagesClient(rest_client.RestClient):
