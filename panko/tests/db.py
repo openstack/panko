@@ -49,8 +49,7 @@ class MongoDbManager(fixtures.Fixture):
                 action='ignore',
                 message='.*you must provide a username and password.*')
             try:
-                self.event_connection = storage.get_connection(
-                    self.url, self.conf)
+                self.connection = storage.get_connection(self.url, self.conf)
             except storage.StorageBadVersion as e:
                 raise testcase.TestSkipped(six.text_type(e))
 
@@ -77,7 +76,7 @@ class SQLManager(fixtures.Fixture):
 
     def setUp(self):
         super(SQLManager, self).setUp()
-        self.event_connection = storage.get_connection(self.url, self.conf)
+        self.connection = storage.get_connection(self.url, self.conf)
 
 
 class PgSQLManager(SQLManager):
@@ -101,13 +100,13 @@ class ElasticSearchManager(fixtures.Fixture):
 
     def setUp(self):
         super(ElasticSearchManager, self).setUp()
-        self.event_connection = storage.get_connection(
+        self.connection = storage.get_connection(
             self.url, self.conf)
         # prefix each test with unique index name
         inx_uuid = uuidutils.generate_uuid(dashed=False)
-        self.event_connection.index_name = 'events_%s' % inx_uuid
+        self.connection.index_name = 'events_%s' % inx_uuid
         # force index on write so data is queryable right away
-        self.event_connection._refresh_on_write = True
+        self.connection._refresh_on_write = True
 
 
 class HBaseManager(fixtures.Fixture):
@@ -117,7 +116,7 @@ class HBaseManager(fixtures.Fixture):
 
     def setUp(self):
         super(HBaseManager, self).setUp()
-        self.event_connection = storage.get_connection(
+        self.connection = storage.get_connection(
             self.url, self.conf)
         # Unique prefix for each test to keep data is distinguished because
         # all test data is stored in one table
@@ -156,7 +155,7 @@ class SQLiteManager(fixtures.Fixture):
 
     def setUp(self):
         super(SQLiteManager, self).setUp()
-        self.event_connection = storage.get_connection(
+        self.connection = storage.get_connection(
             self.url, self.conf)
 
 
@@ -200,19 +199,19 @@ class TestBase(test_base.BaseTestCase):
 
         self.useFixture(self.db_manager)
 
-        self.event_conn = self.db_manager.event_connection
-        self.event_conn.upgrade()
+        self.conn = self.db_manager.connection
+        self.conn.upgrade()
 
         self.useFixture(mockpatch.Patch('panko.storage.get_connection',
                                         side_effect=self._get_connection))
 
     def tearDown(self):
-        self.event_conn.clear()
-        self.event_conn = None
+        self.conn.clear()
+        self.conn = None
         super(TestBase, self).tearDown()
 
     def _get_connection(self, url, conf):
-        return self.event_conn
+        return self.conn
 
 
 def run_with(*drivers):

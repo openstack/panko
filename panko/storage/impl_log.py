@@ -23,7 +23,7 @@ class Connection(base.Connection):
     """Log event data."""
 
     @staticmethod
-    def clear_expired_event_data(ttl):
+    def clear_expired_data(ttl):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.

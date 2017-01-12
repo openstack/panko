@@ -140,12 +140,12 @@ function cleanup_panko {
 # Set configuration for storage backend.
 function _panko_configure_storage_backend {
     if [ "$PANKO_BACKEND" = 'mysql' ] || [ "$PANKO_BACKEND" = 'postgresql' ] ; then
-        iniset $PANKO_CONF database event_connection $(database_connection_url panko)
+        iniset $PANKO_CONF database connection $(database_connection_url panko)
     elif [ "$PANKO_BACKEND" = 'es' ] ; then
-        iniset $PANKO_CONF database event_connection es://localhost:9200
+        iniset $PANKO_CONF database connection es://localhost:9200
         ${TOP_DIR}/pkg/elasticsearch.sh start
     elif [ "$PANKO_BACKEND" = 'mongodb' ] ; then
-        iniset $PANKO_CONF database event_connection mongodb://localhost:27017/panko
+        iniset $PANKO_CONF database connection mongodb://localhost:27017/panko
     else
         die $LINENO "Unable to configure unknown PANKO_BACKEND $PANKO_BACKEND"
     fi

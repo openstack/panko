@@ -67,7 +67,7 @@ class EventTestBase(v2.FunctionalTest):
                              raw={'status': {'nested': 'started'}}))
             base += 100
             self.trait_time += datetime.timedelta(days=1)
-        self.event_conn.record_events(event_models)
+        self.conn.record_events(event_models)
 
 
 class TestEventTypeAPI(EventTestBase):
@@ -566,7 +566,7 @@ class AclRestrictedEventTestBase(v2.FunctionalTest):
                                               models.Trait.TEXT_TYPE,
                                               self.user_id)],
                          raw={}))
-        self.event_conn.record_events(event_models)
+        self.conn.record_events(event_models)
 
     def test_non_admin_access(self):
         a_headers = {"X-Roles": "member",
@@ -682,7 +682,7 @@ class EventRestrictionTestBase(v2.FunctionalTest):
                              traits=trait_models,
                              raw={'status': {'nested': 'started'}}))
             self.trait_time += datetime.timedelta(seconds=1)
-        self.event_conn.record_events(event_models)
+        self.conn.record_events(event_models)
 
 
 class TestEventRestriction(EventRestrictionTestBase):

@@ -96,7 +96,7 @@ class Connection(pymongo_base.Connection):
         # Connection will be reopened automatically if needed
         self.conn.close()
 
-    def clear_expired_event_data(self, ttl):
+    def clear_expired_data(self, ttl):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.

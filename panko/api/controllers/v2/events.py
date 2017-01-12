@@ -233,8 +233,7 @@ class TraitsController(rest.RestController):
         """
         LOG.debug("Getting traits for %s", event_type)
         return [Trait._convert_storage_trait(t)
-                for t in pecan.request.event_storage_conn
-                .get_traits(event_type, trait_name)]
+                for t in pecan.request.conn.get_traits(event_type, trait_name)]
 
     @v2_utils.requires_admin
     @wsme_pecan.wsexpose([TraitDescription], wtypes.text)
@@ -246,8 +245,7 @@ class TraitsController(rest.RestController):
         get_trait_name = event_models.Trait.get_name_by_type
         return [TraitDescription(name=t['name'],
                                  type=get_trait_name(t['data_type']))
-                for t in pecan.request.event_storage_conn
-                .get_trait_types(event_type)]
+                for t in pecan.request.conn.get_trait_types(event_type)]
 
 
 class EventTypesController(rest.RestController):
@@ -268,7 +266,7 @@ class EventTypesController(rest.RestController):
     @wsme_pecan.wsexpose([six.text_type])
     def get_all(self):
         """Get all event types."""
-        return list(pecan.request.event_storage_conn.get_event_types())
+        return list(pecan.request.conn.get_event_types())
 
 
 class EventsController(rest.RestController):
@@ -296,8 +294,7 @@ class EventsController(rest.RestController):
                       traits=event.traits,
                       raw=event.raw)
                 for event in
-                pecan.request.event_storage_conn.get_events(event_filter,
-                                                            pagination)]
+                pecan.request.conn.get_events(event_filter, pagination)]
 
     @v2_utils.requires_context
     @wsme_pecan.wsexpose(Event, wtypes.text)
@@ -314,7 +311,7 @@ class EventsController(rest.RestController):
                                            admin_proj=admin_proj,
                                            message_id=message_id)
         events = [event for event
-                  in pecan.request.event_storage_conn.get_events(event_filter)]
+                  in pecan.request.conn.get_events(event_filter)]
         if not events:
             raise base.EntityNotFound(_("Event"), message_id)
 

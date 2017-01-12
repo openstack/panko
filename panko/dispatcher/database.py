@@ -41,7 +41,7 @@ class DatabaseDispatcher(object):
         # NOTE(jd) The `conf' arg is the Ceilometer conf, but we don't really
         # need it here.
         conf = service.prepare_service([])
-        self.event_conn = storage.get_connection_from_config(conf)
+        self.conn = storage.get_connection_from_config(conf)
 
     def record_events(self, events):
         if not isinstance(events, list):
@@ -65,4 +65,4 @@ class DatabaseDispatcher(object):
             except Exception:
                 LOG.exception(_LE("Error processing event and it will be "
                                   "dropped: %s"), ev)
-        self.event_conn.record_events(event_list)
+        self.conn.record_events(event_list)

@@ -31,31 +31,31 @@ class IndexTest(tests_db.TestBase):
 
     def test_event_ttl_index_absent(self):
         # create a fake index and check it is deleted
-        self.event_conn.clear_expired_event_data(-1)
+        self.conn.clear_expired_data(-1)
         self.assertNotIn("event_ttl",
-                         self.event_conn.db.event.index_information())
+                         self.conn.db.event.index_information())
 
-        self.event_conn.clear_expired_event_data(456789)
+        self.conn.clear_expired_data(456789)
         self.assertEqual(456789,
-                         self.event_conn.db.event.index_information()
+                         self.conn.db.event.index_information()
                          ["event_ttl"]['expireAfterSeconds'])
 
     def test_event_ttl_index_present(self):
-        self.event_conn.clear_expired_event_data(456789)
+        self.conn.clear_expired_data(456789)
         self.assertEqual(456789,
-                         self.event_conn.db.event.index_information()
+                         self.conn.db.event.index_information()
                          ["event_ttl"]['expireAfterSeconds'])
 
-        self.event_conn.clear_expired_event_data(-1)
+        self.conn.clear_expired_data(-1)
         self.assertNotIn("event_ttl",
-                         self.event_conn.db.event.index_information())
+                         self.conn.db.event.index_information())
 
 
 class CapabilitiesTest(test_base.BaseTestCase):
     # Check the returned capabilities list, which is specific to each DB
     # driver
 
-    def test_event_capabilities(self):
+    def test_capabilities(self):
         expected_capabilities = {
             'events': {'query': {'simple': True}},
         }

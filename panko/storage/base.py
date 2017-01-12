@@ -122,7 +122,7 @@ class Connection(object):
         return cls.STORAGE_CAPABILITIES
 
     @staticmethod
-    def clear_expired_event_data(ttl):
+    def clear_expired_data(ttl):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.

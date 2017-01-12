@@ -33,11 +33,11 @@ class TestDispatcherDB(base.BaseTestCase):
             f.return_value = self.CONF
             self.dispatcher = database.DatabaseDispatcher(None)
 
-    def test_event_conn(self):
+    def test_conn(self):
         event = models.Event(uuidutils.generate_uuid(), 'test',
                              datetime.datetime(2012, 7, 2, 13, 53, 40),
                              [], {}).serialize()
-        with mock.patch.object(self.dispatcher.event_conn,
+        with mock.patch.object(self.dispatcher.conn,
                                'record_events') as record_events:
             self.dispatcher.record_events(event)
         self.assertEqual(1, len(record_events.call_args_list[0][0][0]))

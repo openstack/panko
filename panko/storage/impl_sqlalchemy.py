@@ -435,7 +435,7 @@ class Connection(base.Connection):
                                            dtype=dtype,
                                            value=v)
 
-    def clear_expired_event_data(self, ttl):
+    def clear_expired_data(self, ttl):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.

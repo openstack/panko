@@ -44,16 +44,16 @@ class EventTypeTest(tests_db.TestBase):
     # Not applicable to other drivers.
 
     def test_event_type_exists(self):
-        et1 = self.event_conn._get_or_create_event_type("foo")
+        et1 = self.conn._get_or_create_event_type("foo")
         self.assertTrue(et1.id >= 0)
-        et2 = self.event_conn._get_or_create_event_type("foo")
+        et2 = self.conn._get_or_create_event_type("foo")
         self.assertEqual(et2.id, et1.id)
         self.assertEqual(et2.desc, et1.desc)
 
     def test_event_type_unique(self):
-        et1 = self.event_conn._get_or_create_event_type("foo")
+        et1 = self.conn._get_or_create_event_type("foo")
         self.assertTrue(et1.id >= 0)
-        et2 = self.event_conn._get_or_create_event_type("blah")
+        et2 = self.conn._get_or_create_event_type("blah")
         self.assertNotEqual(et1.id, et2.id)
         self.assertNotEqual(et1.desc, et2.desc)
         # Test the method __repr__ returns a string
@@ -65,8 +65,8 @@ class EventTest(tests_db.TestBase):
     def _verify_data(self, trait, trait_table):
         now = datetime.datetime.utcnow()
         ev = models.Event('1', 'name', now, [trait], {})
-        self.event_conn.record_events([ev])
-        session = self.event_conn._engine_facade.get_session()
+        self.conn.record_events([ev])
+        session = self.conn._engine_facade.get_session()
         t_tables = [sql_models.TraitText, sql_models.TraitFloat,
                     sql_models.TraitInt, sql_models.TraitDatetime]
         for table in t_tables:
@@ -102,7 +102,7 @@ class CapabilitiesTest(test_base.BaseTestCase):
     # Check the returned capabilities list, which is specific to each DB
     # driver
 
-    def test_event_capabilities(self):
+    def test_capabilities(self):
         expected_capabilities = {
             'events': {'query': {'simple': True}},
         }
