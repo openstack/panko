@@ -24,9 +24,8 @@ from oslo_log import log
 from oslo_utils import timeutils
 import sqlalchemy as sa
 
-from panko.event import storage as event_storage
-from panko.event.storage import base
-from panko.event.storage import models as api_models
+from panko.storage import base
+from panko.storage import models as api_models
 from panko.i18n import _LE, _LI
 from panko import storage
 from panko.storage.sqlalchemy import models
@@ -213,7 +212,7 @@ class Connection(base.Connection):
 
         marker = None
         if pagination.get('marker'):
-            marker_filter = event_storage.EventFilter(
+            marker_filter = storage.EventFilter(
                 message_id=pagination.get('marker'))
             markers = list(self.get_events(marker_filter))
             if markers:

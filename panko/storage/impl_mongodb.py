@@ -15,9 +15,9 @@
 from oslo_log import log
 import pymongo
 
-from panko.event.storage import pymongo_base
 from panko import storage
 from panko.storage.mongo import utils as pymongo_utils
+from panko.storage import pymongo_base
 
 LOG = log.getLogger(__name__)
 

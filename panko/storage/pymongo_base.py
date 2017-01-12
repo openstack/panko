@@ -15,8 +15,8 @@
 from oslo_log import log
 import pymongo
 
-from panko.event.storage import base
-from panko.event.storage import models
+from panko.storage import base
+from panko.storage import models
 from panko.i18n import _LE, _LI, _LW
 from panko.storage.mongo import utils as pymongo_utils
 from panko import utils

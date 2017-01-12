@@ -31,8 +31,8 @@ import wsmeext.pecan as wsme_pecan
 from panko.api.controllers.v2 import base
 from panko.api.controllers.v2 import utils as v2_utils
 from panko.api import rbac
-from panko.event import storage
-from panko.event.storage import models as event_models
+from panko import storage
+from panko.storage import models as event_models
 from panko.i18n import _, _LE
 
 LOG = log.getLogger(__name__)

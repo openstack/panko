@@ -16,10 +16,10 @@
 from oslo_log import log
 from oslo_utils import timeutils
 
-from panko.event.storage import models
 from panko.i18n import _LE
 from panko import service
 from panko import storage
+from panko.storage import models
 
 LOG = log.getLogger(__name__)
 

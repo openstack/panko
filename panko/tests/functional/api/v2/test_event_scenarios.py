@@ -20,7 +20,7 @@ from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 import webtest.app
 
-from panko.event.storage import models
+from panko.storage import models
 from panko.tests import db as tests_db
 from panko.tests.functional.api import v2
 

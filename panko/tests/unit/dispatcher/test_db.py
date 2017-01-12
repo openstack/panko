@@ -19,8 +19,8 @@ from oslo_utils import uuidutils
 from oslotest import base
 
 from panko.dispatcher import database
-from panko.event.storage import models as event_models
 from panko import service
+from panko.storage import models
 
 
 class TestDispatcherDB(base.BaseTestCase):
@@ -34,9 +34,9 @@ class TestDispatcherDB(base.BaseTestCase):
             self.dispatcher = database.DatabaseDispatcher(None)
 
     def test_event_conn(self):
-        event = event_models.Event(uuidutils.generate_uuid(), 'test',
-                                   datetime.datetime(2012, 7, 2, 13, 53, 40),
-                                   [], {}).serialize()
+        event = models.Event(uuidutils.generate_uuid(), 'test',
+                             datetime.datetime(2012, 7, 2, 13, 53, 40),
+                             [], {}).serialize()
         with mock.patch.object(self.dispatcher.event_conn,
                                'record_events') as record_events:
             self.dispatcher.record_events(event)

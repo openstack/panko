@@ -21,8 +21,8 @@ from oslo_utils import netutils
 from oslo_utils import timeutils
 import six
 
-from panko.event.storage import base
-from panko.event.storage import models
+from panko.storage import base
+from panko.storage import models
 from panko.i18n import _LE, _LI, _LW
 from panko import storage
 from panko import utils

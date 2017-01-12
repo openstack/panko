@@ -24,7 +24,7 @@ import six
 import webtest
 
 from panko.api import app
-from panko.event.storage import models as ev_model
+from panko.storage import models
 from panko.tests.functional.api import v2
 
 VALID_TOKEN = uuidutils.generate_uuid(dashed=False)
@@ -87,11 +87,11 @@ class TestBaseApiEventRBAC(v2.FunctionalTest):
 
     def setUp(self):
         super(TestBaseApiEventRBAC, self).setUp()
-        traits = [ev_model.Trait('project_id', 1, 'project-good'),
-                  ev_model.Trait('user_id', 1, 'user-good')]
+        traits = [models.Trait('project_id', 1, 'project-good'),
+                  models.Trait('user_id', 1, 'user-good')]
         self.message_id = uuidutils.generate_uuid()
-        ev = ev_model.Event(self.message_id, 'event_type',
-                            datetime.datetime.now(), traits, {})
+        ev = models.Event(self.message_id, 'event_type',
+                          datetime.datetime.now(), traits, {})
         self.event_conn.record_events([ev])
 
     def test_get_events_without_project(self):
