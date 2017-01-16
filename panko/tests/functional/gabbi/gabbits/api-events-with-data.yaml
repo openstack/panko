@@ -7,7 +7,7 @@ tests:
 
 # this attempts to get all the events and checks to make sure they are valid
 - name: get all events
-  url: /v2/events
+  GET: /v2/events
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -31,7 +31,7 @@ tests:
 
 # this attempts to get all the events with invalid parameters and expects a 400
 - name: get events with bad params
-  url: /v2/events?bad_Stuff_here
+  GET: /v2/events?bad_Stuff_here
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -41,7 +41,7 @@ tests:
 # this attempts to query the events with the correct parameterized query syntax
 # and expects a matching event
 - name: get events that match query
-  url: /v2/events?q.field=event_type&q.op=eq&q.type=string&q.value=cookies_chocolate.chip
+  GET: /v2/events?q.field=event_type&q.op=eq&q.type=string&q.value=cookies_chocolate.chip
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -55,7 +55,7 @@ tests:
 # this attempts to query the events with the correct data query syntax and
 # expects a matching event
 - name: get events that match query via data
-  url: /v2/events
+  GET: /v2/events
   request_headers:
       content-type: application/json
       X-Roles: admin
@@ -76,7 +76,7 @@ tests:
 # this attempts to query the events with the correct parameterized query syntax
 # but a bad field name and expects an empty list
 - name: get events that match bad query
-  url: /v2/events?q.field=bad_field&q.op=eq&q.type=string&q.value=cookies_chocolate.chip
+  GET: /v2/events?q.field=bad_field&q.op=eq&q.type=string&q.value=cookies_chocolate.chip
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -89,7 +89,7 @@ tests:
 # this attempts to query the events with the correct data query syntax and
 # a bad field name and expects an empty list
 - name: get events that match bad query via data
-  url: /v2/events
+  GET: /v2/events
   request_headers:
       content-type: application/json
       X-Roles: admin
@@ -109,7 +109,7 @@ tests:
 # this attempts to query the events with the wrong data query syntax missing the
 # q object but supplying the field list and  a bad field name and expects a 400
 - name: get events that match bad query via data list
-  url: /v2/events
+  GET: /v2/events
   request_headers:
       content-type: application/json
       X-Roles: admin
@@ -124,7 +124,7 @@ tests:
 
 # Get a single event by message_id should return an event
 - name: get a single event
-  url: /v2/events/fea1b15a-1d47-4175-85a5-a4bb2c729240
+  GET: /v2/events/fea1b15a-1d47-4175-85a5-a4bb2c729240
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -138,7 +138,7 @@ tests:
 
 # Get a single event by message_id no data is present so should return a 404
 - name: get a single event that does not exist
-  url: /v2/events/bad-id
+  GET: /v2/events/bad-id
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -147,7 +147,7 @@ tests:
 
 # Get all the event types should return a list of event types
 - name: get all event types
-  url: /v2/event_types
+  GET: /v2/event_types
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -161,7 +161,7 @@ tests:
 
 # Get a single event type by valid name, this API is unused and should return a 404
 - name: get event types for good event_type unused api
-  url: /v2/event_types/cookies_chocolate.chip
+  GET: /v2/event_types/cookies_chocolate.chip
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -170,7 +170,7 @@ tests:
 
 # Get a single event type by invalid name, this API is unused and should return a 404
 - name: get event types for bad event_type unused api
-  url: /v2/event_types/bad_event_type
+  GET: /v2/event_types/bad_event_type
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -179,7 +179,7 @@ tests:
 
 # Get all traits for a valid event type should return an list of traits
 - name: get all traits for event type
-  url: /v2/event_types/cookies_chocolate.chip/traits
+  GET: /v2/event_types/cookies_chocolate.chip/traits
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -192,7 +192,7 @@ tests:
 
 # Get all traits for an invalid event type should return an empty list
 - name: get all traits names for event type bad event type
-  url: /v2/event_types/bad_event_type/traits
+  GET: /v2/event_types/bad_event_type/traits
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -205,7 +205,7 @@ tests:
 # Get all traits of type ate for a valid event type should return an list of
 # traits
 - name: get all traits of type ate for event type
-  url: /v2/event_types/cookies_chocolate.chip/traits/ate
+  GET: /v2/event_types/cookies_chocolate.chip/traits/ate
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -219,7 +219,7 @@ tests:
 # Get all traits of type ate for an invalid event type should return an empty
 # list
 - name: get all traits of type for event type bad event type
-  url: /v2/event_types/bad_event_type/traits/ate
+  GET: /v2/event_types/bad_event_type/traits/ate
   request_headers:
       X-Roles: admin
       X-User-Id: user1
@@ -232,7 +232,7 @@ tests:
 # Get all traits of type bad_trait_name for a valid event type should return an
 # empty list
 - name: get all traits of type instances for event type bad trait name
-  url: /v2/event_types/cookies_chocolate.chip/traits/bad_trait_name
+  GET: /v2/event_types/cookies_chocolate.chip/traits/bad_trait_name
   request_headers:
       X-Roles: admin
       X-User-Id: user1
