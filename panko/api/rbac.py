@@ -22,6 +22,13 @@ import pecan
 _ENFORCER = None
 
 
+def init():
+    global _ENFORCER
+    if not _ENFORCER:
+        _ENFORCER = policy.Enforcer(pecan.request.cfg)
+        _ENFORCER.load_rules()
+
+
 def reset():
     global _ENFORCER
     if _ENFORCER:
@@ -41,10 +48,7 @@ def enforce(policy_name, request):
 
 
     """
-    global _ENFORCER
-    if not _ENFORCER:
-        _ENFORCER = policy.Enforcer(pecan.request.cfg)
-        _ENFORCER.load_rules()
+    init()
 
     rule_method = "telemetry:" + policy_name
     headers = request.headers
@@ -72,10 +76,7 @@ def get_limited_to(headers):
     one of these.
 
     """
-    global _ENFORCER
-    if not _ENFORCER:
-        _ENFORCER = policy.Enforcer(pecan.request.cfg)
-        _ENFORCER.load_rules()
+    init()
 
     policy_dict = dict()
     policy_dict['roles'] = headers.get('X-Roles', "").split(",")
