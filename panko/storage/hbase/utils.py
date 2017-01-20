@@ -21,7 +21,6 @@ from oslo_log import log
 import six
 
 from panko.i18n import _
-from panko import utils
 
 LOG = log.getLogger(__name__)
 
@@ -32,10 +31,6 @@ OP_SIGN = {'eq': '=', 'lt': '<', 'le': '<=', 'ne': '!=', 'gt': '>', 'ge': '>='}
 # row-keys for stored metrics
 OP_SIGN_REV = {'eq': '=', 'lt': '>', 'le': '>=', 'ne': '!=', 'gt': '<',
                'ge': '<='}
-
-
-def _QualifierFilter(op, qualifier):
-    return "QualifierFilter (%s, 'binaryprefix:m_%s')" % (op, qualifier)
 
 
 def timestamp(dt, reverse=True):
@@ -127,10 +122,9 @@ def get_start_end_rts(start, end):
     return rts_start, rts_end
 
 
-def make_query(metaquery=None, trait_query=None, **kwargs):
+def make_query(trait_query=None, **kwargs):
     """Return a filter query string based on the selected parameters.
 
-    :param metaquery: optional metaquery dict
     :param trait_query: optional boolean, for trait_query from kwargs
     :param kwargs: key-value pairs to filter on. Key should be a real
       column name in db
@@ -157,11 +151,7 @@ def make_query(metaquery=None, trait_query=None, **kwargs):
     # found in table.
     for key, value in sorted(kwargs.items()):
         if value is not None:
-            if key == 'source':
-                q.append("SingleColumnValueFilter "
-                         "('f', 's_%s', =, 'binary:%s', true, true)" %
-                         (value, dump('1')))
-            elif key == 'trait_type':
+            if key == 'trait_type':
                 q.append("ColumnPrefixFilter('%s')" % value)
             elif key == 'event_id':
                 q.append("RowFilter ( = , 'regexstring:\d*:%s')" % value)
@@ -172,20 +162,6 @@ def make_query(metaquery=None, trait_query=None, **kwargs):
     res_q = None
     if len(q):
         res_q = " AND ".join(q)
-
-    if metaquery:
-        meta_q = []
-        for k, v in metaquery.items():
-            meta_q.append(
-                "SingleColumnValueFilter ('f', '%s', =, 'binary:%s', "
-                "true, true)"
-                % ('r_' + k, dump(v)))
-        meta_q = " AND ".join(meta_q)
-        # join query and metaquery
-        if res_q is not None:
-            res_q += " AND " + meta_q
-        else:
-            res_q = meta_q   # metaquery only
 
     return res_q
 
@@ -204,44 +180,21 @@ def prepare_key(*args):
     return ":".join(key_quote)
 
 
-def deserialize_entry(entry, get_raw_meta=True):
-    """Return a list of flatten_result, sources, meters and metadata.
+def deserialize_entry(entry):
+    """Return a list of flatten_result
 
     Flatten_result contains a dict of simple structures such as 'resource_id':1
-    sources/meters are the lists of sources and meters correspondingly.
-    metadata is metadata dict. This dict may be returned as flattened if
-    get_raw_meta is False.
 
     :param entry: entry from HBase, without row name and timestamp
-    :param get_raw_meta: If true then raw metadata will be returned,
-                         if False metadata will be constructed from
-                         'f:r_metadata.' fields
     """
     flatten_result = {}
-    sources = []
-    meters = []
-    metadata_flattened = {}
     for k, v in entry.items():
-        if k.startswith('f:s_'):
-            sources.append(decode_unicode(k[4:]))
-        elif k.startswith('f:r_metadata.'):
-            qualifier = decode_unicode(k[len('f:r_metadata.'):])
-            metadata_flattened[qualifier] = load(v)
-        elif k.startswith("f:m_"):
-            meter = ([unquote(i) for i in k[4:].split(':')], load(v))
-            meters.append(meter)
+        if ':' in k[2:]:
+            key = tuple([unquote(i) for i in k[2:].split(':')])
         else:
-            if ':' in k[2:]:
-                key = tuple([unquote(i) for i in k[2:].split(':')])
-            else:
-                key = unquote(k[2:])
-            flatten_result[key] = load(v)
-    if get_raw_meta:
-        metadata = flatten_result.get('resource_metadata', {})
-    else:
-        metadata = metadata_flattened
-
-    return flatten_result, meters, metadata
+            key = unquote(k[2:])
+        flatten_result[key] = load(v)
+    return flatten_result
 
 
 def serialize_entry(data=None, **kwargs):
@@ -254,39 +207,7 @@ def serialize_entry(data=None, **kwargs):
     entry_dict = copy.copy(data)
     entry_dict.update(**kwargs)
 
-    result = {}
-    for k, v in entry_dict.items():
-        if k == 'source':
-            # user, project and resource tables may contain several sources.
-            # Besides, resource table may contain several meters.
-            # To make insertion safe we need to store all meters and sources in
-            # a separate cell. For this purpose s_ and m_ prefixes are
-            # introduced.
-            qualifier = encode_unicode('f:s_%s' % v)
-            result[qualifier] = dump('1')
-        elif k == 'meter':
-            for meter, ts in v.items():
-                qualifier = encode_unicode('f:m_%s' % meter)
-                result[qualifier] = dump(ts)
-        elif k == 'resource_metadata':
-            # keep raw metadata as well as flattened to provide
-            # capability with API v2. It will be flattened in another
-            # way on API level. But we need flattened too for quick filtering.
-            flattened_meta = dump_metadata(v)
-            for key, m in flattened_meta.items():
-                metadata_qualifier = encode_unicode('f:r_metadata.' + key)
-                result[metadata_qualifier] = dump(m)
-            result['f:resource_metadata'] = dump(v)
-        else:
-            result['f:' + quote(k, ':')] = dump(v)
-    return result
-
-
-def dump_metadata(meta):
-    resource_metadata = {}
-    for key, v in utils.dict_to_keyval(meta):
-        resource_metadata[key] = v
-    return resource_metadata
+    return {'f:' + quote(k, ':'): dump(v) for k, v in entry_dict.items()}
 
 
 def dump(data):
@@ -295,14 +216,6 @@ def dump(data):
 
 def load(data):
     return json.loads(data, object_hook=object_hook)
-
-
-def encode_unicode(data):
-    return data.encode('utf-8') if isinstance(data, six.text_type) else data
-
-
-def decode_unicode(data):
-    return data.decode('utf-8') if isinstance(data, six.string_types) else data
 
 
 # We don't want to have tzinfo in decoded json.This object_hook is
