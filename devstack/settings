@@ -16,6 +16,9 @@ PANKO_SERVICE_HOST=$SERVICE_HOST
 PANKO_SERVICE_PORT=${PANKO_SERVICE_PORT:-8779}
 PANKO_USE_MOD_WSGI=${PANKO_USE_MOD_WSGI:-${ENABLE_HTTPD_MOD_WSGI_SERVICES}}
 
+# Tell Tempest this project is present
+TEMPEST_SERVICES+=,panko
+
 # Get rid of this before done.
 # Tell emacs to use shell-script-mode
 ## Local variables:
