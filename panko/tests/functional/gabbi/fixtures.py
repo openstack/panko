@@ -29,9 +29,9 @@ from six.moves.urllib import parse as urlparse
 import sqlalchemy_utils
 
 from panko.api import app
-from panko.event.storage import models
 from panko import service
 from panko import storage
+from panko.storage import models
 
 # NOTE(chdent): Hack to restore semblance of global configuration to
 # pass to the WSGI app used per test suite. LOAD_APP_KWARGS are the olso

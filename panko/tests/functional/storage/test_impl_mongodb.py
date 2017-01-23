@@ -21,7 +21,7 @@
 
 """
 
-from panko.event.storage import impl_mongodb
+from panko.storage import impl_mongodb
 from panko.tests import base as test_base
 from panko.tests import db as tests_db
 

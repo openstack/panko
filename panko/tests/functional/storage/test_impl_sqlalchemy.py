@@ -22,8 +22,8 @@ import datetime
 
 from six.moves import reprlib
 
-from panko.event.storage import impl_sqlalchemy as impl_sqla_event
-from panko.event.storage import models
+from panko.storage import impl_sqlalchemy as impl_sqla_event
+from panko.storage import models
 from panko.storage.sqlalchemy import models as sql_models
 from panko.tests import base as test_base
 from panko.tests import db as tests_db

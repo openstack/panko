@@ -17,13 +17,12 @@
 
 import mock
 from oslotest import base
+import six
 
-from panko.event.storage import impl_log
-from panko.event.storage import impl_sqlalchemy
 from panko import service
 from panko import storage
-
-import six
+from panko.storage import impl_log
+from panko.storage import impl_sqlalchemy
 
 
 class EngineTest(base.BaseTestCase):

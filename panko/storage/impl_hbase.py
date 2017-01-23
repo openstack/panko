@@ -15,8 +15,8 @@ import operator
 
 from oslo_log import log
 
-from panko.event.storage import base
-from panko.event.storage import models
+from panko.storage import base
+from panko.storage import models
 from panko.i18n import _LE, _LW
 from panko.storage.hbase import base as hbase_base
 from panko.storage.hbase import utils as hbase_utils

@@ -13,8 +13,8 @@
 
 from oslo_log import log
 
-from panko.event.storage import base
 from panko.i18n import _LI
+from panko.storage import base
 
 LOG = log.getLogger(__name__)
 

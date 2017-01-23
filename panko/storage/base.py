@@ -17,6 +17,8 @@
 
 import six
 
+import panko
+
 
 class Model(object):
     """Base class for storage API models."""
@@ -42,3 +44,88 @@ class Model(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+
+class Connection(object):
+    """Base class for event storage system connections."""
+
+    # A dictionary representing the capabilities of this driver.
+    CAPABILITIES = {
+        'events': {'query': {'simple': False}},
+    }
+
+    STORAGE_CAPABILITIES = {
+        'storage': {'production_ready': False},
+    }
+
+    @staticmethod
+    def __init__(url, conf):
+        pass
+
+    @staticmethod
+    def upgrade():
+        """Migrate the database to `version` or the most recent version."""
+
+    @staticmethod
+    def clear():
+        """Clear database."""
+
+    @staticmethod
+    def record_events(events):
+        """Write the events to the backend storage system.
+
+        :param events: a list of model.Event objects.
+        """
+        raise panko.NotImplementedError('Events not implemented.')
+
+    @staticmethod
+    def get_events(event_filter, pagination=None):
+        """Return an iterable of model.Event objects."""
+
+    @staticmethod
+    def get_event_types():
+        """Return all event types as an iterable of strings."""
+        raise panko.NotImplementedError('Events not implemented.')
+
+    @staticmethod
+    def get_trait_types(event_type):
+        """Return a dictionary containing the name and data type of the trait.
+
+        Only trait types for the provided event_type are
+        returned.
+        :param event_type: the type of the Event
+        """
+        raise panko.NotImplementedError('Events not implemented.')
+
+    @staticmethod
+    def get_traits(event_type, trait_type=None):
+        """Return all trait instances associated with an event_type.
+
+        If trait_type is specified, only return instances of that trait type.
+        :param event_type: the type of the Event to filter by
+        :param trait_type: the name of the Trait to filter by
+        """
+
+        raise panko.NotImplementedError('Events not implemented.')
+
+    @classmethod
+    def get_capabilities(cls):
+        """Return an dictionary with the capabilities of each driver."""
+        return cls.CAPABILITIES
+
+    @classmethod
+    def get_storage_capabilities(cls):
+        """Return a dictionary representing the performance capabilities.
+
+        This is needed to evaluate the performance of each driver.
+        """
+        return cls.STORAGE_CAPABILITIES
+
+    @staticmethod
+    def clear_expired_event_data(ttl):
+        """Clear expired data from the backend storage system.
+
+        Clearing occurs according to the time-to-live.
+        :param ttl: Number of seconds to keep records for.
+        """
+        raise panko.NotImplementedError('Clearing events not implemented')

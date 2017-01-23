@@ -28,9 +28,9 @@ import random
 from oslo_utils import timeutils
 from oslo_utils import uuidutils
 
-from panko.event.storage import models
 from panko import service
 from panko import storage
+from panko.storage import models
 
 
 def make_test_data(conn, start, end, interval, event_types):
