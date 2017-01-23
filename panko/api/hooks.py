@@ -35,11 +35,11 @@ class ConfigHook(hooks.PecanHook):
 class DBHook(hooks.PecanHook):
 
     def __init__(self, conf):
-        self.event_storage_connection = storage.get_connection_from_config(
+        self.connection = storage.get_connection_from_config(
             conf)
 
     def before(self, state):
-        state.request.event_storage_conn = self.event_storage_connection
+        state.request.conn = self.connection
 
 
 class TranslationHook(hooks.PecanHook):

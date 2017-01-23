@@ -84,7 +84,6 @@ class ConfigFixture(fixture.GabbiFixture):
         db_url = urlparse.urlunparse(parsed_url)
 
         conf.set_override('connection', db_url, group='database')
-        conf.set_override('event_connection', '', group='database')
 
         if (parsed_url[0].startswith("mysql")
            or parsed_url[0].startswith("postgresql")):

@@ -34,9 +34,8 @@ def expirer():
 
     if conf.database.event_time_to_live > 0:
         LOG.debug("Clearing expired event data")
-        event_conn = storage.get_connection_from_config(conf)
-        event_conn.clear_expired_event_data(
-            conf.database.event_time_to_live)
+        conn = storage.get_connection_from_config(conf)
+        conn.clear_expired_data(conf.database.event_time_to_live)
     else:
         LOG.info(_LI("Nothing to clean, database event time to live "
                      "is disabled"))

@@ -92,7 +92,7 @@ class TestBaseApiEventRBAC(v2.FunctionalTest):
         self.message_id = uuidutils.generate_uuid()
         ev = models.Event(self.message_id, 'event_type',
                           datetime.datetime.now(), traits, {})
-        self.event_conn.record_events([ev])
+        self.conn.record_events([ev])
 
     def test_get_events_without_project(self):
         headers_no_proj = {"X-Roles": "admin", "X-User-Id": "user-good"}

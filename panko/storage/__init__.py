@@ -34,8 +34,9 @@ OPTS = [
                      "in the database for (<= 0 means forever).")),
     cfg.StrOpt('event_connection',
                secret=True,
-               help='The connection string used to connect to the event '
-               'database. (if unset, connection is used)'),
+               deprecated_for_removal=True,
+               help='The connection string used to connect '
+               'to the event database - rather use ${database.connection}'),
 ]
 
 

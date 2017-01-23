@@ -64,10 +64,8 @@ class CapabilitiesController(rest.RestController):
         """
         # variation in API capabilities is effectively determined by
         # the lack of strict feature parity across storage drivers
-        event_conn = pecan.request.event_storage_conn
-        driver_capabilities = {'events':
-                               event_conn.get_capabilities()['events']}
-        event_driver_perf = event_conn.get_storage_capabilities()
+        conn = pecan.request.conn
+        driver_capabilities = {'events': conn.get_capabilities()['events']}
+        driver_perf = conn.get_storage_capabilities()
         return Capabilities(api=_flatten_capabilities(driver_capabilities),
-                            event_storage=_flatten_capabilities(
-                                event_driver_perf))
+                            event_storage=_flatten_capabilities(driver_perf))
