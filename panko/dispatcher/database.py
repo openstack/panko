@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import debtcollector
 from oslo_log import log
 from oslo_utils import timeutils
 
@@ -38,6 +39,9 @@ class DatabaseDispatcher(object):
     """
 
     def __init__(self, conf):
+        debtcollector.deprecate("Panko dispatcher is deprecated."
+                                "Use publisher to push data instead",
+                                version="3.0", removal_version="4.0")
         # NOTE(jd) The `conf' arg is the Ceilometer conf, but we don't really
         # need it here.
         conf = service.prepare_service([])
