@@ -69,8 +69,9 @@ class ConnectionConfigTest(base.BaseTestCase):
         self.assertIsInstance(conn, impl_log.Connection)
 
     def test_two_urls(self):
-        self.CONF.set_override("connection", "sqlite://", group="database")
-        self.CONF.set_override("event_connection", "log://", group="database")
+        self.CONF.set_override("connection", "log://", group="database")
+        self.CONF.set_override("event_connection", "sqlite://",
+                               group="database")
         conn = storage.get_connection_from_config(self.CONF)
         self.assertIsInstance(conn, impl_log.Connection)
 
