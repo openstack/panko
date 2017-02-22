@@ -1,0 +1,13 @@
+---
+features:
+  - |
+    A new ceilometer to panko publisher is created to avoid ceilometer
+    collector dependency. This streamlines the process of pushing data to Panko
+upgrade:
+  - |
+    In ceilometer.conf, remove `panko` from event_dispatchers. Add `panko://`
+    to the publishers in event_pipeline.yaml
+deprecations:
+  - |
+    The ceilometer to panko dispatcher is now deprecated. The publisher
+    should be used going foward.
