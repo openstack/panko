@@ -40,7 +40,7 @@ class DatabaseDispatcher(object):
     def __init__(self, conf):
         # NOTE(jd) The `conf' arg is the Ceilometer conf, but we don't really
         # need it here.
-        conf = service.prepare_service([])
+        conf = service.prepare_service([], share=True)
         self.conn = storage.get_connection_from_config(conf)
 
     def record_events(self, events):
