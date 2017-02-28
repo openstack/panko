@@ -31,7 +31,7 @@ class DatabasePublisher(object):
     """
 
     def __init__(self, parsed_url):
-        conf = service.prepare_service([])
+        conf = service.prepare_service([], share=True)
         self.conn = storage.get_connection_from_config(conf)
 
     def publish_events(self, events):

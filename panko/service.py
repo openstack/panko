@@ -25,15 +25,16 @@ from panko import opts
 from panko import version
 
 
-def prepare_service(argv=None, config_files=None):
+def prepare_service(argv=None, config_files=None, share=False):
     conf = cfg.ConfigOpts()
-    oslo_i18n.enable_lazy()
     for group, options in opts.list_opts():
         conf.register_opts(list(options),
                            group=None if group == "DEFAULT" else group)
-    defaults.set_cors_middleware_defaults()
     db_options.set_defaults(conf)
-    log.register_options(conf)
+    if not share:
+        defaults.set_cors_middleware_defaults()
+        oslo_i18n.enable_lazy()
+        log.register_options(conf)
 
     if argv is None:
         argv = sys.argv
@@ -41,7 +42,8 @@ def prepare_service(argv=None, config_files=None):
          version=version.version_info.version_string(),
          default_config_files=config_files)
 
-    log.setup(conf, 'panko')
+    if not share:
+        log.setup(conf, 'panko')
     # NOTE(liusheng): guru cannot run with service under apache daemon, so when
     # panko-api running with mod_wsgi, the argv is [], we don't start
     # guru.
