@@ -80,21 +80,12 @@ Installing the API Server
    $ cd panko
    $ sudo python setup.py install
 
-3. Copy the sample configuration files from the source tree
-   to their final location::
-
-   $ mkdir -p /etc/panko
-   $ cp etc/panko/api_paste.ini /etc/panko
-   $ cp etc/panko/*.json /etc/panko
-   $ cp etc/panko/*.yaml /etc/panko
-   $ cp etc/panko/panko.conf.sample /etc/panko/panko.conf
-
-4. Create a service for panko in keystone::
+3. Create a service for panko in keystone::
 
      $ openstack service create event --name=panko \
                                          --description="Panko Service"
 
-5. Create an endpoint in keystone for panko::
+4. Create an endpoint in keystone for panko::
 
      $ openstack endpoint create $PANKO_SERVICE \
                                  --region RegionOne \
@@ -109,7 +100,7 @@ Installing the API Server
      default port value for panko API is 8777. If the port value
      has been customized, adjust accordingly.
 
-6. Choose and start the API server.
+5. Choose and start the API server.
 
    Panko includes the ``panko-api`` command. This can be
    used to run the API server. For smaller or proof-of-concept
