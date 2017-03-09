@@ -21,7 +21,6 @@ import warnings
 import fixtures
 import mock
 from oslo_utils import uuidutils
-from oslotest import mockpatch
 import six
 from six.moves.urllib import parse as urlparse
 import sqlalchemy
@@ -202,8 +201,8 @@ class TestBase(test_base.BaseTestCase):
         self.conn = self.db_manager.connection
         self.conn.upgrade()
 
-        self.useFixture(mockpatch.Patch('panko.storage.get_connection',
-                                        side_effect=self._get_connection))
+        self.useFixture(fixtures.MockPatch('panko.storage.get_connection',
+                                           side_effect=self._get_connection))
 
     def tearDown(self):
         self.conn.clear()
