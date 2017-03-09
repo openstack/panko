@@ -19,7 +19,6 @@ import datetime
 import fixtures
 import mock
 from oslotest import base
-from oslotest import mockpatch
 import wsme
 
 from panko.api.controllers.v2 import base as v2_base
@@ -31,10 +30,10 @@ class TestQuery(base.BaseTestCase):
         super(TestQuery, self).setUp()
         self.useFixture(fixtures.MonkeyPatch(
             'pecan.response', mock.MagicMock()))
-        self.useFixture(mockpatch.Patch('panko.api.controllers.v2.events'
-                                        '._build_rbac_query_filters',
-                                        return_value={'t_filter': [],
-                                                      'admin_proj': None}))
+        self.useFixture(fixtures.MockPatch('panko.api.controllers.v2.events'
+                                           '._build_rbac_query_filters',
+                                           return_value={'t_filter': [],
+                                                         'admin_proj': None}))
 
     def test_get_value_as_type_with_integer(self):
         query = v2_base.Query(field='metadata.size',
