@@ -1,0 +1,64 @@
+# Shu Muto <shu-mutou@rf.jp.nec.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: Panko Release Notes 2.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-09 13:27+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-03-06 08:26+0000\n"
+"Last-Translator: Shu Muto <shu-mutou@rf.jp.nec.com>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "2.0.0"
+msgstr "2.0.0"
+
+msgid ""
+"A new ceilometer to panko publisher is created to avoid ceilometer collector "
+"dependency. This streamlines the process of pushing data to Panko"
+msgstr ""
+"Ceilometer のコレクターへの依存を避けるために、 ceilometer から panko への新"
+"しいパブリッシャーを作成しました。これにより、Panko にデータをプッシュするプ"
+"ロセスが合理化されます"
+
+msgid "Current Series Release Notes"
+msgstr "開発中バージョンのリリースノート"
+
+msgid "Deprecation Notes"
+msgstr "廃止予定の機能"
+
+msgid ""
+"In ceilometer.conf, remove `panko` from event_dispatchers. Add `panko://` to "
+"the publishers in event_pipeline.yaml"
+msgstr ""
+"ceilometer.conf の event_dispatchers から `panko` を削除します。 "
+"event_pipeline.yaml 内のパブリッシャーに `panko：//` を追加してください。"
+
+msgid "New Features"
+msgstr "新機能"
+
+msgid "Newton Series Release Notes"
+msgstr "Newton バージョンのリリースノート"
+
+msgid "Ocata Series Release Notes"
+msgstr "Ocata バージョンのリリースノート"
+
+msgid "Panko Release Notes"
+msgstr "Panko リリースノート"
+
+msgid "The api.pecan_debug option has been removed."
+msgstr "api.pecan_debug オプションを削除しました。"
+
+msgid ""
+"The ceilometer to panko dispatcher is now deprecated. The publisher should "
+"be used going foward."
+msgstr ""
+"ceilometer から panko へのディスパッチャーは非推奨になりました。今後は、パブ"
+"リッシャーを使用する必要があります。"
+
+msgid "Upgrade Notes"
+msgstr "アップグレード時の注意"
