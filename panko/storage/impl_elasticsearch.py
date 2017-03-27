@@ -65,14 +65,18 @@ class Connection(base.Connection):
         base.Connection.STORAGE_CAPABILITIES,
         AVAILABLE_STORAGE_CAPABILITIES,
     )
-    index_name = 'events'
     # NOTE(gordc): mainly for testing, data is not searchable after write,
     #              it is only searchable after periodic refreshes.
     _refresh_on_write = False
 
     def __init__(self, url, conf):
         url_split = netutils.urlsplit(url)
-        self.conn = es.Elasticsearch(url_split.netloc)
+
+        use_ssl = conf.database.es_ssl_enabled
+
+        self.index_name = conf.database.es_index_name
+        self.conn = es.Elasticsearch(hosts=url_split.netloc,
+                                     use_ssl=use_ssl)
 
     def upgrade(self):
         iclient = es.client.IndicesClient(self.conn)
