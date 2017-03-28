@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Add new connection parameters to the Elasticsearch event database
+    configuration to specify a custom index name where to save the events
+    called ``es_index_name`` (events will be created under
+    ``my_index_YYYY-MM-DD`` if ``es_index_name`` is ``my_index``) and
+    ``es_ssl_enabled`` to allow SSL connections to Elasticsearch.
