@@ -17,7 +17,6 @@ import debtcollector
 from oslo_log import log
 from oslo_utils import timeutils
 
-from panko.i18n import _LE
 from panko import service
 from panko import storage
 from panko.storage import models
@@ -67,6 +66,6 @@ class DatabaseDispatcher(object):
                         raw=ev.get('raw', {}))
                 )
             except Exception:
-                LOG.exception(_LE("Error processing event and it will be "
-                                  "dropped: %s"), ev)
+                LOG.exception("Error processing event and it will be "
+                              "dropped: %s", ev)
         self.conn.record_events(event_list)

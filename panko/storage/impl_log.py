@@ -13,7 +13,6 @@
 
 from oslo_log import log
 
-from panko.i18n import _LI
 from panko.storage import base
 
 LOG = log.getLogger(__name__)
@@ -30,4 +29,4 @@ class Connection(base.Connection):
 
         :param ttl: Number of seconds to keep records for.
         """
-        LOG.info(_LI("Dropping event data with TTL %d"), ttl)
+        LOG.info("Dropping event data with TTL %d", ttl)

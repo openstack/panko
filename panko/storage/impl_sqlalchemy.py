@@ -24,10 +24,9 @@ from oslo_log import log
 from oslo_utils import timeutils
 import sqlalchemy as sa
 
+from panko import storage
 from panko.storage import base
 from panko.storage import models as api_models
-from panko.i18n import _LE, _LI
-from panko import storage
 from panko.storage.sqlalchemy import models
 from panko import utils
 
@@ -196,11 +195,11 @@ class Connection(base.Connection):
                             session.execute(model.__table__.insert(),
                                             trait_map[dtype])
             except dbexc.DBDuplicateEntry as e:
-                LOG.info(_LI("Duplicate event detected, skipping it: %s") % e)
+                LOG.info("Duplicate event detected, skipping it: %s", e)
             except KeyError as e:
-                LOG.exception(_LE('Failed to record event: %s') % e)
+                LOG.exception('Failed to record event: %s', e)
             except Exception as e:
-                LOG.exception(_LE('Failed to record event: %s') % e)
+                LOG.exception('Failed to record event: %s', e)
                 error = e
         if error:
             raise error
@@ -459,4 +458,4 @@ class Connection(base.Connection):
             (session.query(models.EventType)
              .filter(~models.EventType.events.any())
              .delete(synchronize_session="fetch"))
-            LOG.info(_LI("%d events are removed from database"), event_rows)
+            LOG.info("%d events are removed from database", event_rows)

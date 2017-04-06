@@ -16,7 +16,6 @@
 
 from oslo_log import log
 
-from panko.i18n import _LI
 from panko import service
 from panko import storage
 
@@ -37,5 +36,5 @@ def expirer():
         conn = storage.get_connection_from_config(conf)
         conn.clear_expired_data(conf.database.event_time_to_live)
     else:
-        LOG.info(_LI("Nothing to clean, database event time to live "
-                     "is disabled"))
+        LOG.info("Nothing to clean, database event time to live "
+                 "is disabled")

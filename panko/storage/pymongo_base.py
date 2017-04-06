@@ -17,7 +17,6 @@ import pymongo
 
 from panko.storage import base
 from panko.storage import models
-from panko.i18n import _LE, _LI, _LW
 from panko.storage.mongo import utils as pymongo_utils
 from panko import utils
 
@@ -64,9 +63,9 @@ class Connection(base.Connection):
                      'timestamp': event_model.generated,
                      'traits': traits, 'raw': event_model.raw})
             except pymongo.errors.DuplicateKeyError as ex:
-                LOG.info(_LI("Duplicate event detected, skipping it: %s") % ex)
+                LOG.info("Duplicate event detected, skipping it: %s", ex)
             except Exception as ex:
-                LOG.exception(_LE("Failed to record event: %s") % ex)
+                LOG.exception("Failed to record event: %s", ex)
                 error = ex
         if error:
             raise error
@@ -81,7 +80,7 @@ class Connection(base.Connection):
         limit = None
         if pagination:
             if pagination.get('sort'):
-                LOG.warning(_LW('Driver does not support sort functionality'))
+                LOG.warning('Driver does not support sort functionality')
             limit = pagination.get('limit')
             if limit == 0:
                 return

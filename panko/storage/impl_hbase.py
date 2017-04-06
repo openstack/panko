@@ -16,10 +16,9 @@ import operator
 from oslo_log import log
 
 from panko.storage import base
-from panko.storage import models
-from panko.i18n import _LE, _LW
 from panko.storage.hbase import base as hbase_base
 from panko.storage.hbase import utils as hbase_utils
+from panko.storage import models
 from panko import utils
 
 LOG = log.getLogger(__name__)
@@ -115,7 +114,7 @@ class Connection(hbase_base.Connection, base.Connection):
                 try:
                     events_table.put(row, record)
                 except Exception as ex:
-                    LOG.exception(_LE("Failed to record event: %s") % ex)
+                    LOG.exception("Failed to record event: %s", ex)
                     error = ex
         if error:
             raise error
@@ -130,7 +129,7 @@ class Connection(hbase_base.Connection, base.Connection):
         limit = None
         if pagination:
             if pagination.get('sort'):
-                LOG.warning(_LW('Driver does not support sort functionality'))
+                LOG.warning('Driver does not support sort functionality')
             limit = pagination.get('limit')
             if limit == 0:
                 return

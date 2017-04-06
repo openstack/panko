@@ -21,10 +21,9 @@ from oslo_utils import netutils
 from oslo_utils import timeutils
 import six
 
+from panko import storage
 from panko.storage import base
 from panko.storage import models
-from panko.i18n import _LE, _LI, _LW
-from panko import storage
 from panko import utils
 
 LOG = log.getLogger(__name__)
@@ -106,10 +105,10 @@ class Connection(base.Connection):
             if not ok:
                 __, result = result.popitem()
                 if result['status'] == 409:
-                    LOG.info(_LI('Duplicate event detected, skipping it: %s')
-                             % result)
+                    LOG.info('Duplicate event detected, skipping it: %s',
+                             result)
                 else:
-                    LOG.exception(_LE('Failed to record event: %s') % result)
+                    LOG.exception('Failed to record event: %s', result)
                     error = storage.StorageUnknownWriteError(result)
 
         if self._refresh_on_write:
@@ -187,7 +186,7 @@ class Connection(base.Connection):
         limit = None
         if pagination:
             if pagination.get('sort'):
-                LOG.warning(_LW('Driver does not support sort functionality'))
+                LOG.warning('Driver does not support sort functionality')
             limit = pagination.get('limit')
             if limit == 0:
                 return
