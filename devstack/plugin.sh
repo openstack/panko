@@ -55,7 +55,6 @@ function _panko_config_apache_wsgi {
     sudo mkdir -p $PANKO_WSGI_DIR
 
     local panko_apache_conf=$(apache_site_config_for panko)
-    local apache_version=$(get_apache_version)
     local venv_path=""
 
     # Copy proxy vhost and wsgi file
