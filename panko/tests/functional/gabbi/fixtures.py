@@ -75,8 +75,7 @@ class ConfigFixture(fixture.GabbiFixture):
                           group='oslo_policy')
         conf.set_override(
             'api_paste_config',
-            os.path.abspath(
-                'panko/tests/functional/gabbi/gabbi_paste.ini')
+            os.path.abspath('etc/panko/api_paste.ini')
         )
 
         parsed_url = list(urlparse.urlparse(db_url))
@@ -93,7 +92,7 @@ class ConfigFixture(fixture.GabbiFixture):
         self.conn.upgrade()
 
         LOAD_APP_KWARGS = {
-            'conf': conf,
+            'conf': conf, 'appname': 'panko+noauth',
         }
 
     def stop_fixture(self):

@@ -63,10 +63,9 @@ class TestAPIACL(v2.FunctionalTest):
                                                 q=q or [],
                                                 **params)
 
-    def _make_app(self, conf):
-        file_name = self.path_get('etc/panko/api_paste.ini')
-        conf.set_override("api_paste_config", file_name)
-        return webtest.TestApp(app.load_app(conf=conf))
+    @staticmethod
+    def _make_app(conf):
+        return webtest.TestApp(app.load_app(conf, appname='panko+keystone'))
 
 
 class TestAPIEventACL(TestAPIACL):
@@ -128,7 +127,7 @@ class TestBaseApiEventRBAC(v2.FunctionalTest):
 
 class TestApiEventAdminRBAC(TestBaseApiEventRBAC):
 
-    def _make_app(self, conf, enable_acl=False):
+    def _make_app(self, conf):
         content = ('{"context_is_admin": "role:admin",'
                    '"telemetry:events:index": "rule:context_is_admin",'
                    '"telemetry:events:show": "rule:context_is_admin"}')
@@ -138,9 +137,8 @@ class TestApiEventAdminRBAC(TestBaseApiEventRBAC):
                                                     prefix='policy',
                                                     suffix='.json')
 
-        self.CONF.set_override("policy_file", self.tempfile,
-                               group='oslo_policy')
-        return super(TestApiEventAdminRBAC, self)._make_app(conf)
+        conf.set_override("policy_file", self.tempfile, group='oslo_policy')
+        return webtest.TestApp(app.load_app(conf, appname='panko+noauth'))
 
     def tearDown(self):
         os.remove(self.tempfile)
