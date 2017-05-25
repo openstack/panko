@@ -23,6 +23,7 @@ from oslo_db.sqlalchemy import utils as oslo_sql_utils
 from oslo_log import log
 from oslo_utils import timeutils
 import sqlalchemy as sa
+from sqlalchemy.engine import url as sqlalchemy_url
 
 from panko import storage
 from panko.storage import base
@@ -133,7 +134,17 @@ class Connection(base.Connection):
         # oslo.db doesn't support options defined by Panko
         for opt in storage.OPTS:
             options.pop(opt.name, None)
-        self._engine_facade = db_session.EngineFacade(url, **options)
+        self._engine_facade = db_session.EngineFacade(self.dress_url(url),
+                                                      **options)
+
+    @staticmethod
+    def dress_url(url):
+        # If no explicit driver has been set, we default to pymysql
+        if url.startswith("mysql://"):
+            url = sqlalchemy_url.make_url(url)
+            url.drivername = "mysql+pymysql"
+            return str(url)
+        return url
 
     def upgrade(self):
         engine = self._engine_facade.get_engine()
