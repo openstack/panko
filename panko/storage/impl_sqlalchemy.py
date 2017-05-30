@@ -129,7 +129,7 @@ class Connection(base.Connection):
         # to retry making the db connection retried max_retries ^ 2 times
         # in failure case and db reconnection has already been implemented
         # in storage.__init__.get_connection_from_config function
-        options = dict(conf)
+        options = dict(conf.database.items())
         options['max_retries'] = 0
         # oslo.db doesn't support options defined by Panko
         for opt in storage.OPTS:
