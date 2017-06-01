@@ -2,14 +2,6 @@
  Web API
 =========
 
-.. note::
-
-   Gnocchi provides a more responsive API when statistical capabilities rather
-   than full-resolution datapoints are required. The REST API for Gnocchi is
-   captured here_.
-
-.. _here: http://docs.openstack.org/developer/gnocchi/rest.html
-
 .. toctree::
    :maxdepth: 2
 
