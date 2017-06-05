@@ -16,9 +16,9 @@
 """
 
 from oslo_policy import opts
-import pecan
-import pecan.testing
+import webtest
 
+from panko.api import app
 from panko.api import rbac
 from panko import service
 from panko.tests import db as db_test_base
@@ -41,27 +41,17 @@ class FunctionalTest(db_test_base.TestBase):
         self.CONF.set_override("policy_file",
                                self.path_get('etc/panko/policy.json'),
                                group='oslo_policy')
-
+        self.CONF.set_override('api_paste_config',
+                               self.path_get('etc/panko/api_paste.ini'))
         self.app = self._make_app(self.CONF)
 
-    def _make_app(self, conf, enable_acl=False):
-        self.config = {
-            'app': {
-                'root': 'panko.api.controllers.root.RootController',
-                'modules': ['panko.api'],
-                'enable_acl': enable_acl,
-            },
-            'wsme': {
-                'debug': True,
-            },
-        }
-
-        return pecan.testing.load_test_app(self.config, conf=conf)
+    @staticmethod
+    def _make_app(conf):
+        return webtest.TestApp(app.load_app(conf, appname='panko+noauth'))
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()
         rbac.reset()
-        pecan.set_config({}, overwrite=True)
 
     def put_json(self, path, params, expect_errors=False, headers=None,
                  extra_environ=None, status=None):

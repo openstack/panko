@@ -14,10 +14,10 @@
 # under the License.
 
 import os
+import uuid
 
 from oslo_config import cfg
 from oslo_log import log
-from oslo_utils import uuidutils
 from paste import deploy
 import pecan
 
@@ -28,31 +28,17 @@ from panko import service
 LOG = log.getLogger(__name__)
 
 
-def setup_app(pecan_config=None, conf=None):
-    if conf is None:
-        raise RuntimeError("No configuration passed")
-    # FIXME: Replace DBHook with a hooks.TransactionHook
+def setup_app(root, conf):
     app_hooks = [hooks.ConfigHook(conf),
                  hooks.DBHook(conf),
                  hooks.TranslationHook()]
 
-    pecan_config = pecan_config or {
-        "app": {
-            'root': 'panko.api.controllers.root.RootController',
-            'modules': ['panko.api'],
-        }
-    }
-
-    pecan.configuration.set_config(dict(pecan_config), overwrite=True)
-
-    app = pecan.make_app(
-        pecan_config['app']['root'],
+    return pecan.make_app(
+        root,
         hooks=app_hooks,
         wrap_app=middleware.ParsableErrorMiddleware,
         guess_content_type_from_ext=False
     )
-
-    return app
 
 
 # NOTE(sileht): pastedeploy uses ConfigParser to handle
@@ -65,25 +51,23 @@ global APPCONFIGS
 APPCONFIGS = {}
 
 
-def load_app(conf):
+def load_app(conf, appname='panko+keystone'):
     global APPCONFIGS
 
     # Build the WSGI app
-    cfg_file = None
     cfg_path = conf.api_paste_config
     if not os.path.isabs(cfg_path):
-        cfg_file = conf.find_file(cfg_path)
-    elif os.path.exists(cfg_path):
-        cfg_file = cfg_path
+        cfg_path = conf.find_file(cfg_path)
 
-    if not cfg_file:
+    if cfg_path is None or not os.path.exists(cfg_path):
         raise cfg.ConfigFilesNotFoundError([conf.api_paste_config])
 
-    configkey = uuidutils.generate_uuid()
-    APPCONFIGS[configkey] = conf
+    config = dict(conf=conf)
+    configkey = str(uuid.uuid4())
+    APPCONFIGS[configkey] = config
 
-    LOG.info("Full WSGI config used: %s" % cfg_file)
-    return deploy.loadapp("config:" + cfg_file,
+    LOG.info("Full WSGI config used: %s" % cfg_path)
+    return deploy.loadapp("config:" + cfg_path, name=appname,
                           global_conf={'configkey': configkey})
 
 
@@ -94,4 +78,4 @@ def build_wsgi_app(argv=None):
 def app_factory(global_config, **local_conf):
     global APPCONFIGS
     conf = APPCONFIGS.get(global_config.get('configkey'))
-    return setup_app(conf=conf)
+    return setup_app(root=local_conf.get('root'), **conf)
