@@ -25,3 +25,4 @@
    development
    manual
    mod_wsgi
+   uwsgi

@@ -14,7 +14,13 @@ PANKO_BACKEND=${PANKO_BACKEND:-mysql}
 PANKO_SERVICE_PROTOCOL=http
 PANKO_SERVICE_HOST=$SERVICE_HOST
 PANKO_SERVICE_PORT=${PANKO_SERVICE_PORT:-8779}
-PANKO_USE_MOD_WSGI=${PANKO_USE_MOD_WSGI:-${ENABLE_HTTPD_MOD_WSGI_SERVICES}}
+
+# PANKO_DEPLOY defines how Panko is deployed, allowed values:
+# - mod_wsgi: Run Panko under Apache HTTPd mod_wsgi
+# - simple: Run panko-api
+# - uwsgi: Run Panko under uwsgi
+# - <empty>: Fallback to PANKO_USE_MOD_WSGI or ENABLE_HTTPD_MOD_WSGI_SERVICES
+PANKO_DEPLOY=${PANKO_DEPLOY}
 
 # Tell Tempest this project is present
 TEMPEST_SERVICES+=,panko

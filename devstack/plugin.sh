@@ -23,6 +23,25 @@ else
     PANKO_BIN_DIR=$(get_python_exec_prefix)
 fi
 
+
+if [ -z "$PANKO_DEPLOY" ]; then
+    # Default
+    PANKO_DEPLOY=simple
+
+    # Fallback to common wsgi devstack configuration
+    if [ "$ENABLE_HTTPD_MOD_WSGI_SERVICES" == "True" ]; then
+        PANKO_DEPLOY=mod_wsgi
+
+    # Deprecated config
+    elif [ -n "$PANKO_USE_MOD_WSGI" ] ; then
+        echo_summary "PANKO_USE_MOD_WSGI is deprecated, use PANKO_DEPLOY instead"
+        if [ "$PANKO_USE_MOD_WSGI" == True ]; then
+            PANKO_DEPLOY=mod_wsgi
+        fi
+    fi
+fi
+
+
 function panko_service_url {
     echo "$PANKO_SERVICE_PROTOCOL://$PANKO_SERVICE_HOST:$PANKO_SERVICE_PORT"
 }
@@ -110,11 +129,9 @@ function preinstall_panko {
 
 # Remove WSGI files, disable and remove Apache vhost file
 function _panko_cleanup_apache_wsgi {
-    if is_service_enabled panko-api && [ "$PANKO_USE_MOD_WSGI" == "True" ]; then
-        sudo rm -f "$PANKO_WSGI_DIR"/*
-        sudo rmdir "$PANKO_WSGI_DIR"
-        sudo rm -f $(apache_site_config_for panko)
-    fi
+    sudo rm -f "$PANKO_WSGI_DIR"/*
+    sudo rmdir "$PANKO_WSGI_DIR"
+    sudo rm -f $(apache_site_config_for panko)
 }
 
 function _panko_drop_database {
@@ -130,7 +147,9 @@ function _panko_drop_database {
 # cleanup_panko() - Remove residual data files, anything left over
 # from previous runs that a clean run would need to clean up
 function cleanup_panko {
-    _panko_cleanup_apache_wsgi
+    if [ "$PANKO_DEPLOY" == "mod_wsgi" ]; then
+        _panko_cleanup_apache_wsgi
+    fi
     _panko_drop_database
     sudo rm -f "$PANKO_CONF_DIR"/*
     sudo rmdir "$PANKO_CONF_DIR"
@@ -158,6 +177,16 @@ function configure_panko {
 
     iniset $PANKO_CONF DEFAULT debug "$ENABLE_DEBUG_LOG_LEVEL"
 
+    # Set up logging
+    if [ "$SYSLOG" != "False" ]; then
+        iniset $PANKO_CONF DEFAULT use_syslog "True"
+    fi
+
+    # Format logging
+    if [ "$LOG_COLOR" == "True" ] && [ "$SYSLOG" == "False" ] && [ "$PANKO_DEPLOY" != "mod_wsgi" ]; then
+        setup_colorized_logging $PANKO_CONF DEFAULT
+    fi
+
     # Install the policy file and declarative configuration files to
     # the conf dir.
     # NOTE(cdent): Do not make this a glob as it will conflict
@@ -175,8 +204,32 @@ function configure_panko {
         _panko_configure_storage_backend
     fi
 
-    if is_service_enabled panko-api && [ "$PANKO_USE_MOD_WSGI" == "True" ]; then
+    if is_service_enabled panko-api && [ "$PANKO_DEPLOY" == "mod_wsgi" ]; then
         _panko_config_apache_wsgi
+    elif [ "$PANKO_DEPLOY" == "uwsgi" ]; then
+        # iniset creates these files when it's called if they don't exist.
+        PANKO_UWSGI_FILE=$PANKO_CONF_DIR/panko-uwsgi.ini
+
+        rm -f "$PANKO_UWSGI_FILE"
+
+        iniset "$PANKO_UWSGI_FILE" uwsgi http $PANKO_SERVICE_HOST:$PANKO_SERVICE_PORT
+        iniset "$PANKO_UWSGI_FILE" uwsgi wsgi-file "$PANKO_DIR/panko/api/app.wsgi"
+        # This is running standalone
+        iniset "$PANKO_UWSGI_FILE" uwsgi master true
+        # Set die-on-term & exit-on-reload so that uwsgi shuts down
+        iniset "$PANKO_UWSGI_FILE" uwsgi die-on-term true
+        iniset "$PANKO_UWSGI_FILE" uwsgi exit-on-reload true
+        iniset "$PANKO_UWSGI_FILE" uwsgi threads 10
+        iniset "$PANKO_UWSGI_FILE" uwsgi processes $API_WORKERS
+        iniset "$PANKO_UWSGI_FILE" uwsgi enable-threads true
+        iniset "$PANKO_UWSGI_FILE" uwsgi plugins python
+        iniset "$PANKO_UWSGI_FILE" uwsgi lazy-apps true
+        # uwsgi recommends this to prevent thundering herd on accept.
+        iniset "$PANKO_UWSGI_FILE" uwsgi thunder-lock true
+        # Override the default size for headers from the 4k default.
+        iniset "$PANKO_UWSGI_FILE" uwsgi buffer-size 65535
+        # Make sure the client doesn't try to re-use the connection.
+        iniset "$PANKO_UWSGI_FILE" uwsgi add-header "Connection: close"
     fi
 }
 
@@ -204,24 +257,32 @@ function install_panko {
 
     setup_develop $PANKO_DIR
     sudo install -d -o $STACK_USER -m 755 $PANKO_CONF_DIR
+
+    if [ "$PANKO_DEPLOY" == "mod_wsgi" ]; then
+        install_apache_wsgi
+    elif [ "$PANKO_DEPLOY" == "uwsgi" ]; then
+        pip_install uwsgi
+    fi
 }
 
 # start_panko() - Start running processes, including screen
 function start_panko {
-    if [[ "$PANKO_USE_MOD_WSGI" == "False" ]]; then
-        run_process panko-api "$PANKO_BIN_DIR/panko-api -d -v --config-file $PANKO_CONF"
-    elif is_service_enabled panko-api; then
+    if [[ "$PANKO_DEPLOY" == "mod_wsgi" ]]; then
         enable_apache_site panko
         restart_apache_server
         tail_log panko /var/log/$APACHE_NAME/panko.log
         tail_log panko-api /var/log/$APACHE_NAME/panko_access.log
+    elif [ "$PANKO_DEPLOY" == "uwsgi" ]; then
+        run_process panko-api "$PANKO_BIN_DIR/uwsgi $PANKO_UWSGI_FILE"
+    else
+        run_process panko-api "$PANKO_BIN_DIR/panko-api -d -v --config-file $PANKO_CONF"
     fi
 }
 
 # stop_panko() - Stop running processes
 function stop_panko {
     if is_service_enabled panko-api ; then
-        if [ "$PANKO_USE_MOD_WSGI" == "True" ]; then
+        if [ "$PANKO_DEPLOY" == "mod_wsgi" ]; then
             disable_apache_site panko
             restart_apache_server
         else
