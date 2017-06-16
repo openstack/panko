@@ -74,7 +74,7 @@ class Connection(base.Connection):
         use_ssl = conf.database.es_ssl_enabled
 
         self.index_name = conf.database.es_index_name
-        self.conn = es.Elasticsearch(hosts=url_split.netloc,
+        self.conn = es.Elasticsearch(hosts=url_split.netloc + url_split.path,
                                      use_ssl=use_ssl)
 
     def upgrade(self):
