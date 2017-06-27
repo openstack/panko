@@ -12,6 +12,7 @@
 # under the License.
 
 import os
+import warnings
 
 import happybase
 from oslo_log import log
@@ -29,6 +30,8 @@ class Connection(object):
     _memory_instance = None
 
     def __init__(self, url):
+        warnings.warn("Panko's HBase driver is now deprecated. Please use "
+                      "another driver.")
         """Hbase Connection Initialization."""
         opts = self._parse_connection_url(url)
 

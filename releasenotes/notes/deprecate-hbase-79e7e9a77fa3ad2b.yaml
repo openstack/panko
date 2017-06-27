@@ -1,0 +1,6 @@
+---
+deprecations:
+  - |
+    Panko's HBase driver is untested and unmaintained. A quick query confirms
+    no one cares about it. Therefore, the Hbase driver is gone and will be
+    removed in the following cycle.
