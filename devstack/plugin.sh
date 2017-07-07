@@ -291,6 +291,16 @@ function stop_panko {
     fi
 }
 
+# install_pankoclient() - Collect source and prepare
+function install_pankoclient {
+    if use_library_from_git "python-pankoclient"; then
+        git_clone_by_name "python-pankoclient"
+        setup_dev_lib "python-pankoclient"
+    else
+        pip_install pankoclient
+    fi
+}
+
 # This is the main for plugin.sh
 if is_service_enabled panko-api; then
     if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
@@ -301,6 +311,7 @@ if is_service_enabled panko-api; then
         echo_summary "Installing Panko"
         # Use stack_install_service here to account for virtualenv
         stack_install_service panko
+        install_pankoclient
     elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then
         echo_summary "Configuring Panko"
         configure_panko
