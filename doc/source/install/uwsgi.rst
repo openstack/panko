@@ -2,14 +2,14 @@
  Installing the API with uwsgi
 ==============================
 
-Aodh comes with a few example files for configuring the API
+Panko comes with a few example files for configuring the API
 service to run behind Apache with ``mod_wsgi``.
 
 app.wsgi
 ========
 
 The file ``panko/api/app.wsgi`` sets up the V2 API WSGI
-application. The file is installed with the rest of the Aodh
+application. The file is installed with the rest of the Panko
 application code, and should not need to be modified.
 
 Example of uwsgi configuration file
