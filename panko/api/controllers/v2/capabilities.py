@@ -24,6 +24,7 @@ from wsme import types as wtypes
 import wsmeext.pecan as wsme_pecan
 
 from panko.api.controllers.v2 import base
+from panko import profiler
 from panko import utils
 
 
@@ -31,6 +32,7 @@ def _flatten_capabilities(capabilities):
     return dict((k, v) for k, v in utils.recursive_keypairs(capabilities))
 
 
+@profiler.trace_cls('api')
 class Capabilities(base.Base):
     """A representation of the API and storage capabilities.
 
@@ -53,6 +55,7 @@ class Capabilities(base.Base):
         )
 
 
+@profiler.trace_cls('api')
 class CapabilitiesController(rest.RestController):
     """Manages capabilities queries."""
 

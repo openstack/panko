@@ -19,10 +19,14 @@ from oslo_db import options as db_options
 import oslo_i18n
 from oslo_log import log
 from oslo_reports import guru_meditation_report as gmr
+from oslo_utils import importutils
 
 from panko.conf import defaults
 from panko import opts
+from panko import profiler
 from panko import version
+
+profiler_opts = importutils.try_import('osprofiler.opts')
 
 
 def prepare_service(argv=None, config_files=None, share=False):
@@ -31,6 +35,8 @@ def prepare_service(argv=None, config_files=None, share=False):
         conf.register_opts(list(options),
                            group=None if group == "DEFAULT" else group)
     db_options.set_defaults(conf)
+    if profiler_opts:
+        profiler_opts.set_defaults(conf)
     if not share:
         defaults.set_cors_middleware_defaults()
         oslo_i18n.enable_lazy()
@@ -44,6 +50,7 @@ def prepare_service(argv=None, config_files=None, share=False):
 
     if not share:
         log.setup(conf, 'panko')
+    profiler.setup(conf)
     # NOTE(liusheng): guru cannot run with service under apache daemon, so when
     # panko-api running with mod_wsgi, the argv is [], we don't start
     # guru.
