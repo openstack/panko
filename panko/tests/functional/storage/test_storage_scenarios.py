@@ -105,6 +105,15 @@ class EventTest(EventTestBase):
             self.assertEqual(2, log.exception.call_count)
 
 
+class BigIntegerTest(EventTestBase):
+    def test_trait_bigint(self):
+        big = 99999999999999
+        new_events = [models.Event(
+            "id_testid", "MessageIDTest", self.start,
+            [models.Trait('int', models.Trait.INT_TYPE, big)], {})]
+        self.conn.record_events(new_events)
+
+
 class GetEventTest(EventTestBase):
 
     def test_generated_is_datetime(self):
