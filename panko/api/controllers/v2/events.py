@@ -62,6 +62,12 @@ class EventQuery(base.Query):
     type = wsme.wsattr(wtypes.text, default='string')
     "the type of the trait filter, defaults to string"
 
+    field = wsme.wsattr(wtypes.text)
+    '''
+    Name of the field to filter on. Can be either a trait name or field of an
+    event. Use start_timestamp/end_timestamp to filter on `generated` field
+    '''
+
     def __repr__(self):
         # for logging calls
         return '<EventQuery %r %s %r %s>' % (self.field,
