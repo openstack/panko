@@ -14,7 +14,6 @@
 import subprocess
 import sys
 import os
-import warnings
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
@@ -40,12 +39,11 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'openstack_dashboard.settings'
 # or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinxcontrib.autohttp.flask',
     'wsmeext.sphinxext',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinxcontrib.pecanwsme.rest',
-    'oslosphinx',
+    'openstackdocstheme',
 ]
 
 wsme_protocols = ['restjson', 'restxml']
@@ -67,7 +65,10 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
-# General information about the project.
+# openstackdocstheme options
+repository_name = 'openstack/panko'
+bug_project = 'panko'
+bug_tag = ''
 project = u'Panko'
 copyright = u'2012-2015, OpenStack Foundation'
 
@@ -116,6 +117,7 @@ nitpicky = False
 # a list of builtin themes.
 # html_theme_path = ['.']
 # html_theme = '_theme'
+html_theme = 'openstackdocs'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -150,15 +152,7 @@ html_theme_options = {
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
-try:
-    git_cmd = ["git", "log", "--pretty=format:'%ad, commit %h'", "--date=local",
-               "-n1"]
-    html_last_updated_fmt = subprocess.check_output(git_cmd).decode('utf-8')
-except Exception:
-    warnings.warn('Cannot get last updated time from git repository. '
-                  'Not setting "html_last_updated_fmt".')
-
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.

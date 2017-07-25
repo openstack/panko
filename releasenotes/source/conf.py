@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Panko Release Notes documentation build configuration file, created by
-# sphinx-quickstart on Tue Nov  3 17:40:50 2015.
-#
 # This file is execfile()d with the current directory set to its
 # containing dir.
 #
@@ -38,8 +35,8 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'oslosphinx',
     'reno.sphinxext',
+    'openstackdocstheme',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,7 +51,10 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
-# General information about the project.
+# openstackdocstheme options
+repository_name = 'openstack/panko'
+bug_project = 'panko'
+bug_tag = ''
 project = u'Panko Release Notes'
 copyright = u'2015, Panko Developers'
 
@@ -112,7 +112,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'openstackdocs'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -150,7 +150,7 @@ html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-# html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
