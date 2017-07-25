@@ -5,4 +5,4 @@ Documentation for the project can be found at:
   https://docs.openstack.org/panko/latest/
 
 The project home is at:
-  http://launchpad.net/panko
+  https://launchpad.net/panko
