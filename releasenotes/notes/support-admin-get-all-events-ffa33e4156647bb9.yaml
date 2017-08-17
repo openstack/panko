@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Specify the 'all_tenants=True' query parameter to get all events for all
+    projects, this is only allowed by admin users.
