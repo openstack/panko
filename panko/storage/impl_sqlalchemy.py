@@ -24,6 +24,7 @@ from oslo_log import log
 from oslo_utils import timeutils
 import sqlalchemy as sa
 from sqlalchemy.engine import url as sqlalchemy_url
+from sqlalchemy.orm import aliased
 
 from panko import storage
 from panko.storage import base
@@ -61,8 +62,8 @@ trait_models_dict = {'string': models.TraitText,
                      'float': models.TraitFloat}
 
 
-def _build_trait_query(session, trait_type, key, value, op='eq'):
-    trait_model = trait_models_dict[trait_type]
+def _get_model_and_conditions(trait_type, key, value, op='eq'):
+    trait_model = aliased(trait_models_dict[trait_type])
     op_dict = {'eq': (trait_model.value == value),
                'lt': (trait_model.value < value),
                'le': (trait_model.value <= value),
@@ -70,8 +71,7 @@ def _build_trait_query(session, trait_type, key, value, op='eq'):
                'ge': (trait_model.value >= value),
                'ne': (trait_model.value != value)}
     conditions = [trait_model.key == key, op_dict[op]]
-    return (session.query(trait_model.event_id.label('ev_id'))
-            .filter(*conditions))
+    return (trait_model, conditions)
 
 
 class Connection(base.Connection):
@@ -274,16 +274,28 @@ class Connection(base.Connection):
                 key = trait_filter.pop('key')
                 op = trait_filter.pop('op', 'eq')
                 trait_type, value = list(trait_filter.items())[0]
-                trait_subq = _build_trait_query(session, trait_type,
-                                                key, value, op)
-                for trait_filter in filters:
+
+                trait_model, conditions = _get_model_and_conditions(
+                    trait_type, key, value, op)
+                trait_subq = (session
+                              .query(trait_model.event_id.label('ev_id'))
+                              .filter(*conditions))
+
+                first_model = trait_model
+                for label_num, trait_filter in enumerate(filters):
                     key = trait_filter.pop('key')
                     op = trait_filter.pop('op', 'eq')
                     trait_type, value = list(trait_filter.items())[0]
-                    q = _build_trait_query(session, trait_type,
-                                           key, value, op)
-                    trait_subq = trait_subq.filter(
-                        trait_subq.subquery().c.ev_id == q.subquery().c.ev_id)
+                    trait_model, conditions = _get_model_and_conditions(
+                        trait_type, key, value, op)
+                    trait_subq = (
+                        trait_subq
+                        .add_columns(
+                            trait_model.event_id.label('l%d' % label_num))
+                        .filter(
+                            first_model.event_id == trait_model.event_id,
+                            *conditions))
+
                 trait_subq = trait_subq.subquery()
 
             query = (session.query(models.Event.id)
