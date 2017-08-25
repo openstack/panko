@@ -10,4 +10,4 @@ upgrade:
 deprecations:
   - |
     The ceilometer to panko dispatcher is now deprecated. The publisher
-    should be used going foward.
+    should be used going forward.
