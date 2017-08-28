@@ -4,17 +4,17 @@
 
 set -o errexit
 
-source $GRENADE_DIR/grenaderc
-source $GRENADE_DIR/functions
+. $GRENADE_DIR/grenaderc
+. $GRENADE_DIR/functions
 
-source $BASE_DEVSTACK_DIR/functions
-source $BASE_DEVSTACK_DIR/stackrc # needed for status directory
-source $BASE_DEVSTACK_DIR/lib/tls
-source $BASE_DEVSTACK_DIR/lib/apache
+. $BASE_DEVSTACK_DIR/functions
+. $BASE_DEVSTACK_DIR/stackrc # needed for status directory
+. $BASE_DEVSTACK_DIR/lib/tls
+. $BASE_DEVSTACK_DIR/lib/apache
 
 # Locate the panko plugin and get its functions
 PANKO_DEVSTACK_DIR=$(dirname $(dirname $0))
-source $PANKO_DEVSTACK_DIR/plugin.sh
+. $PANKO_DEVSTACK_DIR/plugin.sh
 
 set -o xtrace
 

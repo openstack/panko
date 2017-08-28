@@ -18,7 +18,7 @@ Usage:
 
 Generate testing data for e.g. for default time span
 
-source .tox/py27/bin/activate
+. .tox/py27/bin/activate
 ./tools/make_test_event_data.py --event_types 3
 """
 import argparse

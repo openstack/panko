@@ -24,10 +24,10 @@ trap cleanup SIGHUP SIGINT SIGTERM
 RUN_DIR=$(cd $(dirname "$0") && pwd)
 
 # Source params
-source $GRENADE_DIR/grenaderc
+. $GRENADE_DIR/grenaderc
 
 # Import common functions
-source $GRENADE_DIR/functions
+. $GRENADE_DIR/functions
 
 # This script exits on an error so that errors don't compound and you see
 # only the first error that occurred.
@@ -47,19 +47,19 @@ fi
 PANKO_DEVSTACK_DIR=$(dirname $(dirname $0))
 
 # Get functions from current DevStack
-source $TARGET_DEVSTACK_DIR/functions
-source $TARGET_DEVSTACK_DIR/stackrc
-source $TARGET_DEVSTACK_DIR/lib/apache
+. $TARGET_DEVSTACK_DIR/functions
+. $TARGET_DEVSTACK_DIR/stackrc
+. $TARGET_DEVSTACK_DIR/lib/apache
 
 # Get panko functions from devstack plugin
-source $PANKO_DEVSTACK_DIR/settings
+. $PANKO_DEVSTACK_DIR/settings
 
 # Print the commands being run so that we can see the command that triggers
 # an error.
 set -o xtrace
 
 # Install the target panko
-source $PANKO_DEVSTACK_DIR/plugin.sh stack install
+. $PANKO_DEVSTACK_DIR/plugin.sh stack install
 
 # calls upgrade-panko for specific release
 upgrade_project panko $RUN_DIR $BASE_DEVSTACK_BRANCH $TARGET_DEVSTACK_BRANCH
