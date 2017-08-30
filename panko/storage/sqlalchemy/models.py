@@ -18,7 +18,7 @@ import json
 import six
 import sqlalchemy
 from sqlalchemy import Column, Integer, String, ForeignKey, Index
-from sqlalchemy import Float, DateTime
+from sqlalchemy import BigInteger, Float, DateTime
 from sqlalchemy.dialects.mysql import DECIMAL
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import deferred
@@ -159,7 +159,7 @@ class TraitInt(Base):
     )
     event_id = Column(Integer, ForeignKey('event.id'), primary_key=True)
     key = Column(String(255), primary_key=True)
-    value = Column(Integer)
+    value = Column(BigInteger)
 
 
 class TraitFloat(Base):
