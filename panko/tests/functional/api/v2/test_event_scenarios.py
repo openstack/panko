@@ -226,7 +226,7 @@ class TestEventAPI(EventTestBase):
     def test_get_events_filter_start_timestamp(self):
         data = self.get_json(self.PATH, headers=HEADERS,
                              q=[{'field': 'start_timestamp',
-                                 'op': 'ge',
+                                 'op': 'eq',
                                  'value': '2014-01-01T00:00:00'}])
         self.assertEqual(2, len(data))
         sorted_types = sorted([d['event_type'] for d in data])
@@ -241,14 +241,14 @@ class TestEventAPI(EventTestBase):
                              expect_errors=True)
         self.assertEqual(400, resp.status_code)
         self.assertEqual(u'Operator gt is not supported. Only'
-                         ' `ge\' operator is available for field'
+                         ' `eq\' operator is available for field'
                          ' start_timestamp',
                          resp.json['error_message']['faultstring'])
 
     def test_get_events_filter_end_timestamp(self):
         data = self.get_json(self.PATH, headers=HEADERS,
                              q=[{'field': 'end_timestamp',
-                                 'op': 'le',
+                                 'op': 'eq',
                                  'value': '2014-01-03T00:00:00'}])
         self.assertEqual(3, len(data))
         event_types = ['Foo', 'Bar', 'Zoo']
@@ -263,17 +263,17 @@ class TestEventAPI(EventTestBase):
                              expect_errors=True)
         self.assertEqual(400, resp.status_code)
         self.assertEqual(u'Operator gt is not supported. Only'
-                         ' `le\' operator is available for field'
+                         ' `eq\' operator is available for field'
                          ' end_timestamp',
                          resp.json['error_message']['faultstring'])
 
     def test_get_events_filter_start_end_timestamp(self):
         data = self.get_json(self.PATH, headers=HEADERS,
                              q=[{'field': 'start_timestamp',
-                                 'op': 'ge',
+                                 'op': 'eq',
                                  'value': '2014-01-02T00:00:00'},
                                 {'field': 'end_timestamp',
-                                 'op': 'le',
+                                 'op': 'eq',
                                  'value': '2014-01-03T10:00:00'}])
         self.assertEqual(1, len(data))
         sorted_types = sorted([d['event_type'] for d in data])
