@@ -70,7 +70,7 @@ run through tox_.
    $ tox -e gabbi
 
    The YAML files used to drive the gabbi tests can be found in
-   ``panko/tests/gabbi/gabbits``. If you are adding to or adjusting the
+   ``panko/tests/functional/gabbi/gabbits``. If you are adding to or adjusting the
    API you should consider adding tests here.
 
 .. _gabbi: https://gabbi.readthedocs.org/
