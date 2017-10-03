@@ -38,9 +38,6 @@ class FunctionalTest(db_test_base.TestBase):
         self.CONF = service.prepare_service([], [])
         opts.set_defaults(self.CONF)
 
-        self.CONF.set_override("policy_file",
-                               self.path_get('etc/panko/policy.json'),
-                               group='oslo_policy')
         self.CONF.set_override('api_paste_config',
                                self.path_get('etc/panko/api_paste.ini'))
         self.app = self._make_app(self.CONF)

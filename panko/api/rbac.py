@@ -19,6 +19,8 @@
 from oslo_policy import policy
 import pecan
 
+from panko import policies
+
 _ENFORCER = None
 
 
@@ -27,6 +29,7 @@ def init():
     if not _ENFORCER:
         _ENFORCER = policy.Enforcer(pecan.request.cfg)
         _ENFORCER.load_rules()
+        _ENFORCER.register_defaults(policies.list_policies())
 
 
 def reset():

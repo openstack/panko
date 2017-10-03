@@ -13,3 +13,4 @@ doc/build
 doc/source/api/
 etc/panko/panko.conf
 subunit.log
+etc/panko/policy.yaml.sample
