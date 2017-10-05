@@ -67,7 +67,7 @@ def get_connection_from_config(conf):
     )
     def _inner():
         url = (conf.database.connection or
-               getattr(conf.database, 'event_connection'))
+               getattr(conf.database, 'event_connection', None))
         return get_connection(url, conf)
 
     return _inner()
