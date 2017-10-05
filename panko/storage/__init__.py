@@ -66,7 +66,7 @@ def get_connection_from_config(conf):
               else tenacity.stop_never)
     )
     def _inner():
-        url = (getattr(conf.database, 'event_connection') or
+        url = (getattr(conf.database, 'event_connection', None) or
                conf.database.connection)
         return get_connection(url, conf)
 
