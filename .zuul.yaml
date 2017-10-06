@@ -1,0 +1,90 @@
+- project:
+    name: openstack/panko
+    check:
+      jobs:
+        - panko-tox-py27-mongodb
+        - panko-tox-py27-mysql
+        - panko-tox-py27-postgresql
+        - panko-tox-py35-mongodb
+        - panko-tox-py35-mysql
+        - panko-tox-py35-postgresql
+        - telemetry-dsvm-integration-panko
+    gate:
+      jobs:
+        - panko-tox-py27-mongodb
+        - panko-tox-py27-mysql
+        - panko-tox-py27-postgresql
+        - panko-tox-py35-mongodb
+        - panko-tox-py35-mysql
+        - panko-tox-py35-postgresql
+        - telemetry-dsvm-integration-panko
+
+- job:
+    name: panko-tox-py27-mongodb
+    parent: legacy-base
+    run: playbooks/legacy/panko-tox-py27-mongodb/run
+    post-run: playbooks/legacy/panko-tox-py27-mongodb/post
+    timeout: 2400
+    required-projects:
+      - openstack/requirements
+
+- job:
+    name: panko-tox-py27-mysql
+    parent: legacy-base
+    run: playbooks/legacy/panko-tox-py27-mysql/run
+    post-run: playbooks/legacy/panko-tox-py27-mysql/post
+    timeout: 2400
+    required-projects:
+      - openstack/requirements
+
+- job:
+    name: panko-tox-py27-postgresql
+    parent: legacy-base
+    run: playbooks/legacy/panko-tox-py27-postgresql/run
+    post-run: playbooks/legacy/panko-tox-py27-postgresql/post
+    timeout: 2400
+    required-projects:
+      - openstack/requirements
+
+- job:
+    name: panko-tox-py35-mongodb
+    parent: legacy-base
+    run: playbooks/legacy/panko-tox-py35-mongodb/run
+    post-run: playbooks/legacy/panko-tox-py35-mongodb/post
+    timeout: 2400
+    required-projects:
+      - openstack/requirements
+
+- job:
+    name: panko-tox-py35-mysql
+    parent: legacy-base
+    run: playbooks/legacy/panko-tox-py35-mysql/run
+    post-run: playbooks/legacy/panko-tox-py35-mysql/post
+    timeout: 2400
+    required-projects:
+      - openstack/requirements
+
+- job:
+    name: panko-tox-py35-postgresql
+    parent: legacy-base
+    run: playbooks/legacy/panko-tox-py35-postgresql/run
+    post-run: playbooks/legacy/panko-tox-py35-postgresql/post
+    timeout: 2400
+    required-projects:
+      - openstack/requirements
+
+- job:
+    name: telemetry-dsvm-integration-panko
+    parent: legacy-dsvm-base
+    run: playbooks/legacy/telemetry-dsvm-integration-panko/run
+    post-run: playbooks/legacy/telemetry-dsvm-integration-panko/post
+    timeout: 7800
+    required-projects:
+      - openstack-infra/devstack-gate
+      - openstack/aodh
+      - openstack/ceilometer
+      - openstack/panko
+      # following are required when DEVSTACK_GATE_HEAT, which this
+      # job turns on
+      - openstack/dib-utils
+      - openstack/diskimage-builder
