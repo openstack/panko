@@ -21,6 +21,7 @@
 import datetime
 
 from oslo_log import log
+from oslo_utils import strutils
 import pecan
 from pecan import rest
 import six
@@ -65,7 +66,10 @@ class EventQuery(base.Query):
     field = wsme.wsattr(wtypes.text)
     '''
     Name of the field to filter on. Can be either a trait name or field of an
-    event. Use start_timestamp/end_timestamp to filter on `generated` field
+    event.
+    1) Use start_timestamp/end_timestamp to filter on `generated` field.
+    2) Specify the 'all_tenants=True' query parameter to get all events for all
+    projects, this is only allowed by admin users.
     '''
 
     def __repr__(self):
@@ -205,6 +209,10 @@ def _event_query_to_event_filter(q):
                          {'operator': i.op, 'field': i.field})
                 raise base.ClientSideError(error)
             evt_model_filter[i.field] = i.value
+        elif i.field == 'all_tenants' and admin_proj:
+            all_tenants = strutils.bool_from_string(i.value)
+            if all_tenants:
+                admin_proj = None
         else:
             trait_type = i.type or 'string'
             traits_filter.append({"key": i.field,
