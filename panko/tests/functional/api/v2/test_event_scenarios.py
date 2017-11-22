@@ -16,7 +16,6 @@
 
 import datetime
 
-from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 import webtest.app
 
@@ -762,7 +761,7 @@ class TestEventSort(EventTestBase):
                          "':', or only sort key specified and sort dir will "
                          "be default 'asc', the supported sort keys are: "
                          "('message_id', 'generated')",
-                         jsonutils.loads(resp.body)['error_message']
+                         resp.json['error_message']
                          ['faultstring'])
 
     def test_invalid_sort_dir(self):
@@ -776,7 +775,7 @@ class TestEventSort(EventTestBase):
                          "with ':', or only sort key specified and sort dir "
                          "will be default 'asc', the supported sort "
                          "directions are: ('asc', 'desc')",
-                         jsonutils.loads(resp.body)['error_message']
+                         resp.json['error_message']
                          ['faultstring'])
 
     def test_sort_message_id(self):
