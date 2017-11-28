@@ -38,6 +38,14 @@ Overview
 
 .. update index
 
+Sample Configuration Files
+==========================
+
+.. toctree::
+   :maxdepth: 2
+
+   configuration/sample_policy
+
 Indices and tables
 ==================
 
