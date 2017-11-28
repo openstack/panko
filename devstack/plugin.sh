@@ -187,15 +187,13 @@ function configure_panko {
         setup_colorized_logging $PANKO_CONF DEFAULT
     fi
 
-    # Install the policy file and declarative configuration files to
+    # Install the declarative configuration files to
     # the conf dir.
     # NOTE(cdent): Do not make this a glob as it will conflict
     # with rootwrap installation done elsewhere and also clobber
     # panko.conf settings that have already been made.
     # Anyway, explicit is better than implicit.
-    for conffile in policy.json api_paste.ini; do
-        cp $PANKO_DIR/etc/panko/$conffile $PANKO_CONF_DIR
-    done
+    cp $PANKO_DIR/etc/panko/api_paste.ini $PANKO_CONF_DIR
 
     configure_auth_token_middleware $PANKO_CONF panko $PANKO_AUTH_CACHE_DIR
 
