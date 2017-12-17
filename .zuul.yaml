@@ -8,7 +8,7 @@
         - panko-tox-py35-mongodb
         - panko-tox-py35-mysql
         - panko-tox-py35-postgresql
-        - telemetry-dsvm-integration-panko
+        - telemetry-dsvm-integration
         # TripleO jobs that deploy Telemetry.
         # Note we don't use a project-template here, so it's easier
         # to disable voting on one specific job if things go wrong.
@@ -33,74 +33,52 @@
         - panko-tox-py35-mongodb
         - panko-tox-py35-mysql
         - panko-tox-py35-postgresql
-        - telemetry-dsvm-integration-panko
+        - telemetry-dsvm-integration
 
 - job:
     name: panko-tox-py27-mongodb
-    parent: legacy-base
-    run: playbooks/legacy/panko-tox-py27-mongodb/run.yaml
-    post-run: playbooks/legacy/panko-tox-py27-mongodb/post.yaml
-    timeout: 2400
-    required-projects:
-      - openstack/requirements
+    parent: openstack-tox
+    description: |
+      Run tests using ``py27-mongodb`` environment.
+    vars:
+      tox_envlist: py27-mongodb
 
 - job:
     name: panko-tox-py27-mysql
-    parent: legacy-base
-    run: playbooks/legacy/panko-tox-py27-mysql/run.yaml
-    post-run: playbooks/legacy/panko-tox-py27-mysql/post.yaml
-    timeout: 2400
-    required-projects:
-      - openstack/requirements
+    parent: openstack-tox
+    description: |
+      Run tests using ``py27-mysql`` environment.
+    vars:
+      tox_envlist: py27-mysql
 
 - job:
     name: panko-tox-py27-postgresql
-    parent: legacy-base
-    run: playbooks/legacy/panko-tox-py27-postgresql/run.yaml
-    post-run: playbooks/legacy/panko-tox-py27-postgresql/post.yaml
-    timeout: 2400
-    required-projects:
-      - openstack/requirements
+    parent: openstack-tox
+    description: |
+      Run tests using ``py27-postgresql`` environment.
+    vars:
+      tox_envlist: py27-postgresql
 
 - job:
     name: panko-tox-py35-mongodb
-    parent: legacy-base
-    run: playbooks/legacy/panko-tox-py35-mongodb/run.yaml
-    post-run: playbooks/legacy/panko-tox-py35-mongodb/post.yaml
-    timeout: 2400
-    required-projects:
-      - openstack/requirements
+    parent: openstack-tox
+    description: |
+      Run tests using ``py35-mongodb`` environment.
+    vars:
+      tox_envlist: py35-mongodb
 
 - job:
     name: panko-tox-py35-mysql
-    parent: legacy-base
-    run: playbooks/legacy/panko-tox-py35-mysql/run.yaml
-    post-run: playbooks/legacy/panko-tox-py35-mysql/post.yaml
-    timeout: 2400
-    required-projects:
-      - openstack/requirements
+    parent: openstack-tox
+    description: |
+      Run tests using ``py35-mysql`` environment.
+    vars:
+      tox_envlist: py35-mysql
 
 - job:
     name: panko-tox-py35-postgresql
-    parent: legacy-base
-    run: playbooks/legacy/panko-tox-py35-postgresql/run.yaml
-    post-run: playbooks/legacy/panko-tox-py35-postgresql/post.yaml
-    timeout: 2400
-    required-projects:
-      - openstack/requirements
-
-- job:
-    name: telemetry-dsvm-integration-panko
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/telemetry-dsvm-integration-panko/run.yaml
-    post-run: playbooks/legacy/telemetry-dsvm-integration-panko/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack-infra/devstack-gate
-      - openstack/aodh
-      - openstack/ceilometer
-      - openstack/panko
-      # following are required when DEVSTACK_GATE_HEAT, which this
-      # job turns on
-      - openstack/dib-utils
-      - openstack/diskimage-builder
+    parent: openstack-tox
+    description: |
+      Run tests using ``py35-postgresql`` environment.
+    vars:
+      tox_envlist: py35-postgresql
