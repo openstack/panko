@@ -26,7 +26,7 @@ contributing to Panko, please follow the workflow found here_.
 Project Hosting Details
 =======================
 
-:Bug tracker: https://launchpad.net/panko
+:Bug tracker: https://bugs.launchpad.net/panko
 :Mailing list: http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev (prefix subjects with ``[Panko]`` for faster responses)
 :Wiki: https://wiki.openstack.org/wiki/Panko
 :Code Hosting: https://git.openstack.org/cgit/openstack/panko/
