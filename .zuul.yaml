@@ -8,7 +8,7 @@
         - panko-tox-py35-mongodb
         - panko-tox-py35-mysql
         - panko-tox-py35-postgresql
-        - telemetry-dsvm-integration-panko
+        - telemetry-dsvm-integration
         # TripleO jobs that deploy Telemetry.
         # Note we don't use a project-template here, so it's easier
         # to disable voting on one specific job if things go wrong.
@@ -33,7 +33,7 @@
         - panko-tox-py35-mongodb
         - panko-tox-py35-mysql
         - panko-tox-py35-postgresql
-        - telemetry-dsvm-integration-panko
+        - telemetry-dsvm-integration
 
 - job:
     name: panko-tox-py27-mongodb
@@ -82,19 +82,3 @@
       Run tests using ``py35-postgresql`` environment.
     vars:
       tox_envlist: py35-postgresql
-
-- job:
-    name: telemetry-dsvm-integration-panko
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/telemetry-dsvm-integration-panko/run.yaml
-    post-run: playbooks/legacy/telemetry-dsvm-integration-panko/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack-infra/devstack-gate
-      - openstack/aodh
-      - openstack/ceilometer
-      - openstack/panko
-      # following are required when DEVSTACK_GATE_HEAT, which this
-      # job turns on
-      - openstack/dib-utils
-      - openstack/diskimage-builder
