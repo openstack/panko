@@ -639,6 +639,20 @@ class AclRestrictedEventTestBase(v2.FunctionalTest):
         self.assertEqual('admin_ev', data['event_type'])
 
     @tests_db.run_with('sqlite', 'mysql', 'pgsql', 'mongodb', 'es')
+    def test_admin_access_all(self):
+        a_headers = {"X-Roles": "admin",
+                     "X-User-Id": self.admin_user_id,
+                     "X-Project-Id": self.admin_proj_id}
+        data = self.get_json('/events', headers=a_headers,
+                             q=[{'field': 'all_tenants',
+                                 'value': 'True',
+                                 'type': 'string',
+                                 'op': 'eq'}])
+        self.assertEqual(3, len(data))
+        self.assertEqual(set(['empty_ev', 'admin_ev', 'user_ev']),
+                         set(ev['event_type'] for ev in data))
+
+    @tests_db.run_with('sqlite', 'mysql', 'pgsql', 'mongodb', 'es')
     def test_admin_access_trait_filter_no_access(self):
         a_headers = {"X-Roles": "admin",
                      "X-User-Id": self.admin_user_id,
