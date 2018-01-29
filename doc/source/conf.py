@@ -17,7 +17,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
-
 sys.path.insert(0, ROOT)
 sys.path.insert(0, BASE_DIR)
 
@@ -44,7 +43,11 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.pecanwsme.rest',
     'openstackdocstheme',
+    'oslo_policy.sphinxpolicygen'
 ]
+
+policy_generator_config_file = '../../etc/panko/panko-policy-generator.conf'
+sample_policy_basename = '_static/panko'
 
 wsme_protocols = ['restjson', 'restxml']
 
