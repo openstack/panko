@@ -30,27 +30,27 @@ one of the listed database backends below to store Panko data.
 MongoDB
 -------
 
-   Follow the instructions to install the MongoDB_ package for your operating
-   system, then start the service. The required minimum version of MongoDB is
-   2.4.x. You will also need to have pymongo_ 2.4 installed
+Follow the instructions to install the MongoDB_ package for your operating
+system, then start the service. The required minimum version of MongoDB is
+2.4.x. You will also need to have pymongo_ 2.4 installed
 
-   To use MongoDB as the storage backend, change the 'database' section in
-   panko.conf as follows::
+To use MongoDB as the storage backend, change the 'database' section in
+panko.conf as follows::
 
-    [database]
-    connection = mongodb://username:password@host:27017/panko
+ [database]
+ connection = mongodb://username:password@host:27017/panko
 
 SQLalchemy-supported DBs
 ------------------------
 
-   You may alternatively use any SQLAlchemy-supported DB such as
-   `PostgreSQL` or `MySQL`.
+You may alternatively use any SQLAlchemy-supported DB such as
+`PostgreSQL` or `MySQL`.
 
-   To use MySQL as the storage backend, change the 'database' section in
-   panko.conf as follows::
+To use MySQL as the storage backend, change the 'database' section in
+panko.conf as follows::
 
-    [database]
-    connection = mysql+pymysql://username:password@host/panko?charset=utf8
+ [database]
+ connection = mysql+pymysql://username:password@host/panko?charset=utf8
 
 
 .. _MongoDB: http://www.mongodb.org/
