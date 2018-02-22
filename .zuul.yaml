@@ -1,5 +1,4 @@
 - project:
-    name: openstack/panko
     check:
       jobs:
         - panko-tox-py27-mongodb
