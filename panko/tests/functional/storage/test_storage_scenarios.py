@@ -340,8 +340,8 @@ class GetEventTest(EventTestBase):
 
     def test_get_event_multiple_trait_filter(self):
         trait_filters = [{'key': 'trait_B', 'integer': 1},
-                         {'key': 'trait_A', 'string': 'my_Foo_text'},
-                         {'key': 'trait_C', 'float': 0.123456}]
+                         {'key': 'trait_C', 'float': 0.123456},
+                         {'key': 'trait_A', 'string': 'my_Foo_text'}]
         event_filter = storage.EventFilter(self.start, self.end,
                                            traits_filter=trait_filters)
         events = [event for event in self.conn.get_events(event_filter)]
