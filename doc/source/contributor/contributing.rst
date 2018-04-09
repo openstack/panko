@@ -13,9 +13,9 @@
 
 .. _contributing:
 
-============================
- Contributing to Panko
-============================
+=====================
+Contributing to Panko
+=====================
 
 Panko follows the same workflow as other OpenStack projects. To start
 contributing to Panko, please follow the workflow found here_.

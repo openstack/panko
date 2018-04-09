@@ -13,9 +13,9 @@
       License for the specific language governing permissions and limitations
       under the License.
 
-===================================
- Installing the API behind mod_wsgi
-===================================
+==================================
+Installing the API behind mod_wsgi
+==================================
 
 Panko comes with a few example files for configuring the API
 service to run behind Apache with ``mod_wsgi``.
@@ -28,7 +28,7 @@ application. The file is installed with the rest of the panko
 application code, and should not need to be modified.
 
 etc/apache2/panko
-======================
+=================
 
 The ``etc/apache2/panko`` file contains example settings that
 work with a copy of panko installed via devstack.

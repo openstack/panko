@@ -1,6 +1,6 @@
-===================
- Source Code Index
-===================
+=================
+Source Code Index
+=================
 
 .. toctree::
    :maxdepth: 1

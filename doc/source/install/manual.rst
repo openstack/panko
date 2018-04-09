@@ -16,9 +16,9 @@
 
 .. _installing_manually:
 
-=====================
- Installing Manually
-=====================
+===================
+Installing Manually
+===================
 
 
 Storage Backend Installation

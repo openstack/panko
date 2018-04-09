@@ -15,9 +15,9 @@
 
 .. _install:
 
-=======================
- Installing Panko
-=======================
+================
+Installing Panko
+================
 
 .. toctree::
    :maxdepth: 2
