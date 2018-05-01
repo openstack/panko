@@ -54,7 +54,7 @@ panko.conf as follows::
 
 
 .. _MongoDB: http://www.mongodb.org/
-.. _pymongo: https://pypi.python.org/pypi/pymongo/
+.. _pymongo: https://pypi.org/project/pymongo/
 
 
 Installing the API Server
