@@ -90,7 +90,7 @@ class EventTest(EventTestBase):
         with mock.patch('%s.LOG' %
                         self.conn.record_events.__module__) as log:
             self.conn.record_events(m)
-            self.assertEqual(1, log.info.call_count)
+            self.assertEqual(1, log.debug.call_count)
 
     def test_bad_event(self):
         now = datetime.datetime.utcnow()

@@ -206,7 +206,7 @@ class Connection(base.Connection):
                             session.execute(model.__table__.insert(),
                                             trait_map[dtype])
             except dbexc.DBDuplicateEntry as e:
-                LOG.info("Duplicate event detected, skipping it: %s", e)
+                LOG.debug("Duplicate event detected, skipping it: %s", e)
             except KeyError as e:
                 LOG.exception('Failed to record event: %s', e)
             except Exception as e:
