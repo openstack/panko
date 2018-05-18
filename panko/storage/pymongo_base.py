@@ -63,7 +63,7 @@ class Connection(base.Connection):
                      'timestamp': event_model.generated,
                      'traits': traits, 'raw': event_model.raw})
             except pymongo.errors.DuplicateKeyError as ex:
-                LOG.info("Duplicate event detected, skipping it: %s", ex)
+                LOG.debug("Duplicate event detected, skipping it: %s", ex)
             except Exception as ex:
                 LOG.exception("Failed to record event: %s", ex)
                 error = ex
