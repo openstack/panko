@@ -10,6 +10,7 @@ to help explain which policy operations protect specific panko APIs, but it
 is not suggested to copy and paste into a deployment unless you're planning on
 providing a different policy for an operation that is not the default.
 
-The sample policy file can also be viewed in `file form <_static/panko.policy.yaml.sample>`_.
+The sample policy file can also be viewed in
+:download:`file form <../_static/panko.policy.yaml.sample>`.
 
-.. literalinclude:: _static/panko.policy.yaml.sample
+.. literalinclude:: ../_static/panko.policy.yaml.sample
