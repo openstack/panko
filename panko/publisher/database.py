@@ -30,7 +30,7 @@ class DatabasePublisher(object):
     Then, panko:// should be added to Ceilometer's event_pipeline.yaml
     """
 
-    def __init__(self, parsed_url):
+    def __init__(self, ceilo_conf, parsed_url):
         conf = service.prepare_service([], share=True)
         self.conn = storage.get_connection_from_config(conf)
 
