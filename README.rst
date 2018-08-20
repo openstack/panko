@@ -27,3 +27,6 @@ IRC
 ---
 IRC Channel: #openstack-telemetry on `Freenode`_.
 
+Release notes
+---
+Release notes: https://docs.openstack.org/releasenotes/panko/
