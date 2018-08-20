@@ -61,6 +61,7 @@ def get_connection_from_config(conf):
     retries = conf.database.max_retries
 
     @tenacity.retry(
+        reraise=True,
         wait=tenacity.wait_fixed(conf.database.retry_interval),
         stop=(tenacity.stop_after_attempt(retries) if retries >= 0
               else tenacity.stop_never)
