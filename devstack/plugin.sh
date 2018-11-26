@@ -277,6 +277,15 @@ function start_panko {
     fi
 }
 
+# configure_tempest_for_panko()
+# NOTE (gmann): Configure all the Tempest setting for Panko service in
+# this function.
+function configure_tempest_for_panko {
+    if is_service_enabled tempest; then
+        iniset $TEMPEST_CONFIG service_available panko True
+    fi
+}
+
 # stop_panko() - Stop running processes
 function stop_panko {
     if is_service_enabled panko-api ; then
@@ -319,6 +328,9 @@ if is_service_enabled panko-api; then
         init_panko
         # Start the services
         start_panko
+    elif [[ "$1" == "stack" && "$2" == "test-config" ]]; then
+        echo_summary "Configuring Tempest for Panko"
+        configure_tempest_for_panko
     fi
 
     if [[ "$1" == "unstack" ]]; then
