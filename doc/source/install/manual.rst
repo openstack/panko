@@ -89,15 +89,15 @@ Installing the API Server
 
      $ openstack endpoint create $PANKO_SERVICE \
                                  --region RegionOne \
-                                 --publicurl "http://$SERVICE_HOST:8777" \
-                                 --adminurl "http://$SERVICE_HOST:8777" \
-                                 --internalurl "http://$SERVICE_HOST:8777"
+                                 --publicurl "http://$SERVICE_HOST:8977" \
+                                 --adminurl "http://$SERVICE_HOST:8977" \
+                                 --internalurl "http://$SERVICE_HOST:8977"
 
    .. note::
 
      PANKO_SERVICE is the id of the service created by the first command
      and SERVICE_HOST is the host where the Panko API is running. The
-     default port value for panko API is 8777. If the port value
+     default port value for panko API is 8977. If the port value
      has been customized, adjust accordingly.
 
 5. Choose and start the API server.
