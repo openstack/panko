@@ -13,7 +13,8 @@
 """
 SQLAlchemy models for Panko data.
 """
-import json
+
+from oslo_serialization import jsonutils
 
 import six
 import sqlalchemy
@@ -36,13 +37,13 @@ class JSONEncodedDict(TypeDecorator):
     @staticmethod
     def process_bind_param(value, dialect):
         if value is not None:
-            value = json.dumps(value)
+            value = jsonutils.dumps(value)
         return value
 
     @staticmethod
     def process_result_value(value, dialect):
         if value is not None:
-            value = json.loads(value)
+            value = jsonutils.loads(value)
         return value
 
 

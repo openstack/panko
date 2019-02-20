@@ -22,8 +22,8 @@ import ast
 import datetime
 import functools
 import inspect
-import json
 
+from oslo_serialization import jsonutils
 from oslo_utils import strutils
 from oslo_utils import timeutils
 import pecan
@@ -225,5 +225,5 @@ class JsonType(wtypes.UserType):
     @staticmethod
     def validate(value):
         # check that value can be serialised
-        json.dumps(value)
+        jsonutils.dumps(value)
         return value

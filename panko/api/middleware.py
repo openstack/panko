@@ -19,10 +19,9 @@ response with one formatted so the client can parse it.
 Based on pecan.middleware.errordocument
 """
 
-import json
-
 from lxml import etree
 from oslo_log import log
+from oslo_serialization import jsonutils
 import six
 import webob
 
@@ -109,13 +108,13 @@ class ParsableErrorMiddleware(object):
                 if six.PY3:
                     app_data = app_data.decode('utf-8')
                 try:
-                    fault = json.loads(app_data)
+                    fault = jsonutils.loads(app_data)
                     if error is not None and 'faultstring' in fault:
                         fault['faultstring'] = i18n.translate(error,
                                                               user_locale)
                 except ValueError as err:
                     fault = app_data
-                body = json.dumps({'error_message': fault})
+                body = jsonutils.dumps({'error_message': fault})
                 if six.PY3:
                     body = body.encode('utf-8')
 

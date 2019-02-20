@@ -11,13 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """Various HBase helpers"""
+
 import copy
 import datetime
-import json
 
 import bson.json_util
 from happybase.hbase import ttypes
 from oslo_log import log
+from oslo_serialization import jsonutils
 import six
 
 from panko.i18n import _
@@ -211,11 +212,11 @@ def serialize_entry(data=None, **kwargs):
 
 
 def dump(data):
-    return json.dumps(data, default=bson.json_util.default)
+    return jsonutils.dumps(data, default=bson.json_util.default)
 
 
 def load(data):
-    return json.loads(data, object_hook=object_hook)
+    return jsonutils.loads(data, object_hook=object_hook)
 
 
 # We don't want to have tzinfo in decoded json.This object_hook is
