@@ -101,8 +101,8 @@ function _panko_prepare_storage_backend {
     fi
 
     if [ "$PANKO_BACKEND" = 'es' ] ; then
-        ${TOP_DIR}/pkg/elasticsearch.sh download
-        ${TOP_DIR}/pkg/elasticsearch.sh install
+         $PANKO_DIR/devstack/lib/elasticsearch.sh download
+         $PANKO_DIR/devstack/lib/elasticsearch.sh install
     fi
 }
 
