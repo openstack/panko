@@ -1,0 +1,83 @@
+# JongSoo Ha <neo415ha@gmail.com>, 2018. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: panko VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2019-04-10 01:12+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-11-12 03:43+0000\n"
+"Last-Translator: JongSoo Ha <neo415ha@gmail.com>\n"
+"Language-Team: Korean (South Korea)\n"
+"Language: ko_KR\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#, python-format
+msgid "%(entity)s %(id)s Not Found"
+msgstr "%(entity)s %(id)s 발견되지 않음"
+
+#, python-format
+msgid "Cannot create table %(table_name)s   it already exists. Ignoring error"
+msgstr " %(table_name)s 이 이미 존재하므로 테이블 추가 불가능. 에러 무시"
+
+msgid "Event"
+msgstr "이벤트"
+
+#, python-format
+msgid "Not Authorized to access %(aspect)s %(id)s"
+msgstr "%(aspect)s %(id)s로의 허가되지 않은 접근"
+
+#, python-format
+msgid ""
+"Operator %(operator)s is not supported. Only `eq' operator is available for "
+"field %(field)s"
+msgstr ""
+"연산자 %(operator)s 는 지원되지 않음.  오직 `eq' 연산자만이 필드 %(field)s에"
+"서 사용가능"
+
+#, python-format
+msgid ""
+"Operator %(operator)s is not supported. Only `ge' operator is available for "
+"field %(field)s"
+msgstr ""
+"연산자 %(operator)s 는 지원되지 않음.  오직 `ge' 연산자만이 필드 %(field)s에"
+"서 사용가능"
+
+#, python-format
+msgid ""
+"Operator %(operator)s is not supported. Only `le' operator is available for "
+"field %(field)s"
+msgstr ""
+"연산자 %(operator)s 는 지원되지 않음.  오직 `le' 연산자만이 필드 %(field)s에"
+"서 사용가능"
+
+#, python-format
+msgid ""
+"Operator %(operator)s is not supported. The supported operators are: "
+"%(supported)s"
+msgstr "연산자 %(operator)s 는 지원되지 않음. 지원되는 연산자들: %(supported)s"
+
+#, python-format
+msgid ""
+"The data type %(type)s is not supported. The supported data type list is: "
+"%(supported)s"
+msgstr ""
+"데이터타입 %(type)s 은 지원되지 않음. 지원되는 데이터타입 목록 : "
+"%(supported)s"
+
+#, python-format
+msgid "Unable to connect to the database server: %(errmsg)s."
+msgstr "데이터베이스 서버로 접속 불가 : %(errmsg)s."
+
+#, python-format
+msgid ""
+"Unable to convert the value %(value)s to the expected data type %(type)s."
+msgstr "값 %(value)s 를 희망하는 데이터 타입 %(type)s 으로의 변환 불가"
+
+#, python-format
+msgid ""
+"Unexpected exception converting %(value)s to the expected data type %(type)s."
+msgstr ""
+" %(value)s를 예측 데이터타입 %(type)s 으로 변환도중 예측치 못한 예외 발생"
