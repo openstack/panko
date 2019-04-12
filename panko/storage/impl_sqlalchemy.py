@@ -21,6 +21,7 @@ from oslo_db import exception as dbexc
 from oslo_db.sqlalchemy import session as db_session
 from oslo_db.sqlalchemy import utils as oslo_sql_utils
 from oslo_log import log
+from oslo_utils import importutils
 from oslo_utils import timeutils
 import sqlalchemy as sa
 from sqlalchemy.engine import url as sqlalchemy_url
@@ -33,6 +34,8 @@ from panko.storage.sqlalchemy import models
 from panko import utils
 
 LOG = log.getLogger(__name__)
+
+osprofiler_sqlalchemy = importutils.try_import('osprofiler.sqlalchemy')
 
 
 AVAILABLE_CAPABILITIES = {
@@ -136,6 +139,10 @@ class Connection(base.Connection):
             options.pop(opt.name, None)
         self._engine_facade = db_session.EngineFacade(self.dress_url(url),
                                                       **options)
+        if osprofiler_sqlalchemy:
+            osprofiler_sqlalchemy.add_tracing(sa,
+                                              self._engine_facade.get_engine(),
+                                              'db')
 
     @staticmethod
     def dress_url(url):

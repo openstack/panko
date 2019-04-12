@@ -33,6 +33,7 @@ from panko.api.controllers.v2 import base
 from panko.api.controllers.v2 import utils as v2_utils
 from panko.api import rbac
 from panko.i18n import _
+from panko import profiler
 from panko import storage
 from panko.storage import models as event_models
 
@@ -234,6 +235,7 @@ def _event_query_to_event_filter(q):
                                admin_proj=admin_proj, **evt_model_filter)
 
 
+@profiler.trace_cls('api')
 class TraitsController(rest.RestController):
     """Works on Event Traits."""
 
@@ -262,6 +264,7 @@ class TraitsController(rest.RestController):
                 for t in pecan.request.conn.get_trait_types(event_type)]
 
 
+@profiler.trace_cls('api')
 class EventTypesController(rest.RestController):
     """Works on Event Types in the system."""
 
@@ -283,6 +286,7 @@ class EventTypesController(rest.RestController):
         return list(pecan.request.conn.get_event_types())
 
 
+@profiler.trace_cls('api')
 class EventsController(rest.RestController):
     """Works on Events."""
 
