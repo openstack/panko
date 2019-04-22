@@ -36,6 +36,6 @@ Configuring devstack
 
       [[local|localrc]]
       # Enable the Panko devstack plugin
-      enable_plugin panko https://git.openstack.org/openstack/panko.git
+      enable_plugin panko https://opendev.org/openstack/panko.git
 
 .. _devstack: http://www.devstack.org/

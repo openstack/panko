@@ -4,7 +4,7 @@
 # looks like
 #
 # [[local|localrc]]
-# enable_plugin panko https://git.openstack.org/openstack/panko
+# enable_plugin panko https://opendev.org/openstack/panko
 #
 # Several variables set in the localrc section adjust common behaviors
 # of Panko (see within for additional settings):
