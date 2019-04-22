@@ -72,7 +72,7 @@ Installing the API Server
 1. Clone the panko git repository to the server::
 
    $ cd /opt/stack
-   $ git clone https://git.openstack.org/openstack/panko.git
+   $ git clone https://opendev.org/openstack/panko.git
 
 2. As a user with ``root`` permissions or ``sudo`` privileges, run the
    panko installer::

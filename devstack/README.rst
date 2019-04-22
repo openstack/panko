@@ -4,18 +4,18 @@ Enabling Panko in DevStack
 
 1. Download Devstack::
 
-    git clone https://git.openstack.org/openstack-dev/devstack
+    git clone https://opendev.org/openstack/devstack
     cd devstack
 
 2. Add this repo as an external repository in ``local.conf`` file::
 
     [[local|localrc]]
-    enable_plugin panko https://git.openstack.org/openstack/panko
+    enable_plugin panko https://opendev.org/openstack/panko
 
    To use stable branches, make sure devstack is on that branch, and specify
    the branch name to enable_plugin, for example::
 
-    enable_plugin panko https://git.openstack.org/openstack/panko stable/newton
+    enable_plugin panko https://opendev.org/openstack/panko stable/newton
 
    There are some options, such as PANKO_BACKEND, defined in
    ``panko/devstack/settings``, they can be used to configure the
