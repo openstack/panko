@@ -7,6 +7,7 @@
     check:
       jobs:
         - telemetry-dsvm-integration
+        - telemetry-dsvm-integration-ipv6-only
         # TripleO jobs that deploy Telemetry.
         # Note we don't use a project-template here, so it's easier
         # to disable voting on one specific job if things go wrong.
@@ -26,3 +27,4 @@
     gate:
       jobs:
         - telemetry-dsvm-integration
+        - telemetry-dsvm-integration-ipv6-only
