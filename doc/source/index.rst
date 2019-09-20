@@ -36,8 +36,6 @@ Overview
    contributor/index
    webapi/index
 
-.. update index
-
 Sample Configuration Files
 ==========================
 
@@ -46,9 +44,11 @@ Sample Configuration Files
 
    configuration/sample_policy
 
-Indices and tables
-==================
+.. only:: html
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Indices and tables
+   ==================
+
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`

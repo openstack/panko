@@ -16,7 +16,12 @@ import copy
 import datetime
 
 import bson.json_util
-from happybase.hbase import ttypes
+try:
+    from happybase.hbase.ttypes import AlreadyExists
+except ImportError:
+    # import happybase to enable Hbase_thrift module
+    import happybase  # noqa
+    from Hbase_thrift import AlreadyExists
 from oslo_log import log
 from oslo_serialization import jsonutils
 import six
@@ -232,7 +237,7 @@ def create_tables(conn, tables, column_families):
     for table in tables:
         try:
             conn.create_table(table, column_families)
-        except ttypes.AlreadyExists:
+        except AlreadyExists:
             if conn.table_prefix:
                 table = ("%(table_prefix)s"
                          "%(separator)s"

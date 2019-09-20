@@ -14,3 +14,4 @@ doc/source/api/
 etc/panko/panko.conf
 subunit.log
 etc/panko/policy.yaml.sample
+doc/source/_static/

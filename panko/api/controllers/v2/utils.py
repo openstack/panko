@@ -77,36 +77,38 @@ def set_pagination_options(sort, limit, marker, api_model):
 
     Arguments:
     sort -- List of sorting criteria. Each sorting option has to format
-            <sort key>:<sort direction>
+    <sort key>:<sort direction>
 
-            Valid sort keys: message_id, generated
-                    (SUPPORT_SORT_KEYS in panko/event/storage/models.py)
-            Valid sort directions: asc (ascending), desc (descending)
-                    (SUPPORT_DIRS in panko/event/storage/models.py)
-                    This defaults to asc if unspecified
-                    (DEFAULT_DIR in panko/event/storage/models.py)
+    Valid sort keys: message_id, generated
+    (SUPPORT_SORT_KEYS in panko/event/storage/models.py)
+    Valid sort directions: asc (ascending), desc (descending)
+    (SUPPORT_DIRS in panko/event/storage/models.py)
+    This defaults to asc if unspecified
+    (DEFAULT_DIR in panko/event/storage/models.py)
 
-            impl_sqlalchemy.py:
-            (see _get_pagination_query)
-            If sort list is empty, this defaults to
-            ['generated:asc', 'message_id:asc']
-                    (DEFAULT_SORT in panko/event/storage/models.py)
+    impl_sqlalchemy.py:
+    (see _get_pagination_query)
+    If sort list is empty, this defaults to
+    ['generated:asc', 'message_id:asc']
+    (DEFAULT_SORT in panko/event/storage/models.py)
 
     limit -- Integer specifying maximum number of values to return
 
-            If unspecified, this defaults to
-            pecan.request.cfg.api.default_api_return_limit
-    marker -- If specified, assumed to be an integer and assumed to be the
-              message id of the last object on the previous page of the results
-    api_model -- Specifies the class implementing the api model to use for
-                 this pagination. The class is expected to provide the
-                 following members:
+    If unspecified, this defaults to
+    pecan.request.cfg.api.default_api_return_limit
 
-                 SUPPORT_DIRS
-                 SUPPORT_SORT_KEYS
-                 DEFAULT_DIR
-                 DEFAULT_SORT
-                 PRIMARY_KEY
+    marker -- If specified, assumed to be an integer and assumed to be the
+    message id of the last object on the previous page of the results
+
+    api_model -- Specifies the class implementing the api model to use for
+    this pagination. The class is expected to provide the
+    following members:
+
+    SUPPORT_DIRS
+    SUPPORT_SORT_KEYS
+    DEFAULT_DIR
+    DEFAULT_SORT
+    PRIMARY_KEY
     """
     if limit and limit <= 0:
         raise wsme.exc.InvalidInput('limit', limit,

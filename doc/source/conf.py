@@ -11,22 +11,13 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import subprocess
-import sys
 import os
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
-sys.path.insert(0, ROOT)
-sys.path.insert(0, BASE_DIR)
-
-# This is required for ReadTheDocs.org, but isn't a bad idea anyway.
-os.environ['DJANGO_SETTINGS_MODULE'] = 'openstack_dashboard.settings'
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
 
 # -- General configuration ----------------------------------------------------
 
@@ -38,10 +29,8 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'openstack_dashboard.settings'
 # or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'wsmeext.sphinxext',
-    'sphinx.ext.coverage',
-    'sphinx.ext.viewcode',
     'sphinxcontrib.pecanwsme.rest',
+    'sphinxcontrib.httpdomain',
     'openstackdocstheme',
     'oslo_policy.sphinxpolicygen'
 ]
@@ -122,9 +111,9 @@ html_theme = 'openstackdocs'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "nosidebar": "false"
-}
+#html_theme_options = {
+#    "nosidebar": "false"
+#}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -152,7 +141,7 @@ html_theme_options = {
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+#html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -198,21 +187,25 @@ htmlhelp_basename = 'Pankodoc'
 # -- Options for LaTeX output -------------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #'papersize': 'letterpaper',
-
-    # The font size ('10pt', '11pt' or '12pt').
-    #'pointsize': '10pt',
-
-    # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
+    'makeindex': '',
+    'printindex': '',
+    'preamble': r'\setcounter{tocdepth}{3}',
+    'maxlistdepth': '10',
 }
+
+# Disable usage of xindy https://bugzilla.redhat.com/show_bug.cgi?id=1643664
+latex_use_xindy = False
+
+# Disable smartquotes, they don't work in latex
+smartquotes_excludes = {'builders': ['latex']}
+
+latex_domain_indices = False
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'Panko.tex', u'Panko Documentation',
+    ('index', 'doc-panko.tex', u'Panko Documentation',
      u'OpenStack Foundation', 'manual'),
 ]
 

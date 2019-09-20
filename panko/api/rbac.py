@@ -76,9 +76,9 @@ def get_limited_to(headers):
 
     :param headers: HTTP headers dictionary
     :return: A tuple of (user, project), set to None if there's no limit on
-    one of these.
-
+             one of these.
     """
+
     init()
 
     policy_dict = dict()

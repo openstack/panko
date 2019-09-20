@@ -12,13 +12,18 @@
 # under the License.
 
 from __future__ import with_statement
+
+import os
+
+from alembic import config as alembic_config
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-config = context.config
+config = alembic_config.Config(os.path.join(os.path.dirname(__file__),
+                                            'alembic.ini'))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
