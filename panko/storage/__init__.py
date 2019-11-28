@@ -37,6 +37,13 @@ OPTS = [
                deprecated_for_removal=True,
                help='The connection string used to connect '
                'to the event database - rather use ${database.connection}'),
+    cfg.BoolOpt('es_ssl_enabled',
+                default=False,
+                help="Enable HTTPS connection in the Elasticsearch "
+                     "connection"),
+    cfg.StrOpt('es_index_name',
+               default='events',
+               help='The name of the index in Elasticsearch')
 ]
 
 

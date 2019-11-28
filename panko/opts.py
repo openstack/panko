@@ -26,14 +26,7 @@ STORAGE_OPTS = [
     cfg.IntOpt('retry_interval',
                default=10,
                deprecated_group='database',
-               help='Interval (in seconds) between retries of connection.'),
-    cfg.BoolOpt('es_ssl_enabled',
-                default=False,
-                help="Enable HTTPS connection in the Elasticsearch "
-                     "connection"),
-    cfg.StrOpt('es_index_name',
-               default='events',
-               help='The name of the index in Elasticsearch'),
+               help='Interval (in seconds) between retries of connection.')
 ]
 
 
