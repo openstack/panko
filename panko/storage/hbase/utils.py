@@ -160,7 +160,7 @@ def make_query(trait_query=None, **kwargs):
             if key == 'trait_type':
                 q.append("ColumnPrefixFilter('%s')" % value)
             elif key == 'event_id':
-                q.append("RowFilter ( = , 'regexstring:\d*:%s')" % value)
+                q.append(r"RowFilter ( = , 'regexstring:\d*:%s')" % value)
             else:
                 q.append("SingleColumnValueFilter "
                          "('f', '%s', =, 'binary:%s', true, true)" %

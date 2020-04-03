@@ -102,7 +102,7 @@ class MTable(object):
             filters = filter.split('AND')
             for f in filters:
                 # Extract filter name and its arguments
-                g = re.search("(.*)\((.*),?\)", f)
+                g = re.search(r"(.*)\((.*),?\)", f)
                 fname = g.group(1).strip()
                 fargs = [s.strip().replace('\'', '')
                          for s in g.group(2).split(',')]
