@@ -17,8 +17,9 @@ available in the backend.
 .. rest-controller:: panko.api.controllers.v2.capabilities:CapabilitiesController
    :webprefix: /v2/capabilities
 
-.. autotype:: panko.api.controllers.v2.capabilities.Capabilities
+.. autoclass:: panko.api.controllers.v2.capabilities.Capabilities
    :members:
+   :noindex:
 
 Events and Traits
 =================
@@ -32,19 +33,21 @@ Events and Traits
 .. rest-controller:: panko.api.controllers.v2.events:EventsController
    :webprefix: /v2/events
 
-.. autotype:: panko.api.controllers.v2.events.Event
+.. autoclass:: panko.api.controllers.v2.events.Event
    :members:
+   :noindex:
 
-.. autotype:: panko.api.controllers.v2.events.Trait
+.. autoclass:: panko.api.controllers.v2.events.Trait
    :members:
+   :noindex:
 
-.. autotype:: panko.api.controllers.v2.events.TraitDescription
+.. autoclass:: panko.api.controllers.v2.events.TraitDescription
    :members:
+   :noindex:
 
 Filtering Queries
 =================
 
-See :ref:`api-queries` for how to query the API.
-
-.. autotype:: panko.api.controllers.v2.events.EventQuery
+.. autoclass:: panko.api.controllers.v2.events.EventQuery
    :members:
+   :noindex:

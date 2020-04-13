@@ -26,28 +26,3 @@ app.wsgi
 The file ``panko/api/app.wsgi`` sets up the V2 API WSGI
 application. The file is installed with the rest of the panko
 application code, and should not need to be modified.
-
-etc/apache2/panko
-=================
-
-The ``etc/apache2/panko`` file contains example settings that
-work with a copy of panko installed via devstack.
-
-.. literalinclude:: ../../../etc/apache2/panko
-
-1. On deb-based systems copy or symlink the file to
-   ``/etc/apache2/sites-available``. For rpm-based systems the file will go in
-   ``/etc/httpd/conf.d``.
-
-2. Modify the ``WSGIDaemonProcess`` directive to set the ``user`` and
-   ``group`` values to an appropriate user on your server. In many
-   installations ``panko`` will be correct.
-
-3. Enable the panko site. On deb-based systems::
-
-      $ a2ensite panko
-      $ service apache2 reload
-
-   On rpm-based systems::
-
-      $ service httpd reload

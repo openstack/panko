@@ -35,6 +35,7 @@ Overview
    install/index
    contributor/index
    webapi/index
+   api/index
 
 Sample Configuration Files
 ==========================

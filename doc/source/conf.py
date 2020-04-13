@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.abspath('../'))
 # They can be extensions coming with Sphinx (named 'sphinx.ext.*')
 # or your custom ones.
 extensions = [
+    'sphinxcontrib.apidoc',
     'sphinx.ext.autodoc',
     'sphinxcontrib.pecanwsme.rest',
     'sphinxcontrib.httpdomain',
@@ -304,3 +305,15 @@ epub_copyright = u'2012-2015, OpenStack'
 
 # Allow duplicate toc entries.
 #epub_tocdup = True
+
+# -- sphinxcontrib.apidoc configuration --------------------------------------
+
+apidoc_module_dir = '../../panko'
+apidoc_output_dir = 'api'
+apidoc_excluded_paths = [
+    'tests',
+    'hacking',
+    # happybase is not Python3 compatible, thus skip over them
+    'storage/hbase/*',
+    'storage/impl_hbase.py'
+]
