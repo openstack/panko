@@ -15,7 +15,8 @@
 """Tests for panko/storage/
 """
 
-import mock
+from unittest import mock
+
 from oslotest import base
 import six
 

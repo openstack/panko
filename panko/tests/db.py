@@ -16,10 +16,10 @@
 
 """Base classes for API tests."""
 import os
+from unittest import mock
 import warnings
 
 import fixtures
-import mock
 from oslo_utils import uuidutils
 import six
 from six.moves.urllib import parse as urlparse

@@ -14,8 +14,8 @@
 # under the License.
 
 import datetime
+from unittest import mock
 
-import mock
 from oslotest import base
 import sqlalchemy
 from sqlalchemy.dialects.mysql import DECIMAL

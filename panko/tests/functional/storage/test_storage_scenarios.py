@@ -16,8 +16,8 @@
 
 import datetime
 import operator
+from unittest import mock
 
-import mock
 from oslo_utils import timeutils
 
 from panko import storage
