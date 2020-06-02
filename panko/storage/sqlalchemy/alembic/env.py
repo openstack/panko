@@ -11,8 +11,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from __future__ import with_statement
-
 import os
 
 from alembic import config as alembic_config
