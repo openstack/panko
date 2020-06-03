@@ -31,22 +31,22 @@ class IndexTest(tests_db.TestBase):
 
     def test_event_ttl_index_absent(self):
         # create a fake index and check it is deleted
-        self.conn.clear_expired_data(-1)
+        self.conn.clear_expired_data(-1, 0)
         self.assertNotIn("event_ttl",
                          self.conn.db.event.index_information())
 
-        self.conn.clear_expired_data(456789)
+        self.conn.clear_expired_data(456789, 0)
         self.assertEqual(456789,
                          self.conn.db.event.index_information()
                          ["event_ttl"]['expireAfterSeconds'])
 
     def test_event_ttl_index_present(self):
-        self.conn.clear_expired_data(456789)
+        self.conn.clear_expired_data(456789, 0)
         self.assertEqual(456789,
                          self.conn.db.event.index_information()
                          ["event_ttl"]['expireAfterSeconds'])
 
-        self.conn.clear_expired_data(-1)
+        self.conn.clear_expired_data(-1, 0)
         self.assertNotIn("event_ttl",
                          self.conn.db.event.index_information())
 

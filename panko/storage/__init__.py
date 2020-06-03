@@ -32,6 +32,11 @@ OPTS = [
                default=-1,
                help=("Number of seconds that events are kept "
                      "in the database for (<= 0 means forever).")),
+    cfg.IntOpt('events_delete_batch_size',
+               default=0,
+               min=0,
+               help=("Number of events to be deleted in one iteration "
+                     "from the database for (0 means all).")),
     cfg.StrOpt('event_connection',
                secret=True,
                deprecated_for_removal=True,
