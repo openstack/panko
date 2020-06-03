@@ -66,7 +66,7 @@ class BinTestCase(base.BaseTestCase):
                                 stdout=subprocess.PIPE)
         out, __ = subp.communicate()
         self.assertEqual(0, subp.poll())
-        msg = "Dropping %s data with TTL 1" % data_name
+        msg = "Dropping 100 %ss data with TTL 1" % data_name
         if six.PY3:
             msg = msg.encode('utf-8')
         self.assertIn(msg, out)
