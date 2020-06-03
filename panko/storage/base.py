@@ -122,10 +122,11 @@ class Connection(object):
         return cls.STORAGE_CAPABILITIES
 
     @staticmethod
-    def clear_expired_data(ttl):
+    def clear_expired_data(ttl, max_count=None):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.
         :param ttl: Number of seconds to keep records for.
+        :param max_count: Number of records to delete.
         """
         raise panko.NotImplementedError('Clearing events not implemented')

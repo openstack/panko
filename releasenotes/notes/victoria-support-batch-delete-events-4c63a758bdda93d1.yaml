@@ -1,0 +1,12 @@
+---
+features:
+  - |
+    A new ``events_delete_batch_size`` config option is introduced to specify
+    a number of events to be deleted in one iteration from the database. It will
+    help when thare're a lot of events in the database and panko-expire
+    consumes a lot of memory to delete all records with a single
+    call.
+fixes:
+    |
+    Fixed the issue that panko-expire is consuming too much memory during
+    events cleaning up.

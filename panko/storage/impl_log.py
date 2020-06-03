@@ -22,11 +22,12 @@ class Connection(base.Connection):
     """Log event data."""
 
     @staticmethod
-    def clear_expired_data(ttl):
+    def clear_expired_data(ttl, max_count):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.
 
         :param ttl: Number of seconds to keep records for.
+        :param max_count: Number of records to delete.
         """
-        LOG.info("Dropping event data with TTL %d", ttl)
+        LOG.info("Dropping %d events data with TTL %d", max_count, ttl)
