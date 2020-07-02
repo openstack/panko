@@ -68,7 +68,7 @@ class EventTTLTest(EventTestBase):
     @mock.patch.object(timeutils, 'utcnow')
     def test_clear_expired_data(self, mock_utcnow):
         mock_utcnow.return_value = datetime.datetime(2013, 12, 31, 10, 0)
-        self.conn.clear_expired_data(3600)
+        self.conn.clear_expired_data(3600, 100)
 
         events = list(self.conn.get_events(storage.EventFilter()))
         self.assertEqual(2, len(events))

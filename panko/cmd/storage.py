@@ -34,7 +34,20 @@ def expirer():
     if conf.database.event_time_to_live > 0:
         LOG.debug("Clearing expired event data")
         conn = storage.get_connection_from_config(conf)
-        conn.clear_expired_data(conf.database.event_time_to_live)
+        max_count = conf.database.events_delete_batch_size
+        try:
+            if max_count > 0:
+                conn.clear_expired_data(conf.database.event_time_to_live,
+                                        max_count)
+            else:
+                deleted = max_count = 100
+                while deleted and deleted > 0:
+                    deleted = conn.clear_expired_data(
+                        conf.database.event_time_to_live,
+                        max_count)
+        except TypeError:
+            LOG.warning("Storage driver does not support "
+                        "'events_delete_batch_size' config option.")
     else:
         LOG.info("Nothing to clean, database event time to live "
                  "is disabled")

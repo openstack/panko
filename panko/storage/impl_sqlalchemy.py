@@ -460,12 +460,13 @@ class Connection(base.Connection):
                                            dtype=dtype,
                                            value=v)
 
-    def clear_expired_data(self, ttl):
+    def clear_expired_data(self, ttl, max_count):
         """Clear expired data from the backend storage system.
 
         Clearing occurs according to the time-to-live.
 
         :param ttl: Number of seconds to keep records for.
+        :param max_count: Number of records to delete.
         """
         session = self._engine_facade.get_session()
         with session.begin():
@@ -473,17 +474,23 @@ class Connection(base.Connection):
             event_q = (session.query(models.Event.id)
                        .filter(models.Event.generated < end))
 
-            event_subq = event_q.subquery()
+            # NOTE(e0ne): it's not an optiomal from the performance point of
+            # view but it works with all databases.
+            ids = [i[0] for i in event_q.limit(max_count)]
             for trait_model in [models.TraitText, models.TraitInt,
                                 models.TraitFloat, models.TraitDatetime]:
-                (session.query(trait_model)
-                 .filter(trait_model.event_id.in_(event_subq))
-                 .delete(synchronize_session="fetch"))
-            event_rows = event_q.delete()
+                session.query(trait_model).filter(
+                    trait_model.event_id.in_(ids)
+                ).delete(synchronize_session="fetch")
+            event_rows = session.query(models.Event).filter(
+                models.Event.id.in_(ids)
+            ).delete(synchronize_session="fetch")
 
             # remove EventType and TraitType with no corresponding
-            # matching events and traits
+            # matching events
             (session.query(models.EventType)
              .filter(~models.EventType.events.any())
              .delete(synchronize_session="fetch"))
             LOG.info("%d events are removed from database", event_rows)
+
+            return event_rows
