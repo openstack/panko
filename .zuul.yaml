@@ -6,7 +6,7 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - telemetry-dsvm-integration
+        - telemetry-dsvm-integration-train
         - telemetry-dsvm-integration-ipv6-only
         # TripleO jobs that deploy Telemetry.
         # Note we don't use a project-template here, so it's easier
@@ -26,5 +26,5 @@
             voting: false
     gate:
       jobs:
-        - telemetry-dsvm-integration
+        - telemetry-dsvm-integration-train
         - telemetry-dsvm-integration-ipv6-only
