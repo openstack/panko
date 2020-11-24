@@ -268,8 +268,6 @@ function start_panko {
     if [[ "$PANKO_DEPLOY" == "mod_wsgi" ]]; then
         enable_apache_site panko
         restart_apache_server
-        tail_log panko /var/log/$APACHE_NAME/panko.log
-        tail_log panko-api /var/log/$APACHE_NAME/panko_access.log
     elif [ "$PANKO_DEPLOY" == "uwsgi" ]; then
         run_process panko-api "$PANKO_BIN_DIR/uwsgi $PANKO_UWSGI_FILE"
     else
