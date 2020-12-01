@@ -17,12 +17,11 @@
 """Base classes for API tests."""
 import os
 from unittest import mock
+from urllib import parse as urlparse
 import warnings
 
 import fixtures
 from oslo_utils import uuidutils
-import six
-from six.moves.urllib import parse as urlparse
 import sqlalchemy
 from testtools import testcase
 
@@ -50,7 +49,7 @@ class MongoDbManager(fixtures.Fixture):
             try:
                 self.connection = storage.get_connection(self.url, self.conf)
             except storage.StorageBadVersion as e:
-                raise testcase.TestSkipped(six.text_type(e))
+                raise testcase.TestSkipped(str(e))
 
     @property
     def url(self):
@@ -158,8 +157,8 @@ class SQLiteManager(fixtures.Fixture):
             self.url, self.conf)
 
 
-@six.add_metaclass(test_base.SkipNotImplementedMeta)
-class TestBase(test_base.BaseTestCase):
+class TestBase(test_base.BaseTestCase,
+               metaclass=test_base.SkipNotImplementedMeta):
 
     DRIVER_MANAGERS = {
         'mongodb': MongoDbManager,
@@ -224,10 +223,7 @@ def run_with(*drivers):
             for attr in dir(test):
                 value = getattr(test, attr)
                 if callable(value) and attr.startswith('test_'):
-                    if six.PY3:
-                        value._run_with = drivers
-                    else:
-                        value.__func__._run_with = drivers
+                    value._run_with = drivers
         else:
             test._run_with = drivers
         return test

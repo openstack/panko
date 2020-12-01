@@ -20,7 +20,6 @@ import os
 from keystonemiddleware import fixture as ksm_fixture
 from oslo_utils import fileutils
 from oslo_utils import uuidutils
-import six
 import webtest
 
 from panko.api import app
@@ -131,8 +130,7 @@ class TestApiEventAdminRBAC(TestBaseApiEventRBAC):
         content = ('{"context_is_admin": "role:admin",'
                    '"telemetry:events:index": "rule:context_is_admin",'
                    '"telemetry:events:show": "rule:context_is_admin"}')
-        if six.PY3:
-            content = content.encode('utf-8')
+        content = content.encode('utf-8')
         self.tempfile = fileutils.write_to_tempfile(content=content,
                                                     prefix='policy',
                                                     suffix='.json')

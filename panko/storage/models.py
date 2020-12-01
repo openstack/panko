@@ -13,7 +13,6 @@
 """Model classes for use in the events storage API.
 """
 from oslo_utils import timeutils
-import six
 
 from panko.storage import base
 
@@ -60,7 +59,7 @@ class Event(base.Model):
     def __repr__(self):
         trait_list = []
         if self.traits:
-            trait_list = [six.text_type(trait) for trait in self.traits]
+            trait_list = [str(trait) for trait in self.traits]
         return ("<Event: %s, %s, %s, %s>" %
                 (self.message_id, self.event_type, self.generated,
                  " ".join(trait_list)))
@@ -128,6 +127,6 @@ class Trait(base.Model):
         if trait_type is cls.DATETIME_TYPE:
             return timeutils.normalize_time(timeutils.parse_isotime(value))
         # Cropping the text value to match the TraitText value size
-        if isinstance(value, six.binary_type):
+        if isinstance(value, bytes):
             return value.decode('utf-8')[:255]
-        return six.text_type(value)[:255]
+        return str(value)[:255]

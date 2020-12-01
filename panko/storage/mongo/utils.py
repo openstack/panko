@@ -21,7 +21,6 @@ from oslo_log import log
 from oslo_utils import netutils
 import pymongo
 import pymongo.errors
-import six
 import tenacity
 
 from panko.i18n import _
@@ -86,7 +85,7 @@ def make_events_query_from_filter(event_filter):
         for trait_filter in event_filter.traits_filter:
             op = trait_filter.pop('op', 'eq')
             dict_query = {}
-            for k, v in six.iteritems(trait_filter):
+            for k, v in trait_filter.items():
                 if v is not None:
                     # All parameters in EventFilter['traits'] are optional, so
                     # we need to check if they are in the query or no.

@@ -24,7 +24,6 @@ from oslo_log import log
 from oslo_utils import strutils
 import pecan
 from pecan import rest
-import six
 import wsme
 from wsme import types as wtypes
 import wsmeext.pecan as wsme_pecan
@@ -108,7 +107,7 @@ class Trait(base.Base):
         """
         if isinstance(trait, Trait):
             return trait
-        value = (six.text_type(trait.value)
+        value = (str(trait.value)
                  if not trait.dtype == event_models.Trait.DATETIME_TYPE
                  else trait.value.isoformat())
         trait_type = event_models.Trait.get_name_by_type(trait.dtype)
@@ -280,7 +279,7 @@ class EventTypesController(rest.RestController):
         pecan.abort(404)
 
     @v2_utils.requires_admin
-    @wsme_pecan.wsexpose([six.text_type])
+    @wsme_pecan.wsexpose([str])
     def get_all(self):
         """Get all event types."""
         return list(pecan.request.conn.get_event_types())
