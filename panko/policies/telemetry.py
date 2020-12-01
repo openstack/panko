@@ -19,6 +19,7 @@ rules = [
     policy.DocumentedRuleDefault(
         name=TELEMETRY_EVENTS % 'index',
         check_str=base.UNPROTECTED,
+        scope_types=['system', 'project'],
         description='Return all events matching the query filters.',
         operations=[
             {
@@ -30,6 +31,7 @@ rules = [
     policy.DocumentedRuleDefault(
         name=TELEMETRY_EVENTS % 'show',
         check_str=base.UNPROTECTED,
+        scope_types=['system', 'project'],
         description='Return a single event with the given message id.',
         operations=[
             {
