@@ -15,7 +15,14 @@ from oslo_policy import policy
 ROLE_ADMIN = 'role:admin'
 UNPROTECTED = ''
 
+# This is a check string that represents a common persona for someone who has
+# read-only access to the deployment, ultimately a subset of authorization for
+# system users, or administrators.
+SYSTEM_READER = 'role:admin and system_scope:all'
+
 rules = [
+    # This can be removed once the deprecated policies in segregation.py have
+    # been removed.
     policy.RuleDefault(
         name='context_is_admin',
         check_str=ROLE_ADMIN
