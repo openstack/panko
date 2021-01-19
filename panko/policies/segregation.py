@@ -10,12 +10,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_log import versionutils
 from oslo_policy import policy
+
+from panko.policies import base
+
+DEPRECATED_REASON = """
+The events API now supports system scope and default roles.
+"""
+
+deprecated_segregation = policy.DeprecatedRule(
+    name='segregation',
+    check_str='rule:context_is_admin'
+)
+
 
 rules = [
     policy.DocumentedRuleDefault(
         name='segregation',
-        check_str='rule:context_is_admin',
+        check_str=base.SYSTEM_READER,
+        scope_types=['system'],
         description='Return the user and project the request'
                     'should be limited to',
         operations=[
@@ -27,7 +41,10 @@ rules = [
                 'path': '/v2/events/{message_id}',
                 'method': 'GET'
             }
-        ]
+        ],
+        deprecated_rule=deprecated_segregation,
+        deprecated_reason=DEPRECATED_REASON,
+        deprecated_since=versionutils.deprecated.WALLABY
     )
 ]
 
