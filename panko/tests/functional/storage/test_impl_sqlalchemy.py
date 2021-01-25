@@ -19,8 +19,8 @@
 """
 
 import datetime
+import reprlib
 
-from six.moves import reprlib
 
 from panko.storage import impl_sqlalchemy as impl_sqla_event
 from panko.storage import models

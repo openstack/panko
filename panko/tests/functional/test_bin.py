@@ -16,7 +16,6 @@ import os
 import subprocess
 
 from oslo_utils import fileutils
-import six
 
 from panko.tests import base
 
@@ -26,8 +25,7 @@ class BinTestCase(base.BaseTestCase):
         super(BinTestCase, self).setUp()
         content = ("[database]\n"
                    "connection=log://localhost\n")
-        if six.PY3:
-            content = content.encode('utf-8')
+        content = content.encode('utf-8')
         self.tempfile = fileutils.write_to_tempfile(content=content,
                                                     prefix='panko',
                                                     suffix='.conf')
@@ -55,8 +53,7 @@ class BinTestCase(base.BaseTestCase):
         content = ("[database]\n"
                    "%s=1\n"
                    "connection=log://localhost\n" % ttl_name)
-        if six.PY3:
-            content = content.encode('utf-8')
+        content = content.encode('utf-8')
         self.tempfile = fileutils.write_to_tempfile(content=content,
                                                     prefix='panko',
                                                     suffix='.conf')
@@ -67,8 +64,7 @@ class BinTestCase(base.BaseTestCase):
         out, __ = subp.communicate()
         self.assertEqual(0, subp.poll())
         msg = "Dropping 100 %ss data with TTL 1" % data_name
-        if six.PY3:
-            msg = msg.encode('utf-8')
+        msg = msg.encode('utf-8')
         self.assertIn(msg, out)
 
     def test_run_expirer_ttl_enabled(self):

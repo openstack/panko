@@ -18,14 +18,13 @@
 import datetime
 import os
 from unittest import case
+from urllib import parse as urlparse
 
 from gabbi import fixture
 from oslo_config import cfg
 from oslo_policy import opts
 from oslo_utils import fileutils
 from oslo_utils import uuidutils
-import six
-from six.moves.urllib import parse as urlparse
 import sqlalchemy_utils
 
 from panko.api import app
@@ -65,8 +64,7 @@ class ConfigFixture(fixture.GabbiFixture):
         opts.set_defaults(self.conf)
 
         content = ('{"default": ""}')
-        if six.PY3:
-            content = content.encode('utf-8')
+        content = content.encode('utf-8')
         self.tempfile = fileutils.write_to_tempfile(content=content,
                                                     prefix='policy',
                                                     suffix='.json')

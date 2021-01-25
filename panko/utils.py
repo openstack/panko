@@ -25,7 +25,6 @@ import decimal
 
 from oslo_utils import timeutils
 from oslo_utils import units
-import six
 
 
 def decode_unicode(input):
@@ -36,7 +35,7 @@ def decode_unicode(input):
         # predictable insertion order to avoid inconsistencies in the
         # message signature computation for equivalent payloads modulo
         # ordering
-        for key, value in sorted(six.iteritems(input)):
+        for key, value in sorted(input.items()):
             temp[decode_unicode(key)] = decode_unicode(value)
         return temp
     elif isinstance(input, (tuple, list)):
@@ -44,9 +43,7 @@ def decode_unicode(input):
         # the tuple would become list. So we have to generate the value as
         # list here.
         return [decode_unicode(element) for element in input]
-    elif six.PY2 and isinstance(input, six.text_type):
-        return input.encode('utf-8')
-    elif six.PY3 and isinstance(input, six.binary_type):
+    elif isinstance(input, bytes):
         return input.decode('utf-8')
     else:
         return input
@@ -54,7 +51,7 @@ def decode_unicode(input):
 
 def recursive_keypairs(d, separator=':'):
     """Generator that produces sequence of keypairs for nested dictionaries."""
-    for name, value in sorted(six.iteritems(d)):
+    for name, value in sorted(d.items()):
         if isinstance(value, dict):
             for subname, subvalue in recursive_keypairs(value, separator):
                 yield ('%s%s%s' % (name, separator, subname), subvalue)
@@ -105,7 +102,7 @@ def update_nested(original_dict, updates):
      Updates occur without replacing entire sub-dicts.
     """
     dict_to_update = copy.deepcopy(original_dict)
-    for key, value in six.iteritems(updates):
+    for key, value in updates.items():
         if isinstance(value, dict):
             sub_dict = update_nested(dict_to_update.get(key, {}), value)
             dict_to_update[key] = sub_dict

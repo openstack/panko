@@ -18,7 +18,6 @@
 from unittest import mock
 
 from oslotest import base
-import six
 
 from panko import service
 from panko import storage
@@ -35,7 +34,7 @@ class EngineTest(base.BaseTestCase):
         try:
             storage.get_connection('no-such-engine://localhost', None)
         except RuntimeError as err:
-            self.assertIn('no-such-engine', six.text_type(err))
+            self.assertIn('no-such-engine', str(err))
 
 
 class ConnectionRetryTest(base.BaseTestCase):

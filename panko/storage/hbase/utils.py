@@ -14,6 +14,7 @@
 
 import copy
 import datetime
+import urllib
 
 import bson.json_util
 try:
@@ -24,7 +25,6 @@ except ImportError:
     from Hbase_thrift import AlreadyExists
 from oslo_log import log
 from oslo_serialization import jsonutils
-import six
 
 from panko.i18n import _
 
@@ -180,7 +180,7 @@ def prepare_key(*args):
     """
     key_quote = []
     for key in args:
-        if isinstance(key, six.integer_types):
+        if isinstance(key, int):
             key = str(key)
         key_quote.append(quote(key))
     return ":".join(key_quote)
@@ -258,7 +258,7 @@ def quote(s, *args):
     :param args: any symbol we want to stay unquoted
     """
     s_en = s.encode('utf8')
-    return six.moves.urllib.parse.quote(s_en, *args)
+    return urllib.parse.quote(s_en, *args)
 
 
 def unquote(s):
@@ -266,5 +266,5 @@ def unquote(s):
 
     :param s: string that should be unquoted
     """
-    s_de = six.moves.urllib.parse.unquote(s)
+    s_de = urllib.parse.unquote(s)
     return s_de.decode('utf8')

@@ -15,8 +15,6 @@
 """Base classes for storage engines
 """
 
-import six
-
 import panko
 
 
@@ -25,7 +23,7 @@ class Model(object):
 
     def __init__(self, **kwds):
         self.fields = list(kwds)
-        for k, v in six.iteritems(kwds):
+        for k, v in kwds.items():
             setattr(self, k, v)
 
     def as_dict(self):

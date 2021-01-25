@@ -27,7 +27,6 @@ from oslo_serialization import jsonutils
 from oslo_utils import strutils
 from oslo_utils import timeutils
 import pecan
-import six
 import wsme
 from wsme import types as wtypes
 
@@ -119,7 +118,7 @@ class Query(Base):
                         'float': float,
                         'boolean': functools.partial(
                             strutils.bool_from_string, strict=True),
-                        'string': six.text_type,
+                        'string': str,
                         'datetime': timeutils.parse_isotime}
 
     _op = None  # provide a default

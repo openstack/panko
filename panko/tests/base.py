@@ -18,7 +18,6 @@ import os.path
 
 from oslo_utils import timeutils
 from oslotest import base
-import six
 from testtools import testcase
 import webtest
 
@@ -71,10 +70,10 @@ def _skip_decorator(func):
         try:
             return func(*args, **kwargs)
         except panko.NotImplementedError as e:
-            raise testcase.TestSkipped(six.text_type(e))
+            raise testcase.TestSkipped(str(e))
         except webtest.app.AppError as e:
-            if 'not implemented' in six.text_type(e):
-                raise testcase.TestSkipped(six.text_type(e))
+            if 'not implemented' in str(e):
+                raise testcase.TestSkipped(str(e))
             raise
     return skip_if_not_implemented
 

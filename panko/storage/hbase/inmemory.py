@@ -18,7 +18,6 @@ import copy
 import re
 
 from oslo_log import log
-import six
 
 import panko
 
@@ -35,8 +34,8 @@ class MTable(object):
     def row(self, key, columns=None):
         if key not in self._rows_with_ts:
             return {}
-        res = copy.copy(sorted(six.iteritems(
-            self._rows_with_ts.get(key)))[-1][1])
+        res = copy.copy(sorted(
+            self._rows_with_ts.get(key).items())[-1][1])
         if columns:
             keys = res.keys()
             for key in keys:
@@ -72,7 +71,7 @@ class MTable(object):
         # To get result as HBase provides we should iterate in reverse order
         # and get from "latest" data only key-values that are not in newer data
         data = {}
-        for i in sorted(six.iteritems(self._rows_with_ts[row])):
+        for i in sorted(self._rows_with_ts[row].items()):
             data.update(i[1])
         return data
 
@@ -91,7 +90,7 @@ class MTable(object):
 
         if columns:
             ret = {}
-            for row, data in six.iteritems(rows):
+            for row, data in rows.items():
                 for key in data:
                     if key in columns:
                         ret[row] = data

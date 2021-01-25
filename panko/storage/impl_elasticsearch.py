@@ -19,7 +19,6 @@ from elasticsearch import helpers
 from oslo_log import log
 from oslo_utils import netutils
 from oslo_utils import timeutils
-import six
 
 from panko import storage
 from panko.storage import base
@@ -151,7 +150,7 @@ class Connection(base.Connection):
                 for val_type in ['integer', 'string', 'float', 'datetime']:
                     if t_filter.get(val_type):
                         value = t_filter.get(val_type)
-                        if isinstance(value, six.string_types):
+                        if isinstance(value, str):
                             value = value.lower()
                         elif isinstance(value, datetime.datetime):
                             value = value.isoformat()

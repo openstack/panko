@@ -12,12 +12,12 @@
 # under the License.
 
 import os
+from urllib import parse as urlparse
 import warnings
 
 import happybase
 from oslo_log import log
 from oslo_utils import netutils
-from six.moves.urllib import parse as urlparse
 
 from panko.storage.hbase import inmemory as hbase_inmemory
 
