@@ -95,7 +95,7 @@ class Base(wtypes.DynamicBase):
         return cls(links=links, **(m.as_dict()))
 
     def as_dict(self, db_model):
-        valid_keys = inspect.getargspec(db_model.__init__)[0]
+        valid_keys = inspect.getfullargspec(db_model.__init__)[0]
         if 'self' in valid_keys:
             valid_keys.remove('self')
         return self.as_dict_from_keys(valid_keys)
