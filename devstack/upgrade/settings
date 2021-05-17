@@ -1,7 +1,0 @@
-register_project_for_upgrade panko
-
-devstack_localrc base enable_plugin panko https://opendev.org/openstack/panko
-devstack_localrc base enable_service panko-api tempest
-
-devstack_localrc target enable_plugin panko https://opendev.org/openstack/panko
-devstack_localrc target enable_service panko-api tempest
