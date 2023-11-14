@@ -1,13 +1,12 @@
 - project:
     templates:
       - openstack-python-jobs
-      - openstack-python3-train-jobs
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
     check:
       jobs:
-        - telemetry-dsvm-integration-train
-        - telemetry-dsvm-integration-ipv6-only
+        - telemetry-dsvm-integration-ipv6-only:
+            voting: false
         # TripleO jobs that deploy Telemetry.
         # Note we don't use a project-template here, so it's easier
         # to disable voting on one specific job if things go wrong.
@@ -26,5 +25,5 @@
             voting: false
     gate:
       jobs:
-        - telemetry-dsvm-integration-train
-        - telemetry-dsvm-integration-ipv6-only
+        - telemetry-dsvm-integration-ipv6-only:
+            voting: false
